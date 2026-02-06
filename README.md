@@ -4,7 +4,7 @@ This project is a backend API for managing maintenance history of assets such as
 
 The system focuses on traceability and data integrity by storing maintenance activities as immutable logs. Each log represents a concrete maintenance action performed on an asset at a specific point in time.
 
-The application is developed incrementally throughout the semester, where new backend technologies and architectural concepts are gradually introduced and integrated into the same system.
+The application is developed incrementally as a school project on the third semester at EK. Lyngby, where new backend technologies and architectural concepts are gradually introduced and integrated into the same system.
 
 ### Core concepts
 - Assets that require maintenance
