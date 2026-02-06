@@ -1,0 +1,90 @@
+@startuml
+
+' Entities
+class User {
+  - int userId
+  - String firstName
+  - String lastName
+  - String phone
+  - String email
+  - UserRole role
+  - boolean active
+  }
+
+class Asset {
+  - int assetId
+  - String name
+  - String description
+  - boolean active
+  - List<MaintenanceLog> logs
+
+}
+
+class Task {
+  - int taskId
+  - String title
+  - String description
+  --
+  + getTaskId(): int
+  + getTitle(): String
+  + getDescription(): String
+}
+
+class MaintenanceLog {
+  - int logId
+  - LocalDate performedDate
+  - String comment
+  - LogStatus status
+  - Asset asset
+  - Task task
+  - User performedBy
+}
+
+' Enums
+enum UserRole {
+  TECHNICIAN
+  MANAGER
+  ADMIN
+}
+
+enum LogStatus {
+  DONE
+  FAILED
+}
+
+' DAOs
+class UserDAO {
+  - EntityManagerFactory emf
+  --
+  + UserDAO(EntityManagerFactory)
+  + createUser(User): User
+  + get(int): User
+  + getByEmail(String): User
+  + update(User): User
+}
+
+class MaintenanceLogDAO {
+  - EntityManagerFactory emf
+  --
+  + MaintenanceLogDAO(EntityManagerFactory)
+  + create(MaintenanceLog): MaintenanceLog
+  + get(int): MaintenanceLog
+  + getByAsset(int): List<MaintenanceLog>
+  + getByStatus(LogStatus): List<MaintenanceLog>
+  + getByStatus(LogStatus, int): List<MaintenanceLog>
+}
+
+' Entity Relationships
+User "1" -- "0..*" MaintenanceLog : performedBy
+Asset "1" -- "0..*" MaintenanceLog : asset
+Task "1" -- "0..*" MaintenanceLog : task
+
+' DAO to Entity Relationships
+UserDAO ..> User : manages
+MaintenanceLogDAO ..> MaintenanceLog : manages
+
+' Enum Usage
+User --> UserRole : uses
+MaintenanceLog --> LogStatus : uses
+
+@enduml
