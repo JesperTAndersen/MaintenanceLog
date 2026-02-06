@@ -1,24 +1,18 @@
-# Created by https://www.toptal.com/developers/gitignore/api/java,windows,osx,intellij,maven
-# Edit at https://www.toptal.com/developers/gitignore?templates=java,windows,osx,intellij,maven
+# Created by https://www.toptal.com/developers/gitignore/api/java,intellij,maven,windows,osx
+# Edit at https://www.toptal.com/developers/gitignore?templates=java,intellij,maven,windows,osx
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-# User-specific stuff
-.idea
+*.properties
 
+# User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-.idea/**/dataSources.xml
-.idea/**/vcs.xml
-
-
-.idea/misc.xml
-.idea/name.xml
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -222,4 +216,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/java,windows,osx,intellij,maven
+# End of https://www.toptal.com/developers/gitignore/api/java,intellij,maven,windows,osx
