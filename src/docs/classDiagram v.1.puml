@@ -1,0 +1,51 @@
+@startuml
+
+class User {
+  int userId
+  String firstName
+  String lastName
+  String email
+  String phone
+  UserRole userRole
+}
+
+class Asset {
+  int assetId
+  String name
+  String description
+  boolean active
+}
+
+class Task {
+  int taskId
+  String title
+  String description
+}
+
+class MaintenanceLog {
+    int logId
+    LocalDate performedDate
+    String comment
+    LogStatus status
+    Asset asset
+    Task task
+    User performedBy
+}
+
+
+User "1" -- "0..*" MaintenanceLog : performedBy
+Asset "1" -- "0..*" MaintenanceLog : asset
+Task "1" -- "0..*" MaintenanceLog : task
+
+enum UserRole {
+  TECHNICIAN
+  MANAGER
+  ADMIN
+}
+
+enum LogStatus {
+  DONE
+  FAILED
+}
+
+@enduml
