@@ -1,13 +1,9 @@
 package app.entities;
 
 import app.utils.UserRole;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
-import java.util.Set;
+
 
 @Getter
 @NoArgsConstructor
@@ -20,14 +16,23 @@ public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    String name;
+    @Column(name = "user_id", nullable = false)
+    int userId;
+
+    @Column(name = "first_name", nullable = false)
+    String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    String lastName;
+
+    @Column(name = "phone", nullable = false)
     String phone;
+
+    @Column(name = "email", nullable = false)
     String email;
-    String address;
-    UserRole status;
-    LocalDate dateOfBirth;
-    LocalDate dateOfEnrollment;
-    Set<Integer> courseIds; // temporary “relation” by IDs
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    UserRole role;
 }
 
