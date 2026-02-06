@@ -28,7 +28,7 @@ public class MaintenanceLogDAO
         return log;
     }
 
-    public MaintenanceLog getLog(int logId)
+    public MaintenanceLog get(int logId)
     {
         try (EntityManager em = emf.createEntityManager())
         {
@@ -36,7 +36,7 @@ public class MaintenanceLogDAO
         }
     }
 
-    public List<MaintenanceLog> getLogsByAsset(int assetId)
+    public List<MaintenanceLog> getByAsset(int assetId)
     {
         try (EntityManager em = emf.createEntityManager())
         {
@@ -46,7 +46,7 @@ public class MaintenanceLogDAO
         }
     }
 
-    public List<MaintenanceLog> getLogsByStatus(LogStatus status)
+    public List<MaintenanceLog> getByStatus(LogStatus status)
     {
         try (EntityManager em = emf.createEntityManager())
         {
@@ -56,7 +56,7 @@ public class MaintenanceLogDAO
         }
     }
 
-    public List<MaintenanceLog> getLogsByStatus(LogStatus status, int assetId)
+    public List<MaintenanceLog> getByStatus(LogStatus status, int assetId)
     {
         try (EntityManager em = emf.createEntityManager())
         {
