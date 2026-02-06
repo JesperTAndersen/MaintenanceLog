@@ -1,16 +1,13 @@
 package app.entities;
 
-import app.utils.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
@@ -29,5 +26,8 @@ public class Asset
 
     @Column(name = "status", nullable = false)
     boolean active;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "asset")
+    List<MaintenanceLog> logs;
 }
 

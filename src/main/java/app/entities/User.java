@@ -8,7 +8,6 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
@@ -28,11 +27,10 @@ public class User
     @Column(name = "phone", nullable = false)
     String phone;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     String email;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     UserRole role;
 }
-

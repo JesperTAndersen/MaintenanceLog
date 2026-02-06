@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
@@ -45,4 +44,3 @@ public class MaintenanceLog
     @JoinColumn(name = "performed_by_user_id", nullable = false)
     User performedBy;
 }
-
