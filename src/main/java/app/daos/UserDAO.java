@@ -1,8 +1,9 @@
 package app.daos;
 
-import app.entities.Course;
+import app.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
@@ -16,60 +17,50 @@ public class UserDAO
         this.emf = emf;
     }
 
-    public Course createCourse(Course course)
+    public User createUser(User user)
     {
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
-            em.persist(course);
+            em.persist(user);
             em.getTransaction().commit();
         }
-        return course;
+        return user;
     }
 
-    public Course update(Course course)
+    public User get(int userId)
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            em.merge(course);
-            em.getTransaction().commit();
-        }
-        return course;
-    }
-
-    public List<Course> getAllCourses()
-    {
-        try (EntityManager em = emf.createEntityManager())
-        {
-            em.getTransaction().begin();
-            TypedQuery<Course> query = em.createQuery("SELECT c from Course c", Course.class);
-            return query.getResultList();
+            return em.find(User.class, userId);
         }
     }
 
-    public boolean delete(int courseId)
+    public User getByEmail(String email)
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-
-            Course course = em.find(Course.class, courseId);
-            if (course == null)
+            TypedQuery<User> query = em.createQuery("SELECT u from User u WHERE u.email = :email AND u.active = true", User.class);
+            query.setParameter("email", email);
+            try
             {
-                em.getTransaction().rollback();
-                return false;
+                return query.getSingleResult();
             }
-
-            em.remove(course);
-            em.getTransaction().commit();
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
+            catch (NoResultException e)
+            {
+                return null;
+            }
         }
     }
 
-
+    public User update(User user)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+        }
+        return user;
+    }
 }
