@@ -1,6 +1,7 @@
 package app.entities;
 
 import app.utils.LogStatus;
+import app.utils.TaskType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,22 +23,21 @@ public class MaintenanceLog
     @Column(name = "performed_date", nullable = false)
     LocalDate performedDate;
 
-    @Column(name = "comment")
-    String comment;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     LogStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_type", nullable = false)
+    TaskType taskType;
+
+    @Column(name = "comment", nullable = false)
+    String comment;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "asset_id", nullable = false)
     Asset asset;
-
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "task_id", nullable = false)
-    Task task;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
