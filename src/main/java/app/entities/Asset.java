@@ -16,18 +16,17 @@ public class Asset
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "asset_id", nullable = false)
-    int assetId;
+    private Integer assetId;
 
     @Column(name = "name", nullable = false)
-    String name;
+    private String name;
 
     @Column(name = "description", nullable = false)
-    String description;
+    private String description;
 
     @Column(name = "status", nullable = false)
-    boolean active;
+    private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "asset")
-    List<MaintenanceLog> logs;
+    private List<MaintenanceLog> logs;
 }
-

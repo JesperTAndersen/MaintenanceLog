@@ -16,30 +16,30 @@ public class User
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
-    int userId;
+    private Integer userId;
 
     @Setter
     @Column(name = "first_name", nullable = false)
-    String firstName;
+    private String firstName;
 
     @Setter
     @Column(name = "last_name", nullable = false)
-    String lastName;
+    private String lastName;
 
     @Setter
     @Column(name = "phone", nullable = false)
-    String phone;
+    private String phone;
 
     @Setter
     @Column(name = "email", nullable = false, unique = true)
-    String email;
+    private String email;
 
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    UserRole role;
+    private UserRole role;
 
     @Setter
     @Column(name = "active", nullable = false)
-    boolean active;
+    private boolean active;
 }

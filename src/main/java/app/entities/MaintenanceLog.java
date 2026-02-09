@@ -18,29 +18,29 @@ public class MaintenanceLog
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "log_id", nullable = false)
-    int logId;
+    private Integer logId;
 
     @Column(name = "performed_date", nullable = false)
-    LocalDate performedDate;
+    private LocalDate performedDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    LogStatus status;
+    private LogStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "task_type", nullable = false)
-    TaskType taskType;
+    private TaskType taskType;
 
     @Column(name = "comment", nullable = false)
-    String comment;
+    private String comment;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "asset_id", nullable = false)
-    Asset asset;
+    private Asset asset;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "performed_by_user_id", nullable = false)
-    User performedBy;
+    private User performedBy;
 }
