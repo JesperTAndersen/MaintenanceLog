@@ -35,12 +35,12 @@ public class MaintenanceLog
     private String comment;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "performed_by_user_id", nullable = false)
     private User performedBy;
 }
