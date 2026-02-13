@@ -55,15 +55,15 @@ public class UserDAO implements IDAO<User>, IUserDAO
     }
 
     @Override
-    public User get(Integer Id)
+    public User get(Integer id)
     {
-        if (Id == null)
+        if (id == null)
         {
             throw new IllegalArgumentException("User id is required");
         }
         try (EntityManager em = emf.createEntityManager())
         {
-            User user = em.find(User.class, Id);
+            User user = em.find(User.class, id);
             if (user != null)
             {
                 return user;
