@@ -7,7 +7,6 @@ import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IUserDAO;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO implements IDAO<User>, IUserDAO
@@ -83,7 +82,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         try (EntityManager em = emf.createEntityManager())
         {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -102,12 +101,6 @@ public class UserDAO implements IDAO<User>, IUserDAO
 
         try (EntityManager em = emf.createEntityManager())
         {
-            User user = em.find(User.class, u.getUserId());
-            if (user == null)
-            {
-                throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND);
-            }
-
             em.getTransaction().begin();
 
             try
@@ -115,6 +108,14 @@ public class UserDAO implements IDAO<User>, IUserDAO
                 User merged = em.merge(u);
                 em.getTransaction().commit();
                 return merged;
+            }
+            catch (IllegalArgumentException e)
+            {
+                if (em.getTransaction().isActive())
+                {
+                    em.getTransaction().rollback();
+                }
+                throw new DatabaseException("User not found or invalid", DatabaseErrorType.NOT_FOUND, e);
             }
             catch (PersistenceException e)
             {
@@ -147,11 +148,14 @@ public class UserDAO implements IDAO<User>, IUserDAO
         {
             TypedQuery<User> query = em.createQuery("SELECT u from User u WHERE u.email = :email AND u.active = true", User.class);
             query.setParameter("email", email);
-            return query.getSingleResult();
-        }
-        catch (NoResultException e)
-        {
-            throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND);
+            try
+            {
+                return query.getSingleResult();
+            }
+            catch (NoResultException e)
+            {
+                throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND);
+            }
         }
         catch (PersistenceException e)
         {
@@ -171,7 +175,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);
             query.setMaxResults(limit);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
