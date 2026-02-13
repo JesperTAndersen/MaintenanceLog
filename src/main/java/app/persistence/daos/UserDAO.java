@@ -1,6 +1,5 @@
 package app.persistence.daos;
 
-import app.entities.model.MaintenanceLog;
 import app.entities.model.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
@@ -74,7 +73,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get User failed", DatabaseErrorType.UNKNOWN, e);
+            throw new DatabaseException("Get user failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 
@@ -88,7 +87,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get Users failed", DatabaseErrorType.UNKNOWN, e);
+            throw new DatabaseException("Get users failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 
@@ -156,7 +155,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get user by email failed", DatabaseErrorType.UNKNOWN, e);
+            throw new DatabaseException("Get user by email failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 
@@ -176,7 +175,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get active users failed", DatabaseErrorType.UNKNOWN, e);
+            throw new DatabaseException("Get active users failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 }
