@@ -12,7 +12,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogDAO
@@ -90,7 +89,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         try (EntityManager em = emf.createEntityManager())
         {
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m", MaintenanceLog.class);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -116,7 +115,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         {
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m from MaintenanceLog m WHERE m.asset.assetId = :assetId", MaintenanceLog.class);
             query.setParameter("assetId", assetId);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -141,7 +140,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m from MaintenanceLog m WHERE m.asset.assetId = :assetId AND m.taskType = :taskType", MaintenanceLog.class);
             query.setParameter("assetId", assetId);
             query.setParameter("taskType", taskType);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -161,7 +160,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         {
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m from MaintenanceLog m WHERE m.status = :status", MaintenanceLog.class);
             query.setParameter("status", status);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -186,7 +185,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m from MaintenanceLog m WHERE m.asset.assetId  = :assetId AND m.status = :status", MaintenanceLog.class);
             query.setParameter("assetId", assetId);
             query.setParameter("status", status);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -206,7 +205,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         {
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m WHERE m.performedBy.userId = :userId", MaintenanceLog.class);
             query.setParameter("userId", userId);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
@@ -226,7 +225,7 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         {
             TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m WHERE m.asset.active = true ORDER BY m.asset.assetId DESC, m.performedDate DESC", MaintenanceLog.class);
             query.setMaxResults(limit);
-            return new ArrayList<>(query.getResultList());
+            return query.getResultList();
         }
         catch (PersistenceException e)
         {
