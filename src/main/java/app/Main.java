@@ -1,6 +1,6 @@
 package app;
 
-import app.config.HibernateConfig;
+import app.persistence.config.HibernateConfig;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
