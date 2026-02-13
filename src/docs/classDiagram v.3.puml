@@ -1,0 +1,161 @@
+@startuml
+
+' Entities
+class User {
+  - Integer userId
+  - String firstName
+  - String lastName
+  - String phone
+  - String email
+  - UserRole role
+  - boolean active
+}
+
+class Asset {
+  - Integer assetId
+  - String name
+  - String description
+  - boolean active
+  - List~MaintenanceLog~ logs
+}
+
+class MaintenanceLog {
+  - Integer logId
+  - LocalDate performedDate
+  - LogStatus status
+  - TaskType taskType
+  - String comment
+  - Asset asset
+  - User performedBy
+}
+
+' Enums
+enum UserRole {
+  TECHNICIAN
+  MANAGER
+  ADMIN
+}
+
+enum LogStatus {
+  DONE
+  FAILED
+}
+
+enum TaskType {
+  PRODUCTION
+  MAINTENANCE
+  ERROR
+}
+
+enum DatabaseErrorType {
+  UNIQUE_VIOLATION
+  FOREIGN_KEY_VIOLATION
+  NOT_FOUND
+  NOT_NULL_VIOLATION
+  CONSTRAINT_VIOLATION
+  CONNECTION_FAILURE
+  TRANSACTION_FAILURE
+  QUERY_FAILURE
+  UNKNOWN
+}
+
+' Interfaces
+interface IDAO {
+  + create(T): T
+  + get(Integer): T
+  + getAll(): List T
+  + update(T): T
+}
+
+interface IUserDAO {
+  + getByEmail(String): User
+  + getActiveUsers(int): List~User~
+}
+
+interface IAssetDAO {
+  + setActive(Integer, boolean): Asset
+  + getInactiveAssets(): List~Asset~
+}
+
+interface IMaintenanceLogDAO {
+  + getByAsset(Integer): List~MaintenanceLog~
+  + getByAssetAndTask(Integer, TaskType): List~MaintenanceLog~
+  + getByStatus(LogStatus): List~MaintenanceLog~
+  + getByStatusAndAsset(LogStatus, Integer): List~MaintenanceLog~
+  + getByPerformedUser(Integer): List~MaintenanceLog~
+  + getLogsOnActiveAssets(int): List~MaintenanceLog~
+}
+
+' DAOs
+class UserDAO {
+  - EntityManagerFactory emf
+  + UserDAO(EntityManagerFactory)
+  + create(User): User
+  + get(Integer): User
+  + getAll(): List~User~
+  + update(User): User
+  + getByEmail(String): User
+  + getActiveUsers(int): List~User~
+}
+
+class AssetDAO {
+  - EntityManagerFactory emf
+  + AssetDAO(EntityManagerFactory)
+  + create(Asset): Asset
+  + get(Integer): Asset
+  + getAll(): List~Asset~
+  + update(Asset): Asset
+  + setActive(Integer, boolean): Asset
+  + getInactiveAssets(): List~Asset~
+}
+
+class MaintenanceLogDAO {
+  - EntityManagerFactory emf
+  + MaintenanceLogDAO(EntityManagerFactory)
+  + create(MaintenanceLog): MaintenanceLog
+  + get(Integer): MaintenanceLog
+  + getAll(): List~MaintenanceLog~
+  + update(MaintenanceLog): MaintenanceLog
+  + getByAsset(Integer): List~MaintenanceLog~
+  + getByAssetAndTask(Integer, TaskType): List~MaintenanceLog~
+  + getByStatus(LogStatus): List~MaintenanceLog~
+  + getByStatusAndAsset(LogStatus, Integer): List~MaintenanceLog~
+  + getByPerformedUser(Integer): List~MaintenanceLog~
+  + getLogsOnActiveAssets(int): List~MaintenanceLog~
+}
+
+' Exceptions
+class DatabaseException {
+  - DatabaseErrorType type
+  + DatabaseException(String, DatabaseErrorType)
+  + DatabaseException(String, DatabaseErrorType, Throwable)
+  + getType(): DatabaseErrorType
+}
+
+class ApiException {
+  - int code
+  + ApiException(int, String)
+  + getCode(): int
+}
+
+' Implements relationships
+UserDAO ..|> IDAO
+UserDAO ..|> IUserDAO
+AssetDAO ..|> IDAO
+AssetDAO ..|> IAssetDAO
+MaintenanceLogDAO ..|> IDAO
+MaintenanceLogDAO ..|> IMaintenanceLogDAO
+
+' Uses relationships
+User --> UserRole
+MaintenanceLog --> LogStatus
+MaintenanceLog --> TaskType
+DatabaseException --> DatabaseErrorType
+
+' DAO to Entity usage
+UserDAO ..> User
+AssetDAO ..> Asset
+MaintenanceLogDAO ..> MaintenanceLog
+
+@enduml
+
