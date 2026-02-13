@@ -1,6 +1,6 @@
-package app.entities;
+package app.entities.model;
 
-import app.utils.UserRole;
+import app.entities.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,7 @@
-package app.entities;
+package app.entities.model;
 
-import app.utils.LogStatus;
-import app.utils.TaskType;
+import app.entities.enums.LogStatus;
+import app.entities.enums.TaskType;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package app.config;
+package app.persistence.config;
 
 import app.utils.Utils;
 import jakarta.persistence.EntityManagerFactory;

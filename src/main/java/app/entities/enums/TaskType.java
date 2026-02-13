@@ -1,4 +1,4 @@
-package app.utils;
+package app.entities.enums;
 
 public enum TaskType
 {

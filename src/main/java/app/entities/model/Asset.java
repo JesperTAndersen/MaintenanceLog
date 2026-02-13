@@ -1,9 +1,11 @@
-package app.entities;
+package app.entities.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @NoArgsConstructor
@@ -24,9 +26,17 @@ public class Asset
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Setter
     @Column(name = "status", nullable = false)
     private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "asset")
-    private List<MaintenanceLog> logs;
+    @OrderBy("performedDate DESC")
+    private List<MaintenanceLog> logs = new ArrayList<>();
+
+    public void addLog(MaintenanceLog log)
+    {
+        logs.add(log);
+        log.setAsset(this);
+    }
 }
