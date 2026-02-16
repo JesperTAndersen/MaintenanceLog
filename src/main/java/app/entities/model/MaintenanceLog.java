@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
+@Table(name = "maintenance_logs")
 public class MaintenanceLog
 {
     @Id
@@ -43,4 +44,14 @@ public class MaintenanceLog
     @ManyToOne(optional = false)
     @JoinColumn(name = "performed_by_user_id", nullable = false)
     private User performedBy;
+
+    public MaintenanceLog(LocalDate performedDate, LogStatus status, TaskType taskType, String comment, Asset asset, User performedBy)
+    {
+        this.performedDate = performedDate;
+        this.status = status;
+        this.taskType = taskType;
+        this.comment = comment;
+        this.asset = asset;
+        this.performedBy = performedBy;
+    }
 }
