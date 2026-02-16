@@ -25,6 +25,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         {
             throw new IllegalArgumentException("User cant be null");
         }
+
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
@@ -61,6 +62,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         {
             throw new IllegalArgumentException("User id is required");
         }
+
         try (EntityManager em = emf.createEntityManager())
         {
             User user = em.find(User.class, id);
@@ -106,16 +108,22 @@ public class UserDAO implements IDAO<User>, IUserDAO
             try
             {
                 User managed = em.find(User.class, u.getUserId());
-                if (managed != null)
+                if (managed == null)
                 {
-                    em.getTransaction().commit();
-                    return managed;
+                    if (em.getTransaction().isActive())
+                    {
+                        em.getTransaction().rollback();
+                    }
+                    throw new DatabaseException("User not found or invalid", DatabaseErrorType.NOT_FOUND);
                 }
-                if (em.getTransaction().isActive())
-                {
-                    em.getTransaction().rollback();
-                }
-                throw new DatabaseException("User not found or invalid", DatabaseErrorType.NOT_FOUND);
+
+                managed = em.merge(u);
+                em.getTransaction().commit();
+                return managed;
+            }
+            catch (DatabaseException e)
+            {
+                throw e;
             }
             catch (PersistenceException e)
             {
@@ -148,13 +156,14 @@ public class UserDAO implements IDAO<User>, IUserDAO
         {
             TypedQuery<User> query = em.createQuery("SELECT u from User u WHERE u.email = :email AND u.active = true", User.class);
             query.setParameter("email", email);
+
             try
             {
                 return query.getSingleResult();
             }
             catch (NoResultException e)
             {
-                throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND);
+                throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND, e);
             }
         }
         catch (PersistenceException e)
@@ -171,6 +180,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
         {
             throw new IllegalArgumentException("Input needs to be bigger than 0");
         }
+
         try (EntityManager em = emf.createEntityManager())
         {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);

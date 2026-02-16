@@ -11,6 +11,7 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
+@Table(name = "users")
 public class User
 {
     @Id
@@ -42,4 +43,14 @@ public class User
     @Setter
     @Column(name = "active", nullable = false)
     private boolean active;
+
+    public User(String firstName, String lastName, String phone, String email, UserRole role, boolean active)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.role = role;
+        this.active = active;
+    }
 }
