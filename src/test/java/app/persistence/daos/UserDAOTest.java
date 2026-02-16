@@ -30,7 +30,7 @@ class UserDAOTest
     @BeforeEach
     void beforeEach()
     {
-        seeded = TestPopulator.populate(emf);
+        seeded = TestPopulator.populateUsers(emf);
         userDAO = new UserDAO(emf);
     }
 
