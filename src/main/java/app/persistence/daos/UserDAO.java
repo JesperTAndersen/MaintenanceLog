@@ -105,17 +105,17 @@ public class UserDAO implements IDAO<User>, IUserDAO
 
             try
             {
-                User merged = em.merge(u);
-                em.getTransaction().commit();
-                return merged;
-            }
-            catch (IllegalArgumentException e)
-            {
+                User managed = em.find(User.class, u.getUserId());
+                if (managed != null)
+                {
+                    em.getTransaction().commit();
+                    return managed;
+                }
                 if (em.getTransaction().isActive())
                 {
                     em.getTransaction().rollback();
                 }
-                throw new DatabaseException("User not found or invalid", DatabaseErrorType.NOT_FOUND, e);
+                throw new DatabaseException("User not found or invalid", DatabaseErrorType.NOT_FOUND);
             }
             catch (PersistenceException e)
             {
