@@ -13,6 +13,7 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
+@Table(name = "assets")
 public class Asset
 {
     @Id
@@ -38,5 +39,13 @@ public class Asset
     {
         logs.add(log);
         log.setAsset(this);
+    }
+
+    public Asset(String name, String description, boolean active, List<MaintenanceLog> logs)
+    {
+        this.name = name;
+        this.description = description;
+        this.active = active;
+        this.logs = logs;
     }
 }
