@@ -1,10 +1,15 @@
 package app;
 
+import app.entities.model.User;
 import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
 import app.persistence.config.HibernateConfig;
 
+import app.persistence.daos.UserDAO;
+import app.persistence.interfaces.IDAO;
+import app.services.ApiUserService;
+import app.services.ApiUserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -15,21 +20,27 @@ import java.util.List;
 
 public class Main
 {
-    //    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     public static void main(String[] args)
     {
-        //        EntityManager em = emf.createEntityManager();
-
-        // Close the database connection:
-        //        em.close();
-        //        emf.close();
+        EntityManager em = emf.createEntityManager();
 
         ObjectMapper objectMapper = new ObjectMapper();
         APIReader apiReader = new APIReader(objectMapper);
         RandomUserClient client = new RandomUserClient(apiReader);
 
-        testThreads(client);
+        IDAO<User> userDao = new UserDAO(emf);
+
+        ApiUserService apiUserService = new ApiUserServiceImpl(client, userDao);
+
+        apiUserService.seedUsers(50, false,0);
+
+
+        // Close the database connection:
+        em.close();
+        emf.close();
+
     }
 
     private static void testThreads(RandomUserClient client)
