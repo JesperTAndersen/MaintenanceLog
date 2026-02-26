@@ -36,6 +36,10 @@ public class User
     private String email;
 
     @Setter
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
@@ -53,4 +57,5 @@ public class User
         this.role = role;
         this.active = active;
     }
+
 }

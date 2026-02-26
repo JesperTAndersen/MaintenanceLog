@@ -21,8 +21,12 @@ public class RandomUserDTO
     private Login login;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private record Name(String first,String last){}
+    public record Name(String first, String last)
+    {
+    }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private record Login(String password){}
+    public record Login(String password)
+    {
+    }
 }
