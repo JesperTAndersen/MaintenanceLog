@@ -4,7 +4,7 @@ import app.entities.enums.UserRole;
 import app.entities.model.User;
 import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
-import app.persistence.daos.UserDAO;
+import app.persistence.interfaces.IDAO;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import java.util.List;
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
-    private final UserDAO userDao;
+    private final IDAO<User> userDao;
 
-    public ApiUserServiceImpl(RandomUserClient client, UserDAO userDao)
+    public ApiUserServiceImpl(RandomUserClient client, IDAO<User> userDao)
     {
         this.client = client;
         this.userDao = userDao;
@@ -24,6 +24,12 @@ public class ApiUserServiceImpl implements ApiUserService
     @Override
     public void seedUsers(int count, boolean multiThreaded, int threads)
     {
+        if(!userDao.getAll().isEmpty()) //only seeds if database is empty
+        {
+            System.out.println("Database not empty - Skipping seeding");
+            return;
+        }
+
         List<RandomUserDTO> randomUsers = fetchUsers(count, multiThreaded, threads);
 
         List<User> convertedUsers = userDtoToEntity(randomUsers);
