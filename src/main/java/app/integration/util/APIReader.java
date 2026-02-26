@@ -27,9 +27,16 @@ public class APIReader
         {
             JsonNode node = objectMapper.readTree(new URI(url).toURL());
             return objectMapper.treeToValue(node, tClass);
-        } catch (IOException | URISyntaxException e)
+        }
+        catch (URISyntaxException e)
         {
-            throw new IllegalArgumentException("Could not retrive data from the provided URL. Try again later");
+            String safeUrl = url.split("\\?")[0]; //in case apiKey is exposed in string
+            throw new IllegalArgumentException("Invalid URL: " + safeUrl + " error: " + e.getMessage(), e);
+        }
+        catch (IOException e)
+        {
+            String safeUrl = url.split("\\?")[0]; //in case apiKey is exposed in string
+            throw new RuntimeException("API call failed for " + safeUrl + ": " + e.getMessage(), e);
         }
     }
 
@@ -50,10 +57,22 @@ public class APIReader
                     list.add(item);
                 }
             }
+            else
+            {
+                String safeUrl = url.split("\\?")[0]; //in case apiKey is exposed in string
+                throw new IllegalArgumentException("api result not an array. URL: " + safeUrl);
+            }
             return list;
-        } catch (IOException | URISyntaxException e)
+        }
+        catch (URISyntaxException e)
         {
-            throw new IllegalArgumentException("Could not retrive data from the provided URL. Try again later");
+            String safeUrl = url.split("\\?")[0]; //in case apiKey is exposed in string
+            throw new IllegalArgumentException("Invalid URL: " + safeUrl + " error: " + e.getMessage(), e);
+        }
+        catch (IOException e)
+        {
+            String safeUrl = url.split("\\?")[0]; //in case apiKey is exposed in string
+            throw new RuntimeException("API call failed for " + safeUrl + ": " + e.getMessage(), e);
         }
     }
 }
