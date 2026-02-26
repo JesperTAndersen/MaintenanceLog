@@ -12,7 +12,7 @@ public class RandomUserClient
 {
     private final APIReader apiReader;
 
-    private final String endpoint = "https://randomuser.me/api/?results=%d";
+    private final String endpoint = "https://randomuser.me/api/?results=/%d&nat=gb,dk&inc=name,login,email,phone&seed=myfixedseed123"; //returns a number of users of choice, but with the same specific information each time
 
     public RandomUserClient(APIReader apiReader)
     {
