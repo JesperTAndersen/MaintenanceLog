@@ -12,7 +12,8 @@ public class RandomUserClient
 {
     private final APIReader apiReader;
 
-    private final String endpoint = "https://randomuser.me/api/?results=/%d&nat=gb,dk&inc=name,login,email,phone&seed=myfixedseed123"; //returns a number of users of choice, but with the same specific information each time
+    private final String endpointFixed = "https://randomuser.me/api/?results=%d&nat=gb,dk&inc=name,login,email,phone&seed=myfixedseed123"; //returns a number of users of choice, but with the same specific information each time
+    private final String endpointRandom = "https://randomuser.me/api/?results=%d&nat=gb,dk&inc=name,login,email,phone";
 
     public RandomUserClient(APIReader apiReader)
     {
@@ -21,7 +22,7 @@ public class RandomUserClient
 
     public List<RandomUserDTO> fetchUsersFromAPI(int amount)
     {
-        String formatted = String.format(Locale.US, endpoint, amount);
+        String formatted = String.format(Locale.US, endpointFixed, amount);
 
         return apiReader.getAndConvertDataList(formatted, RandomUserDTO.class);
     }
