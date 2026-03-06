@@ -2,6 +2,8 @@ package app.integration.client;
 
 import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.concurrent.*;
 public class RandomUserClient
 {
     private final APIReader apiReader;
-
     private final String endpointFixed = "https://randomuser.me/api/?results=%d&nat=gb,dk&inc=name,login,email,phone&seed=myfixedseed123"; //returns a number of users of choice, but with the same specific information each time
     private final String endpointRandom = "https://randomuser.me/api/?results=%d&nat=gb,dk&inc=name,login,email,phone";
 
@@ -20,6 +21,8 @@ public class RandomUserClient
         this.apiReader = apiReader;
     }
 
+    private static final Logger log = LoggerFactory.getLogger(RandomUserClient.class);
+
     public List<RandomUserDTO> fetchUsersFromAPI(int amount)
     {
         String formatted = String.format(Locale.US, endpointFixed, amount);
@@ -27,7 +30,6 @@ public class RandomUserClient
         return apiReader.getAndConvertDataList(formatted, RandomUserDTO.class);
     }
 
-    //TODO: Make this smarter?
     public List<RandomUserDTO> fetchUsersFromAPIMultiThreaded(int threads, int totalUsers)
     {
         List<RandomUserDTO> users = new ArrayList<>();
@@ -51,24 +53,23 @@ public class RandomUserClient
 
             for (Future<List<RandomUserDTO>> f : futures)
             {
-                try //if a batch fails, it just continues with the rest and return however many it got back
+                try
                 {
-                    List<RandomUserDTO> userDTOList = f.get();
-                    users.addAll(userDTOList);
+                    users.addAll(f.get());
                 }
                 catch (ExecutionException e)
                 {
-                    System.out.println("Batch failed: " + e.getCause().getMessage());
+                    log.error("Batch failed to fetch users", e.getCause());
                 }
             }
 
+            log.info("Successfully fetched {} users from API", users.size());
             return users;
         }
         catch (InterruptedException e)
         {
-            System.out.println("Thread interrupted: " + e.getCause().getMessage());
+            log.warn("User fetching interrupted, returning partial results ({} users)", users.size());
             Thread.currentThread().interrupt();
-
             return users;
         }
     }
