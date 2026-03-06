@@ -1,46 +1,62 @@
 package app;
 
+import app.controllers.AssetController;
+import app.controllers.LogController;
+import app.controllers.UserController;
+import app.controllers.routes.Routes;
 import app.entities.model.User;
 import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
 import app.persistence.config.HibernateConfig;
-
 import app.persistence.daos.UserDAO;
 import app.persistence.interfaces.IDAO;
 import app.services.ApiUserService;
 import app.services.ApiUserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.javalin.Javalin;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 public class Main
 {
+    //TODO: SET UP LOGGING USING LOGBACK
     private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     public static void main(String[] args)
     {
-        EntityManager em = emf.createEntityManager();
+        IDAO<User> userDao = new UserDAO(emf);
+        //        seedUsers(userDao)
 
+        UserController userController = new UserController();
+        AssetController assetController = new AssetController();
+        LogController logController = new LogController();
+
+        Routes routes = new Routes(userController, assetController, logController);
+
+        Javalin app = Javalin.create(config ->
+        {
+            config.bundledPlugins.enableRouteOverview("/routes");
+            config.routes.apiBuilder(routes.getRoutes());
+
+            config.routes.exception(RuntimeException.class, (e, ctx) ->
+            {
+                ctx.status(400).json(e.getMessage());
+            });
+
+        }).start(7070);
+
+    }
+
+    private static void seedUsers(IDAO<User> userDao)
+    {
         ObjectMapper objectMapper = new ObjectMapper();
         APIReader apiReader = new APIReader(objectMapper);
         RandomUserClient client = new RandomUserClient(apiReader);
-
-        IDAO<User> userDao = new UserDAO(emf);
-
         ApiUserService apiUserService = new ApiUserServiceImpl(client, userDao);
-
-        apiUserService.seedUsers(50, false,0);
-
-
-        // Close the database connection:
-        em.close();
-        emf.close();
-
+        apiUserService.seedUsers(50, false, 0);
     }
 
     private static void testThreads(RandomUserClient client)
