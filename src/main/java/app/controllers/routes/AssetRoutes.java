@@ -23,9 +23,9 @@ public class AssetRoutes
         {
             path("api/v1/assets", () ->
             {
-                get("/", assetController::getAll);
+                get(assetController::getAll);
                 get("/{id}", assetController::get);
-                post("/", assetController::create);
+                post(assetController::create);
                 put("/{id}", assetController::update);
                 delete("/{id}", assetController::delete);
             });

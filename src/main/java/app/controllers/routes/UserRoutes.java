@@ -1,6 +1,5 @@
 package app.controllers.routes;
 
-import app.controllers.AssetController;
 import app.controllers.UserController;
 import io.javalin.apibuilder.EndpointGroup;
 
@@ -25,11 +24,11 @@ public class UserRoutes
         {
             path("api/v1/users", () ->
             {
-                get("/", userController::getAll);
+                get(userController::getAll);
                 get("/{id}", userController::get);
-                post("/", userController::create);
+                post(userController::create);
                 put("/{id}", userController::update);
-                delete("/{id}", userController::delete);
+                delete("/{id}", userController::deactivate);
             });
         };
     }

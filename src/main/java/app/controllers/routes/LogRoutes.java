@@ -24,9 +24,9 @@ public class LogRoutes
         {
             path("api/v1/logs", () ->
             {
-                get("/", logController::getAll);
+                get(logController::getAll);
                 get("/{id}", logController::get);
-                post("/", logController::create);
+                post(logController::create);
                 put("/{id}", logController::update);
                 delete("/{id}", logController::delete);
             });
