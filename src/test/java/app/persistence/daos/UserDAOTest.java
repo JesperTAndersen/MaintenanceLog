@@ -240,16 +240,16 @@ class UserDAOTest
 
     @Test
     @DisplayName("GetActiveUsers - should retrieve only active users with limit")
-    void getActiveUsers()
+    void getInactiveUsers()
     {
-        List<User> activeUsers = userDAO.getActiveUsers(5);
+        List<User> activeUsers = userDAO.getInactiveUsers(5);
 
         assertThat(activeUsers, notNullValue());
         assertThat(activeUsers.size(), is(3));
 
         // Verify users are active
         for (User user : activeUsers) {
-            assertThat(user.isActive(), is(true));
+            assertThat(user.isActive(), is(false));
         }
 
         // inactive user is not included
@@ -263,35 +263,35 @@ class UserDAOTest
 
     @Test
     @DisplayName("GetActiveUsers - should respect the limit parameter")
-    void getActiveUsersWithLimit()
+    void getInactiveUsersWithLimit()
     {
-        List<User> activeUsers = userDAO.getActiveUsers(2);
+        List<User> activeUsers = userDAO.getInactiveUsers(2);
 
         assertThat(activeUsers, notNullValue());
         assertThat(activeUsers.size(), is(2)); // Should only return 2 users
 
         // Verify all returned users are active
         for (User user : activeUsers) {
-            assertThat(user.isActive(), is(true));
+            assertThat(user.isActive(), is(false));
         }
     }
 
     @Test
     @DisplayName("GetActiveUsers - should throw IllegalArgumentException when limit is zero")
-    void getActiveUsersZeroLimitThrowsException()
+    void getInactiveUsersZeroLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getActiveUsers(0));
+                () -> userDAO.getInactiveUsers(0));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }
 
     @Test
     @DisplayName("GetActiveUsers - should throw IllegalArgumentException when limit is negative")
-    void getActiveUsersNegativeLimitThrowsException()
+    void getInactiveUsersNegativeLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getActiveUsers(-1));
+                () -> userDAO.getInactiveUsers(-1));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }

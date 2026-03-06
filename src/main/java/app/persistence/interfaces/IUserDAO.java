@@ -7,5 +7,5 @@ import java.util.List;
 public interface IUserDAO
 {
     User getByEmail(String email);
-    List<User> getActiveUsers(int limit);
+    List<User> getInactiveUsers(int limit);
 }
