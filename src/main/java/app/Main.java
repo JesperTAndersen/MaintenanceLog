@@ -5,20 +5,25 @@ import app.controllers.LogController;
 import app.controllers.UserController;
 import app.controllers.routes.Routes;
 import app.entities.model.User;
+import app.exceptions.ApiException;
 import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
 import app.persistence.config.HibernateConfig;
 import app.persistence.daos.UserDAO;
 import app.persistence.interfaces.IDAO;
+import app.persistence.interfaces.IUserDAO;
 import app.services.ApiUserService;
 import app.services.ApiUserServiceImpl;
+import app.services.UserService;
+import app.services.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 public class Main
 {
@@ -28,9 +33,11 @@ public class Main
     public static void main(String[] args)
     {
         IDAO<User> userDao = new UserDAO(emf);
-        //        seedUsers(userDao)
+        IUserDAO userDaoExpanded = new UserDAO(emf);
 
-        UserController userController = new UserController();
+        UserService userService = new UserServiceImpl(userDao, userDaoExpanded);
+        UserController userController = new UserController(userService);
+
         AssetController assetController = new AssetController();
         LogController logController = new LogController();
 
@@ -40,6 +47,11 @@ public class Main
         {
             config.bundledPlugins.enableRouteOverview("/routes");
             config.routes.apiBuilder(routes.getRoutes());
+
+            config.routes.exception(ApiException.class, (e, ctx) ->
+            {
+                ctx.status(e.getCode()).json(Map.of("error", e.getMessage()));
+            });
 
             config.routes.exception(RuntimeException.class, (e, ctx) ->
             {

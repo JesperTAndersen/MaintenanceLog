@@ -8,6 +8,14 @@ GET {{baseUrl}}
 ### POST request to example server
 POST {{baseUrl}}/users
 
+ {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "12345678",
+    "role": "TECHNICIAN",
+    "password": "testPassword123"
+ }
 
 ###
 
@@ -18,7 +26,7 @@ GET {{baseUrl}}/users
 ###
 
 ### GET by ID
- GET{{baseUrl}}/users/4
+ GET {{baseUrl}}/users/4
 
 ###
 
