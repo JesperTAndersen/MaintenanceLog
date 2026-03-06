@@ -163,7 +163,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
             }
             catch (NoResultException e)
             {
-                throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND, e);
+                return null;
             }
         }
         catch (PersistenceException e)
