@@ -29,6 +29,7 @@ public class UserRoutes
                 post(userController::create);
                 put("/{id}", userController::update);
                 delete("/{id}", userController::deactivate);
+                patch("/{id}",userController::activate);
             });
         };
     }

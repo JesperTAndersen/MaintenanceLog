@@ -23,11 +23,13 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public UserDTO create(CreateUserRequest request) {
-        if (userDaoExpanded.getByEmail(request.getEmail()) != null) {
+    public UserDTO create(CreateUserRequest request)
+    {
+        if (userDaoExpanded.getByEmail(request.getEmail()) != null)
+        {
             throw new ApiException(409, "Email already exists");
         }
-
+        //TODO: validate inputs. implement validator util class
         User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -45,24 +47,70 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDTO get(Integer id)
     {
-        return null;
+        return new UserDTO(userDao.get(id));
     }
 
     @Override
     public List<UserDTO> getAll()
     {
-        return List.of();
+        return userDao.getAll()
+                .stream()
+                .map(UserDTO::new)
+                .toList();
     }
 
     @Override
-    public UserDTO update(UserDTO userDTO)
+    public UserDTO update(Integer id, UserDTO userDTO)
     {
-        return null;
+        User existingUser = userDao.get(id);
+
+        //check first if email is changing, then for if taken
+        if (!existingUser.getEmail().equals(userDTO.getEmail()))
+        {
+            User userWithEmail = userDaoExpanded.getByEmail(userDTO.getEmail());
+            if (userWithEmail != null)
+            {
+                throw new ApiException(409, "Email already exists");
+            }
+        }
+
+        existingUser.setFirstName(userDTO.getFirstName());
+        existingUser.setLastName(userDTO.getLastName());
+        existingUser.setPhone(userDTO.getPhone());
+        existingUser.setEmail(userDTO.getEmail());
+        existingUser.setRole(userDTO.getRole());
+        existingUser.setActive(userDTO.isActive());
+
+        return new UserDTO(userDao.update(existingUser));
     }
 
     @Override
     public UserDTO deactivate(Integer id)
     {
-        return null;
+        User user = userDao.get(id);
+
+        if (!user.isActive())
+        {
+            return new UserDTO(user);
+        }
+
+        user.setActive(false);
+        return new UserDTO(userDao.update(user));
     }
+
+    @Override
+    public UserDTO activate(Integer id)
+    {
+        User user = userDao.get(id);
+
+        if (user.isActive())
+        {
+            return new UserDTO(user);
+        }
+
+        user.setActive(true);
+        return new UserDTO(userDao.update(user));
+    }
+
+    //TODO: ADD PASSWORD CHANGER
 }

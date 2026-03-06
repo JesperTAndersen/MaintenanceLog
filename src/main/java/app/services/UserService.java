@@ -13,7 +13,9 @@ public interface UserService
 
     List<UserDTO> getAll();
 
-    UserDTO update(UserDTO userDTO);
+    UserDTO update(Integer id, UserDTO userDTO);
 
     UserDTO deactivate(Integer id);
+
+    UserDTO activate(Integer id);
 }

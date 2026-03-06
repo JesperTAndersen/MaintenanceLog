@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.dtos.UserDTO;
 import app.dtos.CreateUserRequest;
+import app.exceptions.ApiException;
 import app.services.UserService;
 import io.javalin.http.Context;
 
@@ -20,7 +21,7 @@ public class UserController
                 check(dto -> dto.getFirstName() != null, "First name is required")
                 .check(dto -> dto.getLastName() != null, "Last name is required")
                 .check(dto -> dto.getEmail() != null, "Email is required")
-                .check(dto ->dto.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
+                .check(dto -> dto.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
                 .check(dto -> dto.getPassword() != null, "Password is required")
                 .check(dto -> dto.getPhone() != null, "Phone is required")
                 .check(dto -> dto.getRole() != null, "Role is required")
@@ -31,25 +32,36 @@ public class UserController
 
     public void getAll(Context ctx)
     {
-        //TODO: ADD CODE
-        ctx.result("get all user - not implemented yet");
+        ctx.status(200).json(userService.getAll());
     }
 
     public void get(Context ctx)
     {
-        //TODO: ADD CODE
-        ctx.result("Get user - not implemented yet");
+        int id = Integer.parseInt((ctx.pathParam("id")));
+        ctx.status(200).json(userService.get(id));
     }
 
     public void update(Context ctx)
     {
-        //TODO: ADD CODE
-        ctx.result("update user - not implemented yet");
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        UserDTO userDTO = ctx.bodyValidator(UserDTO.class)
+                .check(dto -> dto.getId() == null || dto.getId().equals(id), "ID in URL and body must match")
+                .get();
+
+        ctx.json(userService.update(id, userDTO));
     }
 
     public void deactivate(Context ctx)
     {
-        //TODO: ADD CODE
-        ctx.result("delete user - not implemented yet");
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        userService.deactivate(id);
+        ctx.status(204);  // No content
+    }
+
+    public void activate(Context ctx)
+    {
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        userService.activate(id);
+        ctx.status(204);
     }
 }

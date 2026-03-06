@@ -26,14 +26,21 @@ GET {{baseUrl}}/users
 ###
 
 ### GET by ID
- GET {{baseUrl}}/users/4
+ GET {{baseUrl}}/users/51
 
 ###
 
 ### PUT request to example server
-PUT {{baseUrl}}/users/9
+PUT {{baseUrl}}/users/51
 
-
+ {
+    "firstName": "John-Updated",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "12345678",
+    "role": "TECHNICIAN",
+    "active": true
+ }
 
 ###
 
