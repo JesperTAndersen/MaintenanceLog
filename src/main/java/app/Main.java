@@ -6,6 +6,7 @@ import app.controllers.UserController;
 import app.controllers.routes.Routes;
 import app.entities.model.User;
 import app.exceptions.ApiException;
+import app.exceptions.DatabaseException;
 import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
@@ -19,15 +20,16 @@ import app.services.UserService;
 import app.services.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 public class Main
 {
-    //TODO: SET UP LOGGING USING LOGBACK
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
     private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     public static void main(String[] args)
@@ -48,13 +50,36 @@ public class Main
             config.bundledPlugins.enableRouteOverview("/routes");
             config.routes.apiBuilder(routes.getRoutes());
 
+            config.routes.exception(DatabaseException.class, (e, ctx) ->
+            {
+                int statusCode = switch (e.getErrorType())
+                {
+                    case NOT_FOUND -> 404;
+                    case CONSTRAINT_VIOLATION -> 409;
+                    case CONNECTION_FAILURE -> 503;
+                    case TRANSACTION_FAILURE, QUERY_FAILURE, UNKNOWN -> 500;
+                };
+
+                if (statusCode >= 500) {
+                    log.error("Database error [{}]: {}", e.getErrorType(), e.getMessage(), e);
+                } else {
+                    log.warn("Database error [{}]: {}", e.getErrorType(), e.getMessage());
+                }
+
+                ctx.status(statusCode).json(Map.of("status", statusCode,"msg", e.getMessage()
+                ));
+
+            });
+
             config.routes.exception(ApiException.class, (e, ctx) ->
             {
+                log.warn("API error [{}]: {}", e.getCode(), e.getMessage());
                 ctx.status(e.getCode()).json(Map.of("error", e.getMessage()));
             });
 
             config.routes.exception(RuntimeException.class, (e, ctx) ->
             {
+                log.warn("Runtime error: {}", e.getMessage());
                 ctx.status(400).json(e.getMessage());
             });
 
