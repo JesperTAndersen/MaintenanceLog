@@ -49,6 +49,18 @@ public class User
         this.email = email;
         this.role = role;
         this.active = active;
+        this.password = "default";
+    }
+
+    public User(String firstName, String lastName, String phone, String email, String password, UserRole role, boolean active)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = active;
     }
 
     public User(UserDTO userDTO, String password)
