@@ -10,6 +10,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.ArrayList;
 import java.util.List;
 
+import static app.utils.CredentialsHandler.hashPassword;
+
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
@@ -91,8 +93,5 @@ public class ApiUserServiceImpl implements ApiUserService
         }
     }
 
-    private String hashPassword(String password)
-    {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
-    }
+
 }
