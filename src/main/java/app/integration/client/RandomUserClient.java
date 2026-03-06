@@ -27,6 +27,7 @@ public class RandomUserClient
         return apiReader.getAndConvertDataList(formatted, RandomUserDTO.class);
     }
 
+    //TODO: Make this smarter?
     public List<RandomUserDTO> fetchUsersFromAPIMultiThreaded(int threads, int totalUsers)
     {
         List<RandomUserDTO> users = new ArrayList<>();
