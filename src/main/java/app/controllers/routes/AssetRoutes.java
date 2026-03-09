@@ -6,7 +6,6 @@ import io.javalin.apibuilder.EndpointGroup;
 import static io.javalin.apibuilder.ApiBuilder.*;
 import static io.javalin.apibuilder.ApiBuilder.delete;
 import static io.javalin.apibuilder.ApiBuilder.get;
-import static io.javalin.apibuilder.ApiBuilder.put;
 
 public class AssetRoutes
 {
@@ -26,7 +25,7 @@ public class AssetRoutes
                 get(assetController::getAll);
                 get("/{id}", assetController::get);
                 post(assetController::create);
-                put("/{id}", assetController::update);
+                patch("/{id}", assetController::active);
                 delete("/{id}", assetController::delete);
             });
         };

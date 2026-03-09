@@ -4,6 +4,7 @@ import app.controllers.AssetController;
 import app.controllers.LogController;
 import app.controllers.UserController;
 import app.controllers.routes.Routes;
+import app.entities.Asset;
 import app.entities.User;
 import app.exceptions.ApiException;
 import app.exceptions.DatabaseException;
@@ -11,13 +12,12 @@ import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
 import app.persistence.config.HibernateConfig;
+import app.persistence.daos.AssetDAO;
 import app.persistence.daos.UserDAO;
+import app.persistence.interfaces.IAssetDAO;
 import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IUserDAO;
-import app.services.ApiUserService;
-import app.services.ApiUserServiceImpl;
-import app.services.UserService;
-import app.services.UserServiceImpl;
+import app.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import jakarta.persistence.EntityManagerFactory;
@@ -40,7 +40,14 @@ public class Main
         UserService userService = new UserServiceImpl(userDao, userDaoExpanded);
         UserController userController = new UserController(userService);
 
-        AssetController assetController = new AssetController();
+        IDAO<Asset> assetDao = new AssetDAO(emf);
+        IAssetDAO assetDaoExpanded = new AssetDAO(emf);
+
+        AssetService assetService = new AssetServiceImpl(assetDao, assetDaoExpanded);
+        AssetController assetController = new AssetController(assetService);
+
+
+
         LogController logController = new LogController();
 
         Routes routes = new Routes(userController, assetController, logController);

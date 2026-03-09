@@ -8,5 +8,5 @@ public interface IAssetDAO
 {
     Asset setActive(Integer id, boolean active);
 
-    List<Asset> getInactiveAssets();
+    List<Asset> getAllByStatus(boolean active);
 }
