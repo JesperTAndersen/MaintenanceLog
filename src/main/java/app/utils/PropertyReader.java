@@ -1,4 +1,4 @@
-package app.persistence.utils;
+package app.utils;
 
 import app.exceptions.ApiException;
 
@@ -6,10 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Utils {
+public class PropertyReader
+{
 
     public static String getPropertyValue(String propName, String resourceName)  {
-        try (InputStream is = Utils.class.getClassLoader().getResourceAsStream(resourceName)) {
+        try (InputStream is = PropertyReader.class.getClassLoader().getResourceAsStream(resourceName)) {
             Properties prop = new Properties();
             prop.load(is);
 

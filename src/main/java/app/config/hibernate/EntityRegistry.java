@@ -1,8 +1,8 @@
-package app.persistence.config;
+package app.config.hibernate;
 
-import app.entities.model.Asset;
-import app.entities.model.MaintenanceLog;
-import app.entities.model.User;
+import app.entities.Asset;
+import app.entities.MaintenanceLog;
+import app.entities.User;
 import org.hibernate.cfg.Configuration;
 
 final class EntityRegistry

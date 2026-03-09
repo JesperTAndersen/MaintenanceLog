@@ -1,0 +1,51 @@
+ @baseUrl = http://localhost:7070/api/v1
+
+### GET request to example server
+GET {{baseUrl}}
+
+###
+
+### POST request to example server
+POST {{baseUrl}}/users
+
+ {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "12345678",
+    "role": "TECHNICIAN",
+    "password": "testPassword123"
+ }
+
+###
+
+
+### GET request to example server
+GET {{baseUrl}}/users
+
+###
+
+### GET by ID
+ GET {{baseUrl}}/users/51
+
+###
+
+### PUT request to example server
+PUT {{baseUrl}}/users/51
+
+ {
+    "firstName": "John-Updated",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "12345678",
+    "role": "TECHNICIAN",
+    "active": true
+ }
+
+###
+
+### DELETE request to example server
+DELETE {{baseUrl}}/users/9
+
+
+###

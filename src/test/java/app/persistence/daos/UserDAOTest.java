@@ -2,7 +2,7 @@ package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
 import app.entities.enums.UserRole;
-import app.entities.model.User;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;
@@ -16,14 +16,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserDAOTest
 {
-
     private final EntityManagerFactory emf = HibernateTestConfig.getEntityManagerFactory();
-
     private UserDAO userDAO;
     private Map<String, User> seeded;
 
@@ -39,7 +35,6 @@ class UserDAOTest
     {
         emf.close();
     }
-
 
     @Test
     @DisplayName("Create - should persist user and generate ID")
@@ -103,23 +98,27 @@ class UserDAOTest
     }
 
     @Test
-    @DisplayName("GetAll - should retrieve all users including inactive ones")
+    @DisplayName("GetAll - should retrieve only active users")
     void getAll()
     {
         List<User> allUsers = userDAO.getAll();
 
         assertThat(allUsers, notNullValue());
-        assertThat(allUsers.size(), is(4)); // 3 active + 1 inactive from TestPopulator
+        assertThat(allUsers.size(), is(3)); // 3 active users from TestPopulator
 
-        // Verify both active and inactive users
-        long activeCount = allUsers.stream().filter(User::isActive).count();
-        long inactiveCount = allUsers.stream().filter(u -> !u.isActive()).count();
+        // Verify all users are active
+        for (User user : allUsers)
+        {
+            assertThat(user.isActive(), is(true));
+        }
 
-        assertThat(activeCount, is(3L));
-        assertThat(inactiveCount, is(1L));
-
+        // Verify active users are included
         assertThat(allUsers, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
-        assertThat(allUsers, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
+        assertThat(allUsers, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
+        assertThat(allUsers, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
+
+        // Verify inactive user is not included
+        assertThat(allUsers, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
     }
 
     @Test
@@ -152,6 +151,7 @@ class UserDAOTest
                 .lastName("User")
                 .phone("00000000")
                 .email("ghost@mail.dk")
+                .password("default")
                 .role(UserRole.TECHNICIAN)
                 .active(true)
                 .build();
@@ -196,26 +196,22 @@ class UserDAOTest
     }
 
     @Test
-    @DisplayName("GetByEmail - should throw DatabaseException when email not found")
+    @DisplayName("GetByEmail - should return null when email not found")
     void getByEmailNotFoundThrowsException()
     {
-        DatabaseException exception = assertThrows(DatabaseException.class,
-                () -> userDAO.getByEmail("nonexistent@mail.dk"));
+        User result = userDAO.getByEmail("nonexistent@mail.dk");
 
-        assertThat(exception.getMessage(), containsString("User not found"));
-        assertThat(exception.getErrorType(), is(DatabaseErrorType.NOT_FOUND));
+        assertThat(result, nullValue());
     }
 
     @Test
-    @DisplayName("GetByEmail - should not retrieve inactive user")
+    @DisplayName("GetByEmail - should return null for inactive user")
     void getByEmailInactiveUserThrowsException()
     {
         // Clark Kent is inactive
-        DatabaseException exception = assertThrows(DatabaseException.class,
-                () -> userDAO.getByEmail("Clarkkent@mail.dk"));
+        User result = userDAO.getByEmail("Clarkkent@mail.dk");
 
-        assertThat(exception.getMessage(), containsString("User not found"));
-        assertThat(exception.getErrorType(), is(DatabaseErrorType.NOT_FOUND));
+        assertThat(result, nullValue());
     }
 
     @Test
@@ -239,59 +235,61 @@ class UserDAOTest
     }
 
     @Test
-    @DisplayName("GetActiveUsers - should retrieve only active users with limit")
-    void getActiveUsers()
+    @DisplayName("GetInactiveUsers - should retrieve only inactive users with limit")
+    void getInactiveUsers()
     {
-        List<User> activeUsers = userDAO.getActiveUsers(5);
+        List<User> inactiveUsers = userDAO.getInactiveUsers(5);
 
-        assertThat(activeUsers, notNullValue());
-        assertThat(activeUsers.size(), is(3));
+        assertThat(inactiveUsers, notNullValue());
+        assertThat(inactiveUsers.size(), is(1));
 
-        // Verify users are active
-        for (User user : activeUsers) {
-            assertThat(user.isActive(), is(true));
+        // Verify users are inactive
+        for (User user : inactiveUsers)
+        {
+            assertThat(user.isActive(), is(false));
         }
 
-        // inactive user is not included
-        assertThat(activeUsers, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
+        // inactive user is included
+        assertThat(inactiveUsers, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
 
-        // active users are included
-        assertThat(activeUsers, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
-        assertThat(activeUsers, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
-        assertThat(activeUsers, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
+        // active users are not included
+        assertThat(inactiveUsers, not(hasItem(hasProperty("email", is("Johndoe@mail.dk")))));
+        assertThat(inactiveUsers, not(hasItem(hasProperty("email", is("Janedoe@mail.dk")))));
+        assertThat(inactiveUsers, not(hasItem(hasProperty("email", is("Jeffdoe@mail.dk")))));
     }
 
     @Test
-    @DisplayName("GetActiveUsers - should respect the limit parameter")
-    void getActiveUsersWithLimit()
+    @DisplayName("GetInactiveUsers - should respect the limit parameter")
+    void getInactiveUsersWithLimit()
     {
-        List<User> activeUsers = userDAO.getActiveUsers(2);
+        List<User> inactiveUsers = userDAO.getInactiveUsers(2);
 
-        assertThat(activeUsers, notNullValue());
-        assertThat(activeUsers.size(), is(2)); // Should only return 2 users
+        assertThat(inactiveUsers, notNullValue());
+        assertThat(inactiveUsers.size(), is(1)); // Only 1 inactive user in test data
 
-        // Verify all returned users are active
-        for (User user : activeUsers) {
-            assertThat(user.isActive(), is(true));
+        // Verify all returned users are inactive
+        for (User user : inactiveUsers)
+        {
+            assertThat(user.isActive(), is(false));
         }
     }
 
     @Test
-    @DisplayName("GetActiveUsers - should throw IllegalArgumentException when limit is zero")
-    void getActiveUsersZeroLimitThrowsException()
+    @DisplayName("GetInactiveUsers - should throw IllegalArgumentException when limit is zero")
+    void getInactiveUsersZeroLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getActiveUsers(0));
+                () -> userDAO.getInactiveUsers(0));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }
 
     @Test
-    @DisplayName("GetActiveUsers - should throw IllegalArgumentException when limit is negative")
-    void getActiveUsersNegativeLimitThrowsException()
+    @DisplayName("GetInactiveUsers - should throw IllegalArgumentException when limit is negative")
+    void getInactiveUsersNegativeLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getActiveUsers(-1));
+                () -> userDAO.getInactiveUsers(-1));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }

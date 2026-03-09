@@ -1,4 +1,4 @@
-package app.services;
+package app.integration.seeding;
 
 public interface ApiUserService
 {

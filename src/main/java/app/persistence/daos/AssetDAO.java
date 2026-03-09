@@ -1,6 +1,6 @@
 package app.persistence.daos;
 
-import app.entities.model.Asset;
+import app.entities.Asset;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IAssetDAO;
@@ -84,12 +84,12 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a WHERE a.active = true ORDER BY a.assetId DESC", Asset.class);
+            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a ORDER BY a.assetId DESC", Asset.class);
             return query.getResultList();
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get active assets failed", DatabaseErrorType.QUERY_FAILURE, e);
+            throw new DatabaseException("Get assets failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 
@@ -138,11 +138,12 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
     }
 
     @Override
-    public List<Asset> getInactiveAssets()
+    public List<Asset> getAllByStatus(boolean active)
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a WHERE a.active = false ORDER BY a.assetId DESC", Asset.class);
+            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a WHERE a.active = :active ORDER BY a.assetId DESC", Asset.class)
+                    .setParameter("active", active);
             return query.getResultList();
         }
         catch (PersistenceException e)
@@ -150,4 +151,5 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
             throw new DatabaseException("Get inactive assets failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
+
 }

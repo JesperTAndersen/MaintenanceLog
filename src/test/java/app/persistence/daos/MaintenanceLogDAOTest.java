@@ -3,9 +3,9 @@ package app.persistence.daos;
 import app.config.HibernateTestConfig;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
-import app.entities.model.Asset;
-import app.entities.model.MaintenanceLog;
-import app.entities.model.User;
+import app.entities.Asset;
+import app.entities.MaintenanceLog;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;
@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ class MaintenanceLogDAOTest
         User user = seededUsers.get("user1");
         Asset asset = seededAssets.get("asset1");
         MaintenanceLog log = new MaintenanceLog(
-                LocalDate.now(),
+                LocalDateTime.now(),
                 LogStatus.DONE,
                 TaskType.MAINTENANCE,
                 "Test maintenance log",

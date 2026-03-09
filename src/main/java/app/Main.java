@@ -1,65 +1,25 @@
 package app;
 
-import app.entities.model.User;
-import app.integration.client.RandomUserClient;
-import app.integration.dto.RandomUserDTO;
-import app.integration.util.APIReader;
-import app.persistence.config.HibernateConfig;
-
-import app.persistence.daos.UserDAO;
-import app.persistence.interfaces.IDAO;
-import app.services.ApiUserService;
-import app.services.ApiUserServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
+import app.config.AppConfig;
+import app.config.DependencyContainer;
+import app.controllers.routes.Routes;
+import app.config.hibernate.HibernateConfig;
 import jakarta.persistence.EntityManagerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main
 {
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
     private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     public static void main(String[] args)
     {
-        EntityManager em = emf.createEntityManager();
+        DependencyContainer container = new DependencyContainer(emf);
+        Routes routes = container.getRoutes();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        APIReader apiReader = new APIReader(objectMapper);
-        RandomUserClient client = new RandomUserClient(apiReader);
+        AppConfig.create(routes).start(7070);
 
-        IDAO<User> userDao = new UserDAO(emf);
-
-        ApiUserService apiUserService = new ApiUserServiceImpl(client, userDao);
-
-        apiUserService.seedUsers(50, false,0);
-
-
-        // Close the database connection:
-        em.close();
-        emf.close();
-
-    }
-
-    private static void testThreads(RandomUserClient client)
-    {
-        // Sequential timing
-        long startSeq = System.currentTimeMillis();
-        for (int i = 0; i < 5; i++)
-        {
-            client.fetchUsersFromAPI(10);
-        }
-        long endSeq = System.currentTimeMillis();
-        System.out.println("Sequential (5x10): " + (endSeq - startSeq) + "ms");
-
-        // Concurrent timing
-        long startCon = System.currentTimeMillis();
-        List<RandomUserDTO> users = client.fetchUsersFromAPIMultiThreaded(5, 50);
-        long endCon = System.currentTimeMillis();
-        System.out.println("Concurrent (5 threads, 50 total): " + (endCon - startCon) + "ms");
-        System.out.println("Users fetched: " + users.size());
-        System.out.println("Speedup: " + ((endSeq - startSeq) / (double) (endCon - startCon)) + "x");
+        log.info("Server started on port 7070");
     }
 }

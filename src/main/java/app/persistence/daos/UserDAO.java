@@ -1,6 +1,6 @@
 package app.persistence.daos;
 
-import app.entities.model.User;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IDAO;
@@ -83,7 +83,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);
             return query.getResultList();
         }
         catch (PersistenceException e)
@@ -163,7 +163,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
             }
             catch (NoResultException e)
             {
-                throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND, e);
+                return null;
             }
         }
         catch (PersistenceException e)
@@ -174,7 +174,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
 
 
     @Override
-    public List<User> getActiveUsers(int limit)
+    public List<User> getInactiveUsers(int limit)
     {
         if (limit <= 0)
         {
@@ -183,7 +183,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
 
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = false", User.class);
             query.setMaxResults(limit);
             return query.getResultList();
         }

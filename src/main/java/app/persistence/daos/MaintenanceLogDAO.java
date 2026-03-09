@@ -1,6 +1,6 @@
 package app.persistence.daos;
 
-import app.entities.model.MaintenanceLog;
+import app.entities.MaintenanceLog;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.exceptions.DatabaseException;

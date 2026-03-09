@@ -1,6 +1,6 @@
-package app.persistence.config;
+package app.config.hibernate;
 
-import app.persistence.utils.Utils;
+import app.utils.PropertyReader;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Properties;
@@ -34,7 +34,7 @@ public final class HibernateConfig
         Properties props = HibernateBaseProperties.createBase();
 
         // Teaching-friendly default - change to update in production
-        props.put("hibernate.hbm2ddl.auto", "create");
+        props.put("hibernate.hbm2ddl.auto", "update");
 
         if (System.getenv("DEPLOYED") != null)
         {
@@ -57,9 +57,9 @@ public final class HibernateConfig
 
     private static void setDevProperties(Properties props)
     {
-        String dbName = Utils.getPropertyValue("DB_NAME", "config.properties");
-        String username = Utils.getPropertyValue("DB_USERNAME", "config.properties");
-        String password = Utils.getPropertyValue("DB_PASSWORD", "config.properties");
+        String dbName = PropertyReader.getPropertyValue("DB_NAME", "config.properties");
+        String username = PropertyReader.getPropertyValue("DB_USERNAME", "config.properties");
+        String password = PropertyReader.getPropertyValue("DB_PASSWORD", "config.properties");
 
         props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/" + dbName);
         props.put("hibernate.connection.username", username);

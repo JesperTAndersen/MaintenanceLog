@@ -1,14 +1,15 @@
-package app.services;
+package app.integration.seeding;
 
 import app.entities.enums.UserRole;
-import app.entities.model.User;
-import app.integration.client.RandomUserClient;
-import app.integration.dto.RandomUserDTO;
+import app.entities.User;
+import app.integration.RandomUserClient;
+import app.integration.RandomUserDTO;
 import app.persistence.interfaces.IDAO;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static app.utils.CredentialsHandler.hashPassword;
 
 public class ApiUserServiceImpl implements ApiUserService
 {
@@ -91,8 +92,5 @@ public class ApiUserServiceImpl implements ApiUserService
         }
     }
 
-    private String hashPassword(String password)
-    {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
-    }
+
 }
