@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LogDTO
+public class MaintenanceLogDTO
 {
     private Integer id;
     private LocalDateTime performedDate;
@@ -26,7 +26,7 @@ public class LogDTO
     private Integer performedByUserId;
     private String performedByName;
 
-    public LogDTO(MaintenanceLog log) {
+    public MaintenanceLogDTO(MaintenanceLog log) {
         this.id = log.getLogId();
         this.performedDate = log.getPerformedDate();
         this.status = log.getStatus();

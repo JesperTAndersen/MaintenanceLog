@@ -9,13 +9,13 @@ public class Routes
 {
     private final UserRoutes userRoutes;
     private final AssetRoutes assetRoutes;
-    private final LogRoutes logRoutes;
+    private final MaintenanceLogRoutes maintenanceLogRoutes;
 
     public Routes(UserController userController, AssetController assetController, LogController logController)
     {
         userRoutes = new UserRoutes(userController);
-        assetRoutes = new AssetRoutes(assetController);
-        logRoutes = new LogRoutes(logController);
+        assetRoutes = new AssetRoutes(assetController, logController);
+        maintenanceLogRoutes = new MaintenanceLogRoutes(logController);
 
     }
 
@@ -25,7 +25,7 @@ public class Routes
         {
             userRoutes.getRoutes().addEndpoints();
             assetRoutes.getRoutes().addEndpoints();
-            logRoutes.getRoutes().addEndpoints();
+            maintenanceLogRoutes.getRoutes().addEndpoints();
         };
     }
 }

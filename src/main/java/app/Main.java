@@ -5,6 +5,7 @@ import app.controllers.LogController;
 import app.controllers.UserController;
 import app.controllers.routes.Routes;
 import app.entities.Asset;
+import app.entities.MaintenanceLog;
 import app.entities.User;
 import app.exceptions.ApiException;
 import app.exceptions.DatabaseException;
@@ -13,9 +14,11 @@ import app.integration.dto.RandomUserDTO;
 import app.integration.util.APIReader;
 import app.persistence.config.HibernateConfig;
 import app.persistence.daos.AssetDAO;
+import app.persistence.daos.MaintenanceLogDAO;
 import app.persistence.daos.UserDAO;
 import app.persistence.interfaces.IAssetDAO;
 import app.persistence.interfaces.IDAO;
+import app.persistence.interfaces.IMaintenanceLogDAO;
 import app.persistence.interfaces.IUserDAO;
 import app.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,9 +49,11 @@ public class Main
         AssetService assetService = new AssetServiceImpl(assetDao, assetDaoExpanded);
         AssetController assetController = new AssetController(assetService);
 
+        IDAO<MaintenanceLog> logDao = new MaintenanceLogDAO(emf);
+        IMaintenanceLogDAO logDaoExpanded = new MaintenanceLogDAO(emf);
 
-
-        LogController logController = new LogController();
+        MaintenanceLogService logService = new MaintenanceLogServiceImpl(logDao, logDaoExpanded, assetDao, userDao);
+        LogController logController = new LogController(logService);
 
         Routes routes = new Routes(userController, assetController, logController);
 

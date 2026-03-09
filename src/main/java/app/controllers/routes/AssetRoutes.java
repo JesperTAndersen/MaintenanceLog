@@ -1,19 +1,20 @@
 package app.controllers.routes;
 
 import app.controllers.AssetController;
+import app.controllers.LogController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
-import static io.javalin.apibuilder.ApiBuilder.delete;
-import static io.javalin.apibuilder.ApiBuilder.get;
 
 public class AssetRoutes
 {
     private final AssetController assetController;
+    private final LogController logController;
 
-    public AssetRoutes(AssetController assetController)
+    public AssetRoutes(AssetController assetController, LogController logController)
     {
         this.assetController = assetController;
+        this.logController = logController;
     }
 
     public EndpointGroup getRoutes()
@@ -27,6 +28,12 @@ public class AssetRoutes
                 post(assetController::create);
                 patch("/{id}", assetController::active);
                 delete("/{id}", assetController::delete);
+
+                path("/{id}/logs", () ->
+                {
+                    get(logController::getLogsByAsset);
+                    post(logController::createLogForAsset);
+                });
             });
         };
     }
