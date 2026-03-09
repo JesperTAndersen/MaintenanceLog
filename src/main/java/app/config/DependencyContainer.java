@@ -1,5 +1,6 @@
 package app.config;
 
+import app.config.hibernate.HibernateConfig;
 import app.controllers.AssetController;
 import app.controllers.MaintenanceLogController;
 import app.controllers.UserController;
@@ -10,31 +11,28 @@ import app.persistence.daos.UserDAO;
 import app.services.*;
 import jakarta.persistence.EntityManagerFactory;
 
-public class DependencyContainer {
-    private final EntityManagerFactory emf;
+public class DependencyContainer
+{
+    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     //DAOs
     private final UserDAO userDao;
     private final AssetDAO assetDao;
     private final MaintenanceLogDAO logDao;
-
     //Services
     private final UserService userService;
     private final AssetService assetService;
     private final MaintenanceLogService logService;
-
     //Controllers
     private final UserController userController;
     private final AssetController assetController;
     private final MaintenanceLogController maintenanceLogController;
 
-    public DependencyContainer(EntityManagerFactory emf) {
-        this.emf = emf;
-
+    public DependencyContainer()
+    {
         this.userDao = new UserDAO(emf);
         this.assetDao = new AssetDAO(emf);
         this.logDao = new MaintenanceLogDAO(emf);
-
 
         this.userService = new UserServiceImpl(userDao, userDao);
         this.assetService = new AssetServiceImpl(assetDao, assetDao);
@@ -45,7 +43,8 @@ public class DependencyContainer {
         this.maintenanceLogController = new MaintenanceLogController(logService);
     }
 
-    public Routes getRoutes() {
+    public Routes getRoutes()
+    {
         return new Routes(userController, assetController, maintenanceLogController);
     }
 }
