@@ -1,4 +1,4 @@
-package app.persistence.config;
+package app.config.hibernate;
 
 import app.entities.Asset;
 import app.entities.MaintenanceLog;

@@ -1,17 +1,17 @@
 package app.controllers.routes;
 
-import app.controllers.LogController;
+import app.controllers.MaintenanceLogController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class MaintenanceLogRoutes
 {
-    private final LogController logController;
+    private final MaintenanceLogController maintenanceLogController;
 
-    public MaintenanceLogRoutes(LogController logController)
+    public MaintenanceLogRoutes(MaintenanceLogController maintenanceLogController)
     {
-        this.logController = logController;
+        this.maintenanceLogController = maintenanceLogController;
     }
 
     public EndpointGroup getRoutes()
@@ -20,10 +20,10 @@ public class MaintenanceLogRoutes
         {
             path("api/v1/logs", () ->
             {
-                get(logController::getAll);
-                get("/{id}", logController::get);
-                get("/user/{userId}", logController::getByUser);
-                get("/active-assets", logController::getLogsOnActiveAssets);
+                get(maintenanceLogController::getAll);
+                get("/{id}", maintenanceLogController::get);
+                get("/user/{userId}", maintenanceLogController::getByUser);
+                get("/active-assets", maintenanceLogController::getLogsOnActiveAssets);
             });
         };
     }

@@ -1,9 +1,9 @@
-package app.services;
+package app.integration.seeding;
 
 import app.entities.enums.UserRole;
 import app.entities.User;
-import app.integration.client.RandomUserClient;
-import app.integration.dto.RandomUserDTO;
+import app.integration.RandomUserClient;
+import app.integration.RandomUserDTO;
 import app.persistence.interfaces.IDAO;
 
 import java.util.ArrayList;

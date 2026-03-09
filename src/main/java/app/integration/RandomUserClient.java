@@ -1,7 +1,6 @@
-package app.integration.client;
+package app.integration;
 
-import app.integration.dto.RandomUserDTO;
-import app.integration.util.APIReader;
+import app.utils.APIReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

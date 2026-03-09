@@ -1,12 +1,10 @@
-package app.utils;
+package app.integration.seeding;
 
 import app.entities.User;
-import app.integration.client.RandomUserClient;
-import app.integration.dto.RandomUserDTO;
-import app.integration.util.APIReader;
+import app.integration.RandomUserClient;
+import app.integration.RandomUserDTO;
+import app.utils.APIReader;
 import app.persistence.interfaces.IDAO;
-import app.services.ApiUserService;
-import app.services.ApiUserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;

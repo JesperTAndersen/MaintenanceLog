@@ -1,7 +1,7 @@
 package app.config;
 
-import app.persistence.config.HibernateBaseProperties;
-import app.persistence.config.HibernateEmfBuilder;
+import app.config.hibernate.HibernateBaseProperties;
+import app.config.hibernate.HibernateEmfBuilder;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Properties;

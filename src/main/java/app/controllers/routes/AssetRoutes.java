@@ -1,7 +1,7 @@
 package app.controllers.routes;
 
 import app.controllers.AssetController;
-import app.controllers.LogController;
+import app.controllers.MaintenanceLogController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -9,12 +9,12 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 public class AssetRoutes
 {
     private final AssetController assetController;
-    private final LogController logController;
+    private final MaintenanceLogController maintenanceLogController;
 
-    public AssetRoutes(AssetController assetController, LogController logController)
+    public AssetRoutes(AssetController assetController, MaintenanceLogController maintenanceLogController)
     {
         this.assetController = assetController;
-        this.logController = logController;
+        this.maintenanceLogController = maintenanceLogController;
     }
 
     public EndpointGroup getRoutes()
@@ -31,8 +31,8 @@ public class AssetRoutes
 
                 path("/{id}/logs", () ->
                 {
-                    get(logController::getLogsByAsset);
-                    post(logController::createLogForAsset);
+                    get(maintenanceLogController::getLogsByAsset);
+                    post(maintenanceLogController::createLogForAsset);
                 });
             });
         };

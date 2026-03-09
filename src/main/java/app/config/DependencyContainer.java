@@ -1,7 +1,7 @@
 package app.config;
 
 import app.controllers.AssetController;
-import app.controllers.LogController;
+import app.controllers.MaintenanceLogController;
 import app.controllers.UserController;
 import app.controllers.routes.Routes;
 import app.persistence.daos.AssetDAO;
@@ -26,7 +26,7 @@ public class DependencyContainer {
     //Controllers
     private final UserController userController;
     private final AssetController assetController;
-    private final LogController logController;
+    private final MaintenanceLogController maintenanceLogController;
 
     public DependencyContainer(EntityManagerFactory emf) {
         this.emf = emf;
@@ -42,10 +42,10 @@ public class DependencyContainer {
 
         this.userController = new UserController(userService);
         this.assetController = new AssetController(assetService);
-        this.logController = new LogController(logService);
+        this.maintenanceLogController = new MaintenanceLogController(logService);
     }
 
     public Routes getRoutes() {
-        return new Routes(userController, assetController, logController);
+        return new Routes(userController, assetController, maintenanceLogController);
     }
 }

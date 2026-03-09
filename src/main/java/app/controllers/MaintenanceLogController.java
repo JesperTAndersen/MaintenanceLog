@@ -7,11 +7,11 @@ import app.exceptions.ApiException;
 import app.services.MaintenanceLogService;
 import io.javalin.http.Context;
 
-public class LogController
+public class MaintenanceLogController
 {
     private final MaintenanceLogService logService;
 
-    public LogController(MaintenanceLogService logService)
+    public MaintenanceLogController(MaintenanceLogService logService)
     {
         this.logService = logService;
     }

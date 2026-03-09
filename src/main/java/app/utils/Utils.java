@@ -1,4 +1,4 @@
-package app.persistence.utils;
+package app.utils;
 
 import app.exceptions.ApiException;
 
