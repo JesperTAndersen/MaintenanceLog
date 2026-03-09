@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class MaintenanceLog
     private Integer logId;
 
     @Column(name = "performed_date", nullable = false)
-    private LocalDate performedDate;
+    private LocalDateTime performedDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -45,7 +46,7 @@ public class MaintenanceLog
     @JoinColumn(name = "performed_by_user_id", nullable = false)
     private User performedBy;
 
-    public MaintenanceLog(LocalDate performedDate, LogStatus status, TaskType taskType, String comment, Asset asset, User performedBy)
+    public MaintenanceLog(LocalDateTime performedDate, LogStatus status, TaskType taskType, String comment, Asset asset, User performedBy)
     {
         this.performedDate = performedDate;
         this.status = status;

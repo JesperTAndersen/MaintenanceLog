@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ class MaintenanceLogDAOTest
         User user = seededUsers.get("user1");
         Asset asset = seededAssets.get("asset1");
         MaintenanceLog log = new MaintenanceLog(
-                LocalDate.now(),
+                LocalDateTime.now(),
                 LogStatus.DONE,
                 TaskType.MAINTENANCE,
                 "Test maintenance log",

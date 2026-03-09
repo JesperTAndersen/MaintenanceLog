@@ -10,7 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -101,12 +101,12 @@ public class TestPopulator
             Asset asset3 = em.merge(assets.get("asset3"));
             Asset asset4 = em.merge(assets.get("asset4"));
 
-            MaintenanceLog log1 = new MaintenanceLog(LocalDate.of(2024, 1, 15), LogStatus.DONE, TaskType.MAINTENANCE, "Regular maintenance completed", asset1, user1);
-            MaintenanceLog log2 = new MaintenanceLog(LocalDate.of(2024, 2, 10), LogStatus.DONE, TaskType.PRODUCTION, "Production run successful", asset1, user1);
-            MaintenanceLog log3 = new MaintenanceLog(LocalDate.of(2024, 3, 5), LogStatus.FAILED, TaskType.ERROR, "Error occurred during operation", asset2, user2);
-            MaintenanceLog log4 = new MaintenanceLog(LocalDate.of(2024, 4, 20), LogStatus.DONE, TaskType.MAINTENANCE, "Preventive maintenance", asset2, user1);
-            MaintenanceLog log5 = new MaintenanceLog(LocalDate.of(2024, 5, 15), LogStatus.DONE, TaskType.PRODUCTION, "Production completed", asset3, user2);
-            MaintenanceLog log6 = new MaintenanceLog(LocalDate.of(2024, 6, 1), LogStatus.FAILED, TaskType.ERROR, "Machine malfunction", asset4, user1);
+            MaintenanceLog log1 = new MaintenanceLog(LocalDateTime.of(2024, 1, 15, 10, 0), LogStatus.DONE, TaskType.MAINTENANCE, "Regular maintenance completed", asset1, user1);
+            MaintenanceLog log2 = new MaintenanceLog(LocalDateTime.of(2024, 2, 10, 14, 30), LogStatus.DONE, TaskType.PRODUCTION, "Production run successful", asset1, user1);
+            MaintenanceLog log3 = new MaintenanceLog(LocalDateTime.of(2024, 3, 5, 9, 15), LogStatus.FAILED, TaskType.ERROR, "Error occurred during operation", asset2, user2);
+            MaintenanceLog log4 = new MaintenanceLog(LocalDateTime.of(2024, 4, 20, 11, 45), LogStatus.DONE, TaskType.MAINTENANCE, "Preventive maintenance", asset2, user1);
+            MaintenanceLog log5 = new MaintenanceLog(LocalDateTime.of(2024, 5, 15, 16, 20), LogStatus.DONE, TaskType.PRODUCTION, "Production completed", asset3, user2);
+            MaintenanceLog log6 = new MaintenanceLog(LocalDateTime.of(2024, 6, 1, 8, 0), LogStatus.FAILED, TaskType.ERROR, "Machine malfunction", asset4, user1);
 
             try
             {
