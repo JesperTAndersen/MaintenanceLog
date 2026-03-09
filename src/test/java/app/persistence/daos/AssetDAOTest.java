@@ -97,26 +97,19 @@ class AssetDAOTest
     }
 
     @Test
-    @DisplayName("GetAll - should retrieve only active assets in descending order")
+    @DisplayName("GetAll - should retrieve all assets in descending order")
     void getAll()
     {
-        List<Asset> activeAssets = assetDAO.getAll();
+        List<Asset> allAssets = assetDAO.getAll();
 
-        assertThat(activeAssets, notNullValue());
-        assertThat(activeAssets.size(), is(3));
+        assertThat(allAssets, notNullValue());
+        assertThat(allAssets.size(), is(4)); // All assets including inactive ones
 
-
-        for (Asset asset : activeAssets) {
-            assertThat(asset.isActive(), is(true));
-        }
-
-        // inactive asset is not included
-        assertThat(activeAssets, not(hasItem(hasProperty("name", is("Machine D")))));
-
-        // active assets are included
-        assertThat(activeAssets, hasItem(hasProperty("name", is("Machine A"))));
-        assertThat(activeAssets, hasItem(hasProperty("name", is("Machine B"))));
-        assertThat(activeAssets, hasItem(hasProperty("name", is("Machine C"))));
+        // All assets are included
+        assertThat(allAssets, hasItem(hasProperty("name", is("Machine A"))));
+        assertThat(allAssets, hasItem(hasProperty("name", is("Machine B"))));
+        assertThat(allAssets, hasItem(hasProperty("name", is("Machine C"))));
+        assertThat(allAssets, hasItem(hasProperty("name", is("Machine D"))));
     }
 
     @Test
@@ -177,10 +170,10 @@ class AssetDAOTest
     }
 
     @Test
-    @DisplayName("GetInactiveAssets - should retrieve only inactive assets")
-    void getInactiveAssets()
+    @DisplayName("GetAllByStatus - should retrieve only inactive assets")
+    void getAllByStatusInactive()
     {
-        List<Asset> inactiveAssets = assetDAO.getInactiveAssets();
+        List<Asset> inactiveAssets = assetDAO.getAllByStatus(false);
 
         assertThat(inactiveAssets, notNullValue());
         assertThat(inactiveAssets.size(), is(1)); // Only 1 inactive asset in test data
@@ -198,15 +191,38 @@ class AssetDAOTest
     }
 
     @Test
-    @DisplayName("GetInactiveAssets - should return empty list when no inactive assets")
-    void getInactiveAssetsEmptyList()
+    @DisplayName("GetAllByStatus - should retrieve only active assets")
+    void getAllByStatusActive()
+    {
+        List<Asset> activeAssets = assetDAO.getAllByStatus(true);
+
+        assertThat(activeAssets, notNullValue());
+        assertThat(activeAssets.size(), is(3)); // 3 active assets in test data
+
+        // Verify all returned assets are active
+        for (Asset asset : activeAssets) {
+            assertThat(asset.isActive(), is(true));
+        }
+
+        // Verify active assets are included
+        assertThat(activeAssets, hasItem(hasProperty("name", is("Machine A"))));
+        assertThat(activeAssets, hasItem(hasProperty("name", is("Machine B"))));
+        assertThat(activeAssets, hasItem(hasProperty("name", is("Machine C"))));
+
+        // Verify inactive asset is not included
+        assertThat(activeAssets, not(hasItem(hasProperty("name", is("Machine D")))));
+    }
+
+    @Test
+    @DisplayName("GetAllByStatus - should return empty list when no inactive assets")
+    void getAllByStatusEmptyList()
     {
         // Set all assets to active
         for (Asset asset : seeded.values()) {
             assetDAO.setActive(asset.getAssetId(), true);
         }
 
-        List<Asset> inactiveAssets = assetDAO.getInactiveAssets();
+        List<Asset> inactiveAssets = assetDAO.getAllByStatus(false);
 
         assertThat(inactiveAssets, notNullValue());
         assertThat(inactiveAssets.isEmpty(), is(true));
