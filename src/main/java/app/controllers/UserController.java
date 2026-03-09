@@ -37,7 +37,7 @@ public class UserController
 
     public void get(Context ctx)
     {
-        int id = Integer.parseInt((ctx.pathParam("id")));
+        int id = Integer.parseInt(ctx.pathParam("id"));
         ctx.status(200).json(userService.get(id));
     }
 
@@ -55,8 +55,9 @@ public class UserController
     {
         int id = Integer.parseInt(ctx.pathParam("id"));
         userService.deactivate(id);
-        ctx.status(204);  // No content
+        ctx.status(204);
     }
+
 
     public void activate(Context ctx)
     {
