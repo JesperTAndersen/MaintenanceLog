@@ -2,7 +2,7 @@ package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
 import app.entities.enums.UserRole;
-import app.entities.model.User;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;
@@ -16,14 +16,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserDAOTest
 {
-
     private final EntityManagerFactory emf = HibernateTestConfig.getEntityManagerFactory();
-
     private UserDAO userDAO;
     private Map<String, User> seeded;
 
@@ -39,7 +35,6 @@ class UserDAOTest
     {
         emf.close();
     }
-
 
     @Test
     @DisplayName("Create - should persist user and generate ID")
@@ -112,7 +107,8 @@ class UserDAOTest
         assertThat(allUsers.size(), is(3)); // 3 active users from TestPopulator
 
         // Verify all users are active
-        for (User user : allUsers) {
+        for (User user : allUsers)
+        {
             assertThat(user.isActive(), is(true));
         }
 
@@ -248,7 +244,8 @@ class UserDAOTest
         assertThat(inactiveUsers.size(), is(1));
 
         // Verify users are inactive
-        for (User user : inactiveUsers) {
+        for (User user : inactiveUsers)
+        {
             assertThat(user.isActive(), is(false));
         }
 
@@ -271,7 +268,8 @@ class UserDAOTest
         assertThat(inactiveUsers.size(), is(1)); // Only 1 inactive user in test data
 
         // Verify all returned users are inactive
-        for (User user : inactiveUsers) {
+        for (User user : inactiveUsers)
+        {
             assertThat(user.isActive(), is(false));
         }
     }

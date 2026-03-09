@@ -2,7 +2,7 @@ package app.services;
 
 import app.dtos.CreateUserRequest;
 import app.dtos.UserDTO;
-import app.entities.model.User;
+import app.entities.User;
 import app.exceptions.ApiException;
 import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IUserDAO;

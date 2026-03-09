@@ -1,7 +1,7 @@
 package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
-import app.entities.model.Asset;
+import app.entities.Asset;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;

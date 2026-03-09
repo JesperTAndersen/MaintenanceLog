@@ -1,7 +1,7 @@
 package app.dtos;
 
 import app.entities.enums.UserRole;
-import app.entities.model.User;
+import app.entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

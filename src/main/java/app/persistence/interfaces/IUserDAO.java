@@ -1,6 +1,6 @@
 package app.persistence.interfaces;
 
-import app.entities.model.User;
+import app.entities.User;
 
 import java.util.List;
 

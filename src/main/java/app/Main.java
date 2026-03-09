@@ -4,7 +4,7 @@ import app.controllers.AssetController;
 import app.controllers.LogController;
 import app.controllers.UserController;
 import app.controllers.routes.Routes;
-import app.entities.model.User;
+import app.entities.User;
 import app.exceptions.ApiException;
 import app.exceptions.DatabaseException;
 import app.integration.client.RandomUserClient;

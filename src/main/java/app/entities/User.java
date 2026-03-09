@@ -1,4 +1,4 @@
-package app.entities.model;
+package app.entities;
 
 import app.dtos.UserDTO;
 import app.entities.enums.UserRole;

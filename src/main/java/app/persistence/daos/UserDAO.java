@@ -1,6 +1,6 @@
 package app.persistence.daos;
 
-import app.entities.model.User;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IDAO;

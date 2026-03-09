@@ -1,6 +1,6 @@
 package app.persistence.interfaces;
 
-import app.entities.model.Asset;
+import app.entities.Asset;
 
 import java.util.List;
 

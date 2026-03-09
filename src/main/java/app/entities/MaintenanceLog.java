@@ -1,4 +1,4 @@
-package app.entities.model;
+package app.entities;
 
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;

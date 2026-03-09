@@ -1,11 +1,10 @@
 package app.services;
 
 import app.entities.enums.UserRole;
-import app.entities.model.User;
+import app.entities.User;
 import app.integration.client.RandomUserClient;
 import app.integration.dto.RandomUserDTO;
 import app.persistence.interfaces.IDAO;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
