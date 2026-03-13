@@ -2,11 +2,9 @@ package app.persistence.interfaces;
 
 import java.util.List;
 
-public interface IDAO<T>
+public interface IDAO<T> extends IReadOnlyDAO<T>
 {
     T create(T t);
-
-    T get(Integer id);
 
     List<T> getAll();
 

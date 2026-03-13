@@ -9,6 +9,7 @@ import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IMaintenanceLogDAO;
+import app.persistence.interfaces.IReadOnlyDAO;
 
 import java.util.List;
 
@@ -16,10 +17,10 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
 {
     private final IDAO<MaintenanceLog> logDao;
     private final IMaintenanceLogDAO logDaoExpanded;
-    private final IDAO<Asset> assetDao;
-    private final IDAO<User> userDao;
+    private final IReadOnlyDAO<Asset> assetDao;
+    private final IReadOnlyDAO<User> userDao;
 
-    public MaintenanceLogServiceImpl(IDAO<MaintenanceLog> logDao, IMaintenanceLogDAO logDaoExpanded, IDAO<Asset> assetDao, IDAO<User> userDao)
+    public MaintenanceLogServiceImpl(IDAO<MaintenanceLog> logDao, IMaintenanceLogDAO logDaoExpanded, IReadOnlyDAO<Asset> assetDao, IReadOnlyDAO<User> userDao)
     {
         this.logDao = logDao;
         this.logDaoExpanded = logDaoExpanded;
