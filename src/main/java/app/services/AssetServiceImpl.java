@@ -49,12 +49,16 @@ public class AssetServiceImpl implements AssetService
     }
 
     @Override
-    public List<AssetDTO> getAll(Boolean active) {
+    public List<AssetDTO> getAll(Boolean active)
+    {
         List<Asset> assets;
 
-        if (active == null) {
+        if (active == null)
+        {
             assets = assetDao.getAll();
-        } else {
+        }
+        else
+        {
             assets = assetDaoExpanded.getAllByStatus(active);
         }
 

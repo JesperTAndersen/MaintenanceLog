@@ -51,9 +51,24 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public List<UserDTO> getAll()
+    public List<UserDTO> getAll(Boolean active)
     {
-        return userDao.getAll()
+        List<User> users;
+
+        if (active == null)
+        {
+            users = userDao.getAll();
+        }
+        else if (active)
+        {
+            users = userDaoExpanded.getActiveUsers(50);
+        }
+        else
+        {
+            users = userDaoExpanded.getInactiveUsers(50);
+        }
+
+        return users
                 .stream()
                 .map(UserDTO::new)
                 .toList();

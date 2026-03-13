@@ -83,7 +83,7 @@ public class UserDAO implements IDAO<User>, IUserDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
             return query.getResultList();
         }
         catch (PersistenceException e)
@@ -184,6 +184,26 @@ public class UserDAO implements IDAO<User>, IUserDAO
         try (EntityManager em = emf.createEntityManager())
         {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = false", User.class);
+            query.setMaxResults(limit);
+            return query.getResultList();
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Get active users failed", DatabaseErrorType.QUERY_FAILURE, e);
+        }
+    }
+
+    @Override
+    public List<User> getActiveUsers(int limit)
+    {
+        if (limit <= 0)
+        {
+            throw new IllegalArgumentException("Input needs to be bigger than 0");
+        }
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);
             query.setMaxResults(limit);
             return query.getResultList();
         }

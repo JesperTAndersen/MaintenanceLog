@@ -32,7 +32,10 @@ public class UserController
 
     public void getAll(Context ctx)
     {
-        ctx.status(200).json(userService.getAll());
+        String activeParam = ctx.queryParam("active");
+        Boolean active = activeParam != null ? Boolean.parseBoolean(activeParam) : null;
+
+        ctx.status(200).json(userService.getAll(active));
     }
 
     public void get(Context ctx)
