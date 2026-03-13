@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static io.restassured.RestAssured.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -25,7 +24,6 @@ class UserRoutesTest
     private static DependencyContainer container;
     private static Javalin app;
     private static final int TEST_PORT = 7071;
-
     private Map<String, User> seeded;
 
     @BeforeAll
@@ -36,7 +34,7 @@ class UserRoutesTest
         app = AppConfig.start(container, TEST_PORT);
 
         RestAssured.baseURI = "http://localhost:" + TEST_PORT;
-//        RestAssured.basePath = "/" + Routes.getAPI_VERSION();
+        RestAssured.basePath = "/" + Routes.getApiVersion();
     }
 
     @BeforeEach
@@ -83,23 +81,174 @@ class UserRoutesTest
     }
 
     @Test
-    void get()
+    void testgetById()
     {
+        User user1 = seeded.get("user1");
+
+        given()
+                .when()
+                .get("/users/" + user1.getUserId())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(user1.getUserId()))
+                .body("email", equalTo(user1.getEmail()))
+                .body("firstName", equalTo(user1.getFirstName()));
     }
 
-    void post()
+    @Test
+    void testGetByIdFails()
     {
+        given()
+                .when()
+                .get("/users/999999")
+                .then()
+                .statusCode(404);
     }
 
-    void put()
+    @Test
+    void testPostNewUser()
     {
+        given()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "firstName": "Test",
+                            "lastName": "User",
+                            "email": "test@example.com",
+                            "phone": "12345678",
+                            "role": "TECHNICIAN",
+                            "password": "password123"
+                        }
+                        """)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .body("firstName", equalTo("Test"))
+                .body("lastName", equalTo("User"))
+                .body("email", equalTo("test@example.com"))
+                .body("phone", equalTo("12345678"))
+                .body("role", equalTo("TECHNICIAN"))
+                .body("password", nullValue());
     }
 
-    void patch()
+    @Test
+    void testPostExistingEmailReturns409()
     {
+        User user1 = seeded.get("user1");
+
+        given()
+                .contentType("application/json")
+                .body(String.format("""
+                        {
+                            "firstName": "Test",
+                            "lastName": "User",
+                            "email": "%s",
+                            "phone": "12345678",
+                            "role": "TECHNICIAN",
+                            "password": "password123"
+                        }
+                        """, user1.getEmail()))
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(409);
     }
 
-    void delete()
+    @Test
+    void testPut()
     {
+        User user1 = seeded.get("user1");
+
+        given()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "firstName": "Test",
+                            "lastName": "User",
+                            "email": "test@example.com",
+                            "phone": "12345678",
+                            "role": "TECHNICIAN",
+                            "active": true
+                        }
+                        """)
+                .when()
+                .put("/users/" + user1.getUserId())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(user1.getUserId()))
+                .body("firstName", equalTo("Test"))
+                .body("lastName", equalTo("User"))
+                .body("email", equalTo("test@example.com"))
+                .body("phone", equalTo("12345678"))
+                .body("role", equalTo("TECHNICIAN"))
+                .body("active", equalTo(true));
+    }
+
+    @Test
+    void testPatchActivate()
+    {
+
+        User user1 = seeded.values().stream().filter(user -> !user.isActive()).findAny().get();
+
+        given()
+                .when()
+                .patch("/users/" + user1.getUserId())
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    void testPatchActivateAlreadyActiveUser()
+    {
+        User activeUser = seeded.values().stream().filter(User::isActive).findAny().orElseThrow();
+
+        given()
+                .when()
+                .patch("/users/" + activeUser.getUserId())
+                .then()
+                .statusCode(204);
+
+        given()
+                .when()
+                .get("/users/" + activeUser.getUserId())
+                .then()
+                .statusCode(200)
+                .body("active", equalTo(true));
+    }
+
+    @Test
+    void testDeleteDeactivate()
+    {
+        User user1 = seeded.values().stream().filter(User::isActive).findAny().get();
+        given()
+                .when()
+                .delete("/users/" + user1.getUserId())
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    void testPutInvalidEmailFormatReturns400()
+    {
+        User user1 = seeded.get("user1");
+
+        given()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "firstName": "Test",
+                            "lastName": "User",
+                            "email": "not-an-email",
+                            "phone": "12345678",
+                            "role": "TECHNICIAN",
+                            "active": true
+                        }
+                        """)
+                .when()
+                .put("/users/" + user1.getUserId())
+                .then()
+                .statusCode(400);
     }
 }

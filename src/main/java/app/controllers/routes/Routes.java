@@ -10,7 +10,6 @@ import static io.javalin.apibuilder.ApiBuilder.path;
 
 public class Routes
 {
-    @Getter
     private static final String API_VERSION = "api/v1";
 
     private final UserRoutes userRoutes;
@@ -34,5 +33,11 @@ public class Routes
                     assetRoutes.getRoutes().addEndpoints();
                     maintenanceLogRoutes.getRoutes().addEndpoints();
                 });
+    }
+
+
+    public static String getApiVersion()
+    {
+        return API_VERSION;
     }
 }

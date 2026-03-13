@@ -61,11 +61,11 @@ public class UserServiceImpl implements UserService
         }
         else if (active)
         {
-            users = userDaoExpanded.getActiveUsers(50);
+            users = userDaoExpanded.getActiveUsers(100);
         }
         else
         {
-            users = userDaoExpanded.getInactiveUsers(50);
+            users = userDaoExpanded.getInactiveUsers(100);
         }
 
         return users

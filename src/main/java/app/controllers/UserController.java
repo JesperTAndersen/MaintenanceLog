@@ -49,9 +49,10 @@ public class UserController
         int id = Integer.parseInt(ctx.pathParam("id"));
         UserDTO userDTO = ctx.bodyValidator(UserDTO.class)
                 .check(dto -> dto.getId() == null || dto.getId().equals(id), "ID in URL and body must match")
+                .check(dto -> dto.getEmail() == null || dto.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
                 .get();
 
-        ctx.json(userService.update(id, userDTO));
+        ctx.status(200).json(userService.update(id, userDTO));
     }
 
     public void deactivate(Context ctx)
