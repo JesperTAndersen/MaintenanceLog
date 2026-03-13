@@ -14,19 +14,29 @@ public class AppConfig
 {
     private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
 
-    public static void start(int port)
+
+    public static Javalin start(int port)
     {
         DependencyContainer container = new DependencyContainer();
+        return start(container, port);
+    }
+
+    public static Javalin start(DependencyContainer container, int port) //used for test Container
+    {
         Routes routes = container.getRoutes();
 
-        Javalin app = Javalin.create(config ->
+        return Javalin.create(config ->
         {
             configurePlugins(config);
             configureRoutes(config, routes);
             configureExceptionHandlers(config);
-        });
+        }).start(port);
+    }
 
-        app.start(port);
+
+    public static void stop(Javalin app)
+    {
+        app.stop();
     }
 
     private static void configurePlugins(JavalinConfig config)
