@@ -11,7 +11,7 @@ public interface UserService
 
     UserDTO get(Integer id);
 
-    List<UserDTO> getAll();
+    List<UserDTO> getAll(Boolean active);
 
     UserDTO update(Integer id, UserDTO userDTO);
 

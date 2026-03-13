@@ -98,27 +98,21 @@ class UserDAOTest
     }
 
     @Test
-    @DisplayName("GetAll - should retrieve only active users")
+    @DisplayName("GetAll - should retrieve all users")
     void getAll()
     {
         List<User> allUsers = userDAO.getAll();
 
         assertThat(allUsers, notNullValue());
-        assertThat(allUsers.size(), is(3)); // 3 active users from TestPopulator
-
-        // Verify all users are active
-        for (User user : allUsers)
-        {
-            assertThat(user.isActive(), is(true));
-        }
+        assertThat(allUsers.size(), is(4)); // 3 active + 1 inactive from TestPopulator
 
         // Verify active users are included
         assertThat(allUsers, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
         assertThat(allUsers, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
         assertThat(allUsers, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
 
-        // Verify inactive user is not included
-        assertThat(allUsers, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
+        // Verify inactive user is included
+        assertThat(allUsers, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
     }
 
     @Test
@@ -290,6 +284,61 @@ class UserDAOTest
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> userDAO.getInactiveUsers(-1));
+
+        assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
+    }
+
+    @Test
+    @DisplayName("GetActiveUsers - should retrieve only active users with limit")
+    void getActiveUsers()
+    {
+        List<User> activeUsers = userDAO.getActiveUsers(5);
+
+        assertThat(activeUsers, notNullValue());
+        assertThat(activeUsers.size(), is(3));
+
+        for (User user : activeUsers)
+        {
+            assertThat(user.isActive(), is(true));
+        }
+
+        assertThat(activeUsers, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
+        assertThat(activeUsers, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
+        assertThat(activeUsers, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
+        assertThat(activeUsers, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
+    }
+
+    @Test
+    @DisplayName("GetActiveUsers - should respect the limit parameter")
+    void getActiveUsersWithLimit()
+    {
+        List<User> activeUsers = userDAO.getActiveUsers(2);
+
+        assertThat(activeUsers, notNullValue());
+        assertThat(activeUsers.size(), is(2));
+
+        for (User user : activeUsers)
+        {
+            assertThat(user.isActive(), is(true));
+        }
+    }
+
+    @Test
+    @DisplayName("GetActiveUsers - should throw IllegalArgumentException when limit is zero")
+    void getActiveUsersZeroLimitThrowsException()
+    {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> userDAO.getActiveUsers(0));
+
+        assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
+    }
+
+    @Test
+    @DisplayName("GetActiveUsers - should throw IllegalArgumentException when limit is negative")
+    void getActiveUsersNegativeLimitThrowsException()
+    {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> userDAO.getActiveUsers(-1));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }

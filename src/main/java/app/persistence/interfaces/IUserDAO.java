@@ -8,4 +8,5 @@ public interface IUserDAO
 {
     User getByEmail(String email);
     List<User> getInactiveUsers(int limit);
+    List<User> getActiveUsers(int limit);
 }
