@@ -20,10 +20,10 @@ public class MaintenanceLogRoutes
         {
             path("logs", () ->
             {
-                get(maintenanceLogController::getAll);
-                get("/{id}", maintenanceLogController::get);
-                get("/user/{userId}", maintenanceLogController::getByUser);
                 get("/active-assets", maintenanceLogController::getLogsOnActiveAssets);
+                get("/user/{userId}", maintenanceLogController::getByUser);
+                get("/{id}", maintenanceLogController::get);
+                get(maintenanceLogController::getAll);
             });
         };
     }
