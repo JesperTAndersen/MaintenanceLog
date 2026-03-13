@@ -21,7 +21,7 @@ public class AssetRoutes
     {
         return () ->
         {
-            path("api/v1/assets", () ->
+            path("assets", () ->
             {
                 get(assetController::getAll);
                 get("/{id}", assetController::get);

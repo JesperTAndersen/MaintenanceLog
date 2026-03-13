@@ -18,7 +18,7 @@ public class MaintenanceLogRoutes
     {
         return () ->
         {
-            path("api/v1/logs", () ->
+            path("logs", () ->
             {
                 get(maintenanceLogController::getAll);
                 get("/{id}", maintenanceLogController::get);

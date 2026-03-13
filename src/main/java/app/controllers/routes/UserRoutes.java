@@ -22,7 +22,7 @@ public class UserRoutes
     {
         return () ->
         {
-            path("api/v1/users", () ->
+            path("users", () ->
             {
                 get(userController::getAll);
                 get("/{id}", userController::get);
