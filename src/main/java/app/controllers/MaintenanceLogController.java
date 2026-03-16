@@ -65,12 +65,6 @@ public class MaintenanceLogController
         ctx.status(200).json(logService.getByPerformedUser(userId));
     }
 
-    public void getLogsOnActiveAssets(Context ctx)
-    {
-        int limit = ctx.queryParamAsClass("limit", Integer.class).getOrDefault(10);
-        ctx.status(200).json(logService.getLogsOnActiveAssets(limit));
-    }
-
     public void getLogsByAsset(Context ctx)
     {
         int assetId = Integer.parseInt(ctx.pathParam("id"));

@@ -128,30 +128,4 @@ class MaintenanceLogRoutesTest
                 .body("performedByUserId", everyItem(equalTo(user1.getUserId())))
                 .body("size()", is(4));
     }
-
-    @Test
-    void testGetLogsOnActiveAssetsDefaultLimit()
-    {
-        Asset inactiveAsset = assets.get("asset4");
-
-        given()
-                .when()
-                .get("/logs/active-assets")
-                .then()
-                .statusCode(200)
-                .body("size()", is(5))
-                .body("assetId", not(hasItem(inactiveAsset.getAssetId())));
-    }
-
-    @Test
-    void testGetLogsOnActiveAssetsWithLimit()
-    {
-        given()
-                .when()
-                .get("/logs/active-assets?limit=2")
-                .then()
-                .statusCode(200)
-                .body("size()", is(2));
-    }
 }
-
