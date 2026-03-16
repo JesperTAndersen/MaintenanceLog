@@ -17,5 +17,4 @@ public class UserMapper
                 user.isActive()
         );
     }
-
 }
