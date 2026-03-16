@@ -3,20 +3,17 @@ package app.services;
 import app.dtos.AssetDTO;
 import app.entities.Asset;
 import app.persistence.interfaces.IAssetDAO;
-import app.persistence.interfaces.IDAO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class AssetServiceImpl implements AssetService
 {
-    private final IDAO<Asset> assetDao;
-    private final IAssetDAO assetDaoExpanded;
+    private final IAssetDAO assetDao;
 
-    public AssetServiceImpl(IDAO<Asset> assetDao, IAssetDAO assetDaoExpanded)
+    public AssetServiceImpl(IAssetDAO assetDao)
     {
         this.assetDao = assetDao;
-        this.assetDaoExpanded = assetDaoExpanded;
     }
 
     @Override
@@ -59,7 +56,7 @@ public class AssetServiceImpl implements AssetService
         }
         else
         {
-            assets = assetDaoExpanded.getAllByStatus(active);
+            assets = assetDao.getAllByStatus(active);
         }
 
         return assets.stream()
@@ -70,14 +67,14 @@ public class AssetServiceImpl implements AssetService
     @Override
     public AssetDTO activate(Integer id)
     {
-        Asset activated = assetDaoExpanded.setActive(id, true);
+        Asset activated = assetDao.setActive(id, true);
         return new AssetDTO(activated);
     }
 
     @Override
     public AssetDTO deactivate(Integer id)
     {
-        Asset deactivated = assetDaoExpanded.setActive(id, false);
+        Asset deactivated = assetDao.setActive(id, false);
         return new AssetDTO(deactivated);
     }
 }

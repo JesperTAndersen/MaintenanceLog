@@ -5,7 +5,6 @@ import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
-import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IMaintenanceLogDAO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -14,7 +13,7 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogDAO
+public class MaintenanceLogDAO implements IMaintenanceLogDAO
 {
     private final EntityManagerFactory emf;
 
@@ -97,7 +96,6 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         }
     }
 
-    @Override
     public MaintenanceLog update(MaintenanceLog maintenanceLog)
     {
         throw new UnsupportedOperationException("Maintenance logs are immutable");

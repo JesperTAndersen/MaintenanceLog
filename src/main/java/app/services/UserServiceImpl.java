@@ -4,7 +4,6 @@ import app.dtos.CreateUserRequest;
 import app.dtos.UserDTO;
 import app.entities.User;
 import app.exceptions.ApiException;
-import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IUserDAO;
 
 import java.util.List;
@@ -13,19 +12,17 @@ import static app.utils.CredentialsHandler.hashPassword;
 
 public class UserServiceImpl implements UserService
 {
-    private final IDAO<User> userDao;
-    private final IUserDAO userDaoExpanded;
+    private final IUserDAO userDao;
 
-    public UserServiceImpl(IDAO<User> userDao, IUserDAO userDaoExpanded)
+    public UserServiceImpl(IUserDAO userDao)
     {
         this.userDao = userDao;
-        this.userDaoExpanded = userDaoExpanded;
     }
 
     @Override
     public UserDTO create(CreateUserRequest request)
     {
-        if (userDaoExpanded.getByEmail(request.getEmail()) != null)
+        if (userDao.getByEmail(request.getEmail()) != null)
         {
             throw new ApiException(409, "Email already exists");
         }
@@ -61,11 +58,11 @@ public class UserServiceImpl implements UserService
         }
         else if (active)
         {
-            users = userDaoExpanded.getActiveUsers(100);
+            users = userDao.getActiveUsers(100);
         }
         else
         {
-            users = userDaoExpanded.getInactiveUsers(100);
+            users = userDao.getInactiveUsers(100);
         }
 
         return users
@@ -82,7 +79,7 @@ public class UserServiceImpl implements UserService
         //check first if email is changing, then for if taken
         if (!existingUser.getEmail().equals(userDTO.getEmail()))
         {
-            User userWithEmail = userDaoExpanded.getByEmail(userDTO.getEmail());
+            User userWithEmail = userDao.getByEmail(userDTO.getEmail());
             if (userWithEmail != null)
             {
                 throw new ApiException(409, "Email already exists");

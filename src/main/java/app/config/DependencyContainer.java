@@ -30,9 +30,9 @@ public class DependencyContainer
         MaintenanceLogDAO logDaoImpl = new MaintenanceLogDAO(emfTest);
 
         // Services uses different interface implementations and upcast automatically
-        UserService userService = new UserServiceImpl(userDaoImpl, userDaoImpl);
-        AssetService assetService = new AssetServiceImpl(assetDaoImpl, assetDaoImpl);
-        MaintenanceLogService logService = new MaintenanceLogServiceImpl(logDaoImpl, logDaoImpl, assetDaoImpl, userDaoImpl);
+        UserService userService = new UserServiceImpl(userDaoImpl);
+        AssetService assetService = new AssetServiceImpl(assetDaoImpl);
+        MaintenanceLogService logService = new MaintenanceLogServiceImpl(logDaoImpl, assetDaoImpl, userDaoImpl);
 
         this.userController = new UserController(userService);
         this.assetController = new AssetController(assetService);

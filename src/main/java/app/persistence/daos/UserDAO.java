@@ -3,13 +3,12 @@ package app.persistence.daos;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
-import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IUserDAO;
 import jakarta.persistence.*;
 
 import java.util.List;
 
-public class UserDAO implements IDAO<User>, IUserDAO
+public class UserDAO implements IUserDAO
 {
     private final EntityManagerFactory emf;
 

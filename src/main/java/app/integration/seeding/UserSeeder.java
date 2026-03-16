@@ -4,14 +4,14 @@ import app.entities.User;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
 import app.utils.APIReader;
-import app.persistence.interfaces.IDAO;
+import app.persistence.interfaces.ICrudDAO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
 public class UserSeeder
 {
-    public static void seedUsers(IDAO<User> userDao)
+    public static void seedUsers(ICrudDAO<User> userDao)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         APIReader apiReader = new APIReader(objectMapper);

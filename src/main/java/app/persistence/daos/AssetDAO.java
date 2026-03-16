@@ -4,12 +4,11 @@ import app.entities.Asset;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IAssetDAO;
-import app.persistence.interfaces.IDAO;
 import jakarta.persistence.*;
 
 import java.util.List;
 
-public class AssetDAO implements IDAO<Asset>, IAssetDAO
+public class AssetDAO implements IAssetDAO
 {
     private final EntityManagerFactory emf;
 
@@ -100,7 +99,6 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
         }
     }
 
-    @Override
     public Asset update(Asset asset)
     {
         throw new UnsupportedOperationException("Assets are immutable");

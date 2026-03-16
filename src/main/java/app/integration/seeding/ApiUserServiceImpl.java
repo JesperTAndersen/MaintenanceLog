@@ -4,7 +4,7 @@ import app.entities.enums.UserRole;
 import app.entities.User;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
-import app.persistence.interfaces.IDAO;
+import app.persistence.interfaces.ICrudDAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,9 @@ import static app.utils.CredentialsHandler.hashPassword;
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
-    private final IDAO<User> userDao;
+    private final ICrudDAO<User> userDao;
 
-    public ApiUserServiceImpl(RandomUserClient client, IDAO<User> userDao)
+    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<User> userDao)
     {
         this.client = client;
         this.userDao = userDao;
