@@ -29,7 +29,6 @@ public class DependencyContainer
         AssetDAO assetDaoImpl = new AssetDAO(emfTest);
         MaintenanceLogDAO logDaoImpl = new MaintenanceLogDAO(emfTest);
 
-        // Services uses different interface implementations and upcast automatically
         UserService userService = new UserServiceImpl(userDaoImpl);
         AssetService assetService = new AssetServiceImpl(assetDaoImpl);
         MaintenanceLogService logService = new MaintenanceLogServiceImpl(logDaoImpl, assetDaoImpl, userDaoImpl);
