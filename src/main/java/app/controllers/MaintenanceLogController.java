@@ -21,11 +21,11 @@ public class MaintenanceLogController
         int assetId = Integer.parseInt(ctx.pathParam("id"));
 
         CreateLogRequest request = ctx.bodyValidator(CreateLogRequest.class)
-                .check(dto -> dto.getPerformedDate() != null, "Performed date is required")
-                .check(dto -> dto.getStatus() != null, "Status is required")
-                .check(dto -> dto.getTaskType() != null, "Task type is required")
-                .check(dto -> dto.getComment() != null, "Comment is required")
-                .check(dto -> dto.getPerformedByUserId() != null, "Performed by user id is required")
+                .check(dto -> dto.performedDate() != null, "Performed date is required")
+                .check(dto -> dto.status() != null, "Status is required")
+                .check(dto -> dto.taskType() != null, "Task type is required")
+                .check(dto -> dto.comment() != null, "Comment is required")
+                .check(dto -> dto.performedByUserId() != null, "Performed by user id is required")
                 .get();
 
         ctx.status(201).json(logService.create(assetId, request));

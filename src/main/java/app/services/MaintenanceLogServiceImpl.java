@@ -7,6 +7,7 @@ import app.entities.MaintenanceLog;
 import app.entities.User;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
+import app.mappers.MaintenanceLogMapper;
 import app.persistence.interfaces.IMaintenanceLogDAO;
 import app.persistence.interfaces.IReadDAO;
 
@@ -29,31 +30,31 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public MaintenanceLogDTO create(Integer assetId, CreateLogRequest request)
     {
         Asset asset = assetDao.get(assetId);
-        User performedBy = userDao.get(request.getPerformedByUserId());
+        User performedBy = userDao.get(request.performedByUserId());
 
         MaintenanceLog log = new MaintenanceLog(
-                request.getPerformedDate(),
-                request.getStatus(),
-                request.getTaskType(),
-                request.getComment(),
+                request.performedDate(),
+                request.status(),
+                request.taskType(),
+                request.comment(),
                 asset,
                 performedBy
         );
 
-        return new MaintenanceLogDTO(logDao.create(log));
+        return MaintenanceLogMapper.toDTO(logDao.create(log));
     }
 
     @Override
     public MaintenanceLogDTO get(Integer id)
     {
-        return new MaintenanceLogDTO(logDao.get(id));
+        return MaintenanceLogMapper.toDTO(logDao.get(id));
     }
 
     @Override
     public List<MaintenanceLogDTO> getAll()
     {
         return logDao.getAll().stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 
@@ -61,7 +62,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public List<MaintenanceLogDTO> getByAsset(Integer assetId)
     {
         return logDao.getByAsset(assetId).stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 
@@ -69,7 +70,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public List<MaintenanceLogDTO> getByAssetAndTask(Integer assetId, TaskType taskType)
     {
         return logDao.getByAssetAndTask(assetId, taskType).stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 
@@ -77,7 +78,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public List<MaintenanceLogDTO> getByStatus(LogStatus status)
     {
         return logDao.getByStatus(status).stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 
@@ -85,7 +86,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public List<MaintenanceLogDTO> getByStatusAndAsset(LogStatus status, Integer assetId)
     {
         return logDao.getByStatusAndAsset(status, assetId).stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 
@@ -93,7 +94,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public List<MaintenanceLogDTO> getByPerformedUser(Integer userId)
     {
         return logDao.getByPerformedUser(userId).stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 
@@ -101,7 +102,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public List<MaintenanceLogDTO> getLogsOnActiveAssets(int limit)
     {
         return logDao.getLogsOnActiveAssets(limit).stream()
-                .map(MaintenanceLogDTO::new)
+                .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
 }

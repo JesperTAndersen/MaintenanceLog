@@ -8,14 +8,13 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class CreateLogRequest
+public record CreateLogRequest
+        (
+                LocalDateTime performedDate,
+                LogStatus status,
+                TaskType taskType,
+                String comment,
+                Integer performedByUserId
+        )
 {
-    private LocalDateTime performedDate;
-    private LogStatus status;
-    private TaskType taskType;
-    private String comment;
-    private Integer performedByUserId;
 }
