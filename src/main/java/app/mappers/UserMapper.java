@@ -1,7 +1,6 @@
 package app.mappers;
 
 import app.dtos.UserDTO;
-import app.entities.Asset;
 import app.entities.User;
 
 public class UserMapper
@@ -18,4 +17,5 @@ public class UserMapper
                 user.isActive()
         );
     }
+
 }
