@@ -2,6 +2,7 @@ package app.services;
 
 import app.dtos.AssetDTO;
 import app.entities.Asset;
+import app.mappers.AssetMapper;
 import app.persistence.interfaces.IAssetDAO;
 
 import java.time.LocalDateTime;
@@ -19,30 +20,21 @@ public class AssetServiceImpl implements AssetService
     @Override
     public AssetDTO create(AssetDTO dto)
     {
-        Asset asset = Asset.builder()
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .active(dto.isActive()).
-                build();
-
+        Asset asset = AssetMapper.toEntity(dto);
         Asset created = assetDao.create(asset);
-        return new AssetDTO(created);
+        return AssetMapper.toDTO(created);
     }
 
     @Override
-    public AssetDTO get(Integer id)
-    {
+    public AssetDTO get(Integer id) {
         Asset asset = assetDao.get(id);
 
         LocalDateTime lastLogDate = null;
-        if (!asset.getLogs().isEmpty())
-        {
+        if (!asset.getLogs().isEmpty()) {
             lastLogDate = asset.getLogs().get(0).getPerformedDate();
         }
 
-        AssetDTO dto = new AssetDTO(asset);
-        dto.setLastLogDate(lastLogDate);
-        return dto;
+        return AssetMapper.toDTO(asset, lastLogDate);
     }
 
     @Override
@@ -60,7 +52,7 @@ public class AssetServiceImpl implements AssetService
         }
 
         return assets.stream()
-                .map(AssetDTO::new)
+                .map(AssetMapper::toDTO)
                 .toList();
     }
 
@@ -68,13 +60,13 @@ public class AssetServiceImpl implements AssetService
     public AssetDTO activate(Integer id)
     {
         Asset activated = assetDao.setActive(id, true);
-        return new AssetDTO(activated);
+        return AssetMapper.toDTO(activated);
     }
 
     @Override
     public AssetDTO deactivate(Integer id)
     {
         Asset deactivated = assetDao.setActive(id, false);
-        return new AssetDTO(deactivated);
+        return AssetMapper.toDTO(deactivated);
     }
 }

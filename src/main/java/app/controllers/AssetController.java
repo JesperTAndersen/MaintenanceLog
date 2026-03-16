@@ -16,8 +16,8 @@ public class AssetController
     public void create(Context ctx)
     {
         AssetDTO assetDTO = ctx.bodyValidator(AssetDTO.class)
-                .check(dto -> dto.getName() != null, "Name is required")
-                .check(dto -> dto.getDescription() != null, "Description is required")
+                .check(dto -> dto.name() != null, "Name is required")
+                .check(dto -> dto.description() != null, "Description is required")
                 .get();
 
         ctx.status(201).json(assetService.create(assetDTO));
