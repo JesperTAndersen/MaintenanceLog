@@ -18,13 +18,13 @@ public class UserController
     public void create(Context ctx)
     {
         CreateUserRequest userRequest = ctx.bodyValidator(CreateUserRequest.class).
-                check(dto -> dto.getFirstName() != null, "First name is required")
-                .check(dto -> dto.getLastName() != null, "Last name is required")
-                .check(dto -> dto.getEmail() != null, "Email is required")
-                .check(dto -> dto.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
-                .check(dto -> dto.getPassword() != null, "Password is required")
-                .check(dto -> dto.getPhone() != null, "Phone is required")
-                .check(dto -> dto.getRole() != null, "Role is required")
+                check(dto -> dto.firstName() != null, "First name is required")
+                .check(dto -> dto.lastName() != null, "Last name is required")
+                .check(dto -> dto.email() != null, "Email is required")
+                .check(dto -> dto.email().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
+                .check(dto -> dto.password() != null, "Password is required")
+                .check(dto -> dto.phone() != null, "Phone is required")
+                .check(dto -> dto.role() != null, "Role is required")
                 .get();
 
         ctx.status(201).json(userService.create(userRequest));
@@ -48,8 +48,8 @@ public class UserController
     {
         int id = Integer.parseInt(ctx.pathParam("id"));
         UserDTO userDTO = ctx.bodyValidator(UserDTO.class)
-                .check(dto -> dto.getId() == null || dto.getId().equals(id), "ID in URL and body must match")
-                .check(dto -> dto.getEmail() == null || dto.getEmail().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
+                .check(dto -> dto.id() == null || dto.id().equals(id), "ID in URL and body must match")
+                .check(dto -> dto.email() == null || dto.email().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
                 .get();
 
         ctx.status(200).json(userService.update(id, userDTO));

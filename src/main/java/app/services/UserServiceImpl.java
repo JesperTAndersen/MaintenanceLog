@@ -4,6 +4,7 @@ import app.dtos.CreateUserRequest;
 import app.dtos.UserDTO;
 import app.entities.User;
 import app.exceptions.ApiException;
+import app.mappers.UserMapper;
 import app.persistence.interfaces.IUserDAO;
 
 import java.util.List;
@@ -22,29 +23,29 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDTO create(CreateUserRequest request)
     {
-        if (userDao.getByEmail(request.getEmail()) != null)
+        if (userDao.getByEmail(request.email()) != null)
         {
             throw new ApiException(409, "Email already exists");
         }
         //TODO: validate inputs. implement validator util class
         User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .phone(request.getPhone())
-                .role(request.getRole())
-                .password(hashPassword(request.getPassword()))
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .email(request.email())
+                .phone(request.phone())
+                .role(request.role())
+                .password(hashPassword(request.password()))
                 .active(true)
                 .build();
 
         User created = userDao.create(user);
-        return new UserDTO(created);
+        return UserMapper.toDTO(created);
     }
 
     @Override
     public UserDTO get(Integer id)
     {
-        return new UserDTO(userDao.get(id));
+        return UserMapper.toDTO(userDao.get(id));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService
 
         return users
                 .stream()
-                .map(UserDTO::new)
+                .map(UserMapper::toDTO)
                 .toList();
     }
 
@@ -77,23 +78,23 @@ public class UserServiceImpl implements UserService
         User existingUser = userDao.get(id);
 
         //check first if email is changing, then for if taken
-        if (!existingUser.getEmail().equals(userDTO.getEmail()))
+        if (!existingUser.getEmail().equals(userDTO.email()))
         {
-            User userWithEmail = userDao.getByEmail(userDTO.getEmail());
+            User userWithEmail = userDao.getByEmail(userDTO.email());
             if (userWithEmail != null)
             {
                 throw new ApiException(409, "Email already exists");
             }
         }
 
-        existingUser.setFirstName(userDTO.getFirstName());
-        existingUser.setLastName(userDTO.getLastName());
-        existingUser.setPhone(userDTO.getPhone());
-        existingUser.setEmail(userDTO.getEmail());
-        existingUser.setRole(userDTO.getRole());
-        existingUser.setActive(userDTO.isActive());
+        existingUser.setFirstName(userDTO.firstName());
+        existingUser.setLastName(userDTO.lastName());
+        existingUser.setPhone(userDTO.phone());
+        existingUser.setEmail(userDTO.email());
+        existingUser.setRole(userDTO.role());
+        existingUser.setActive(userDTO.active());
 
-        return new UserDTO(userDao.update(existingUser));
+        return UserMapper.toDTO(userDao.update(existingUser));
     }
 
     @Override
@@ -103,11 +104,11 @@ public class UserServiceImpl implements UserService
 
         if (!user.isActive())
         {
-            return new UserDTO(user);
+            return UserMapper.toDTO(user);
         }
 
         user.setActive(false);
-        return new UserDTO(userDao.update(user));
+        return UserMapper.toDTO(userDao.update(user));
     }
 
     @Override
@@ -117,11 +118,11 @@ public class UserServiceImpl implements UserService
 
         if (user.isActive())
         {
-            return new UserDTO(user);
+            return UserMapper.toDTO(user);
         }
 
         user.setActive(true);
-        return new UserDTO(userDao.update(user));
+        return UserMapper.toDTO(userDao.update(user));
     }
 
     //TODO: ADD PASSWORD CHANGER
