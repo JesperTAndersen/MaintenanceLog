@@ -2,7 +2,7 @@ package app.persistence.interfaces;
 
 import java.util.List;
 
-public interface IReadOnlyDAO<T>
+public interface IReadDAO<T>
 {
     T get(Integer id);
 
