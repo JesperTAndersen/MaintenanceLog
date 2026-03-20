@@ -6,6 +6,7 @@ import app.exceptions.ValidationException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IUserDAO;
 import app.security.SecurityServiceImpl;
+import app.security.dao.ISecurityDAO;
 import jakarta.persistence.*;
 
 import java.util.List;

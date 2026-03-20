@@ -4,7 +4,7 @@ import app.entities.User;
 
 import java.util.List;
 
-public interface IUserQueries extends IUserEmailQuery
+public interface IUserQueries
 {
     List<User> getInactiveUsers(int limit);
     List<User> getActiveUsers(int limit);
