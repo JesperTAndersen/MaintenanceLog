@@ -1,6 +1,7 @@
 package app.controllers.routes;
 
 import app.controllers.MaintenanceLogController;
+import app.entities.enums.EmployeeRole;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -20,9 +21,9 @@ public class MaintenanceLogRoutes
         {
             path("logs", () ->
             {
-                get(maintenanceLogController::getAll);
-                get("/{id}", maintenanceLogController::get);
-                get("/user/{userId}", maintenanceLogController::getByUser);
+                get(maintenanceLogController::getAll, EmployeeRole.AUTHENTICATED);
+                get("/{id}", maintenanceLogController::get, EmployeeRole.AUTHENTICATED);
+                get("/user/{userId}", maintenanceLogController::getByUser, EmployeeRole.MANAGER);
             });
         };
     }

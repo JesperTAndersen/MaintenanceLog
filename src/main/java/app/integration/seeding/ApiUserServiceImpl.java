@@ -1,7 +1,7 @@
 package app.integration.seeding;
 
 import app.entities.Employee;
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
 import app.persistence.interfaces.ICrudDAO;
@@ -82,11 +82,11 @@ public class ApiUserServiceImpl implements ApiUserService
         {
             if (counter % 5 == 0)
             {
-                u.setRole(UserRole.MANAGER);
+                u.setRole(EmployeeRole.MANAGER);
             }
             else
             {
-                u.setRole(UserRole.TECHNICIAN);
+                u.setRole(EmployeeRole.TECHNICIAN);
             }
             counter++;
         }

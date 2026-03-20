@@ -1,0 +1,78 @@
+### ============================================
+### Maintenance Log API - Security Testing
+### ============================================
+
+### Variables
+@baseUrl = http://localhost:7070/api/v1
+@authUrl = http://localhost:7070/api/v1/auth
+
+# Tokens will be set after login (copy from response)
+@adminToken =
+@managerToken =
+@technicianToken =
+
+
+### ============================================
+### 1. AUTHENTICATION - Login & Register
+### ============================================
+
+### Login as Admin
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### Login as Manager
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "manager@example.com",
+  "password": "manager123"
+}
+
+### Login as Technician
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "technician@example.com",
+  "password": "tech123"
+}
+
+### Login with Invalid Credentials (should fail - 401)
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "wrong@example.com",
+  "password": "wrongpassword"
+}
+
+### Login with Inactive User (should fail - 403)
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "inactive@example.com",
+  "password": "inactive123"
+}
+
+### ============================================
+### 2. PROTECTED ENDPOINT TEST
+### ============================================
+
+### Access Protected Endpoint (as ADMIN) - Should succeed
+GET {{authUrl}}/protected
+Authorization: Bearer {{adminToken}}
+
+### Access Protected Endpoint (as MANAGER) - Should fail (403)
+GET {{authUrl}}/protected
+Authorization: Bearer {{managerToken}}
+
+### Access Protected Endpoint (no token) - Should fail (401)
+GET {{authUrl}}/protected
+

@@ -1,6 +1,6 @@
 package app.dtos;
 
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 
 public record EmployeeDTO
         (
@@ -9,7 +9,7 @@ public record EmployeeDTO
                 String lastName,
                 String phone,
                 String email,
-                UserRole role,
+                EmployeeRole role,
                 boolean active
         )
 {

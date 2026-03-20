@@ -3,7 +3,7 @@ package app.persistence.testutils;
 import app.entities.Employee;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
 import jakarta.persistence.EntityManager;
@@ -21,10 +21,10 @@ public class TestPopulator
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
-            Employee employee1 = new Employee("John", "Doe", "12345678", "Johndoe@mail.dk", UserRole.TECHNICIAN, true);
-            Employee employee2 = new Employee("Jane", "Doe", "23456789", "Janedoe@mail.dk", UserRole.MANAGER, true);
-            Employee employee3 = new Employee("Jeff", "Doe", "34567890", "Jeffdoe@mail.dk", UserRole.ADMIN, true);
-            Employee employee4 = new Employee("Clark", "Kent", "00000000", "Clarkkent@mail.dk", UserRole.TECHNICIAN, false);
+            Employee employee1 = new Employee("John", "Doe", "12345678", "Johndoe@mail.dk", EmployeeRole.TECHNICIAN, true);
+            Employee employee2 = new Employee("Jane", "Doe", "23456789", "Janedoe@mail.dk", EmployeeRole.MANAGER, true);
+            Employee employee3 = new Employee("Jeff", "Doe", "34567890", "Jeffdoe@mail.dk", EmployeeRole.ADMIN, true);
+            Employee employee4 = new Employee("Clark", "Kent", "00000000", "Clarkkent@mail.dk", EmployeeRole.TECHNICIAN, false);
 
             try
             {

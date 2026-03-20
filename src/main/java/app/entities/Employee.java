@@ -1,7 +1,7 @@
 package app.entities;
 
 import app.dtos.EmployeeDTO;
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,12 +36,12 @@ public class Employee
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;
+    private EmployeeRole role;
     @Setter
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
-    public Employee(String firstName, String lastName, String phone, String email, UserRole role, boolean active)
+    public Employee(String firstName, String lastName, String phone, String email, EmployeeRole role, boolean active)
     {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,7 +52,7 @@ public class Employee
         this.password = "default";
     }
 
-    public Employee(String firstName, String lastName, String phone, String email, String password, UserRole role, boolean active)
+    public Employee(String firstName, String lastName, String phone, String email, String password, EmployeeRole role, boolean active)
     {
         this.firstName = firstName;
         this.lastName = lastName;

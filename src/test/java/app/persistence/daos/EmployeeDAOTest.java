@@ -2,7 +2,7 @@ package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
 import app.entities.Employee;
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;
@@ -40,7 +40,7 @@ class EmployeeDAOTest
     @DisplayName("Create - should persist user and generate ID")
     void create()
     {
-        Employee employee = new Employee("Test", "Doe", "12345678", "test@mail.dk", UserRole.TECHNICIAN, true);
+        Employee employee = new Employee("Test", "Doe", "12345678", "test@mail.dk", EmployeeRole.TECHNICIAN, true);
         Employee created = employeeDAO.create(employee);
 
         assertThat(created.getUserId(), notNullValue());
@@ -49,7 +49,7 @@ class EmployeeDAOTest
         assertThat(fetched.getLastName(), is("Doe"));
         assertThat(fetched.getPhone(), is("12345678"));
         assertThat(fetched.getEmail(), is("test@mail.dk"));
-        assertThat(fetched.getRole(), is(UserRole.TECHNICIAN));
+        assertThat(fetched.getRole(), is(EmployeeRole.TECHNICIAN));
         assertThat(fetched.isActive(), is(true));
     }
 
@@ -75,7 +75,7 @@ class EmployeeDAOTest
         assertThat(fetched.getFirstName(), is("John"));
         assertThat(fetched.getLastName(), is("Doe"));
         assertThat(fetched.getEmail(), is("Johndoe@mail.dk"));
-        assertThat(fetched.getRole(), is(UserRole.TECHNICIAN));
+        assertThat(fetched.getRole(), is(EmployeeRole.TECHNICIAN));
     }
 
     @Test
@@ -122,7 +122,7 @@ class EmployeeDAOTest
         Employee employee1 = seeded.get("user1");
         employee1.setFirstName("UpdatedJohn");
         employee1.setEmail("updatedjohn@mail.dk");
-        employee1.setRole(UserRole.ADMIN);
+        employee1.setRole(EmployeeRole.ADMIN);
 
         Employee updated = employeeDAO.update(employee1);
 
@@ -132,7 +132,7 @@ class EmployeeDAOTest
         Employee fetched = employeeDAO.get(employee1.getUserId());
         assertThat(fetched.getFirstName(), is("UpdatedJohn"));
         assertThat(fetched.getEmail(), is("updatedjohn@mail.dk"));
-        assertThat(fetched.getRole(), is(UserRole.ADMIN));
+        assertThat(fetched.getRole(), is(EmployeeRole.ADMIN));
     }
 
     @Test
@@ -146,7 +146,7 @@ class EmployeeDAOTest
                 .phone("00000000")
                 .email("ghost@mail.dk")
                 .password("default")
-                .role(UserRole.TECHNICIAN)
+                .role(EmployeeRole.TECHNICIAN)
                 .active(true)
                 .build();
 
@@ -169,7 +169,7 @@ class EmployeeDAOTest
     @DisplayName("Update - should throw IllegalArgumentException when user ID is null")
     void updateUserWithNullIdThrowsException()
     {
-        Employee employeeWithoutId = new Employee("Test", "User", "12345678", "test@mail.dk", UserRole.TECHNICIAN, true);
+        Employee employeeWithoutId = new Employee("Test", "User", "12345678", "test@mail.dk", EmployeeRole.TECHNICIAN, true);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> employeeDAO.update(employeeWithoutId));
 

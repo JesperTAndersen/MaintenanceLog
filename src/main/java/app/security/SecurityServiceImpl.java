@@ -28,9 +28,9 @@ public class SecurityServiceImpl implements SecurityService
     private final ISecurityDAO secDAO;
     private final ITokenSecurity tokenSecurity = new TokenSecurity();
     private static final Map<String, Set<String>> ROLE_HIERARCHY = Map.of(
-            "ADMIN", Set.of("ADMIN", "MANAGER", "TECHNICIAN"),
-            "MANAGER", Set.of("MANAGER", "TECHNICIAN"),
-            "TECHNICIAN", Set.of("TECHNICIAN"));
+            "ADMIN", Set.of("ADMIN", "MANAGER", "TECHNICIAN", "AUTHENTICATED"),
+            "MANAGER", Set.of("MANAGER", "TECHNICIAN","AUTHENTICATED"),
+            "TECHNICIAN", Set.of("TECHNICIAN","AUTHENTICATED"));
 
     public SecurityServiceImpl(ISecurityDAO secDAO)
     {

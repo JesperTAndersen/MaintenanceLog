@@ -1,6 +1,6 @@
 package app.dtos;
 
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 
 public record CreateEmployeeRequest
         (
@@ -8,7 +8,7 @@ public record CreateEmployeeRequest
                 String lastName,
                 String email,
                 String phone,
-                UserRole role,
+                EmployeeRole role,
                 String password)
 {
 }

@@ -1,6 +1,6 @@
 package app.security.routes;
 
-import app.entities.enums.UserRole;
+import app.entities.enums.EmployeeRole;
 import app.security.controllers.SecurityController;
 import io.javalin.apibuilder.EndpointGroup;
 
@@ -19,9 +19,9 @@ public class SecurityRoutes
     {
         return () -> path("auth", () ->
         {
-            post("/register", securityController::register);
+            post("/register", securityController::register, EmployeeRole.MANAGER);
             post("/login", securityController::login);
-            get("/protected", ctx -> ctx.json("Hello fom protected").status(200), UserRole.ADMIN); //add as many roles as wanted seperated by ,
+            get("/protected", ctx -> ctx.json("Hello fom protected").status(200), EmployeeRole.ADMIN); //add as many roles as wanted seperated by ,
 
         });
 

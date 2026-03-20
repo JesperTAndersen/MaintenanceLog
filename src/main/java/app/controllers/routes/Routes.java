@@ -13,14 +13,14 @@ public class Routes
 {
     private static final String API_VERSION = "api/v1";
 
-    private final UserRoutes userRoutes;
+    private final EmployeeRoutes employeeRoutes;
     private final AssetRoutes assetRoutes;
     private final MaintenanceLogRoutes maintenanceLogRoutes;
     private final SecurityRoutes securityRoutes;
 
     public Routes(EmployeeController employeeController, AssetController assetController, MaintenanceLogController maintenanceLogController, SecurityController securityController)
     {
-        this.userRoutes = new UserRoutes(employeeController);
+        this.employeeRoutes = new EmployeeRoutes(employeeController);
         this.assetRoutes = new AssetRoutes(assetController, maintenanceLogController);
         this.maintenanceLogRoutes = new MaintenanceLogRoutes(maintenanceLogController);
         this.securityRoutes = new SecurityRoutes(securityController);
@@ -32,7 +32,7 @@ public class Routes
         return () ->
                 path(API_VERSION, () ->
                 {
-                    userRoutes.getRoutes().addEndpoints();
+                    employeeRoutes.getRoutes().addEndpoints();
                     assetRoutes.getRoutes().addEndpoints();
                     maintenanceLogRoutes.getRoutes().addEndpoints();
                     securityRoutes.getRoutes().addEndpoints();
