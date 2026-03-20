@@ -1,16 +1,17 @@
 package app.security;
 
-import app.dtos.CreateUserRequest;
-import app.dtos.UserDTO;
-import app.entities.User;
+import app.dtos.CreateEmployeeRequest;
+import app.dtos.EmployeeDTO;
+import app.entities.Employee;
 import app.exceptions.ApiException;
 import app.exceptions.ValidationException;
-import app.mappers.UserMapper;
+import app.mappers.EmployeeMapper;
 import app.security.dao.ISecurityDAO;
 import app.utils.PropertyReader;
 import dk.bugelhartmann.ITokenSecurity;
 import dk.bugelhartmann.TokenSecurity;
 import dk.bugelhartmann.TokenVerificationException;
+import dk.bugelhartmann.UserDTO;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpStatus;
@@ -26,6 +27,10 @@ public class SecurityServiceImpl implements SecurityService
 {
     private final ISecurityDAO secDAO;
     private final ITokenSecurity tokenSecurity = new TokenSecurity();
+    private static final Map<String, Set<String>> ROLE_HIERARCHY = Map.of(
+            "ADMIN", Set.of("ADMIN", "MANAGER", "TECHNICIAN"),
+            "MANAGER", Set.of("MANAGER", "TECHNICIAN"),
+            "TECHNICIAN", Set.of("TECHNICIAN"));
 
     public SecurityServiceImpl(ISecurityDAO secDAO)
     {
@@ -44,22 +49,76 @@ public class SecurityServiceImpl implements SecurityService
     }
 
     @Override
+    public EmployeeDTO register(CreateEmployeeRequest request)
+    {
+        if (secDAO.getByEmail(request.email()) != null)
+        {
+            throw new ApiException(409, "Email already exists");
+        }
+
+        //TODO: validate inputs. implement validator util class
+        Employee employee = Employee.builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .email(request.email())
+                .phone(request.phone())
+                .role(request.role())
+                .password(hashPassword(request.password()))
+                .active(true)
+                .build();
+
+        Employee created = secDAO.create(employee);
+        return EmployeeMapper.toDTO(created);
+
+    }
+
+    @Override
+    public Map<String, Object> login(EmployeeLoginDTO dto)
+    {
+        try
+        {
+            Employee verifiedEmployee = secDAO.getVerifiedUser(dto.email(), dto.password());
+
+            EmployeeDTO employeeDTO = EmployeeMapper.toDTO(verifiedEmployee);
+            if (!employeeDTO.active())
+            {
+                throw new ApiException(403, "Permission Denied");
+            }
+
+            String token = createToken(employeeDTO);
+
+            return Map.of(
+                    "token", token,
+                    "user", employeeDTO
+            );
+
+        }
+        catch (ValidationException e)
+        {
+            throw new ApiException(401, e.getMessage());
+        }
+    }
+
+    @Override
     public void authenticate(Context ctx)
     {
-        // This is a preflight request => no need for authentication
-        if (ctx.method().toString().equals("OPTIONS"))
+        if (ctx.method().toString().equals("OPTIONS")) // This is a preflight request => no need for authentication
         {
             ctx.status(200);
             return;
         }
-        // If the endpoint is not protected with roles or is open to ANYONE role, then skip
-        Set<String> allowedRoles = ctx.routeRoles().stream().map(role -> role.toString().toUpperCase()).collect(Collectors.toSet());
+
+        // If the endpoint is not protected with roles, then skip
+        Set<String> allowedRoles = ctx.routeRoles().stream()
+                .map(role -> role.toString().toUpperCase())
+                .collect(Collectors.toSet());
+
         if (isOpenEndpoint(allowedRoles))
             return;
 
         // If there is no token we do not allow entry
         UserDTO verifiedTokenUser = validateAndGetUserFromToken(ctx);
-        ctx.attribute("user", verifiedTokenUser); // -> ctx.attribute("user") in ApplicationConfig beforeMatched filter
+        ctx.attribute("user", verifiedTokenUser);
     }
 
     @Override
@@ -73,12 +132,14 @@ public class SecurityServiceImpl implements SecurityService
         // 1. Check if the endpoint is open to all (either by not having any roles or having the ANYONE role set
         if (isOpenEndpoint(allowedRoles))
             return;
+
         // 2. Get user and ensure it is not null
         UserDTO user = ctx.attribute("user");
         if (user == null)
         {
             throw new ForbiddenResponse("No user was added from the token");
         }
+
         // 3. See if any role matches
         if (!userHasAllowedRole(user, allowedRoles))
         {
@@ -86,58 +147,13 @@ public class SecurityServiceImpl implements SecurityService
         }
     }
 
-    @Override
-    public UserDTO register(CreateUserRequest request)
-    {
-        if (secDAO.getByEmail(request.email()) != null)
-        {
-            throw new ApiException(409, "Email already exists");
-        }
 
-        //TODO: validate inputs. implement validator util class
-        User user = User.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .email(request.email())
-                .phone(request.phone())
-                .role(request.role())
-                .password(hashPassword(request.password()))
-                .active(true)
-                .build();
-
-        User created = secDAO.create(user);
-        return UserMapper.toDTO(created);
-
-    }
-
-    @Override
-    public Map<String, Object> login(UserLoginDTO dto)
+    private String createToken(EmployeeDTO employeeDTO)
     {
         try
         {
-            User verifiedUser = secDAO.getVerifiedUser(dto.email(), dto.password());
+            UserDTO libraryDTO = convertToLibraryDTO(employeeDTO);
 
-            UserDTO userDTO = UserMapper.toDTO(verifiedUser);
-            if (userDTO.active())
-            {
-                String token = createToken(userDTO);
-
-                return Map.of(
-                        "token", token,
-                        "user", userDTO
-                );
-            }
-        }
-        catch (ValidationException e)
-        {
-            throw new ApiException(401, e.getMessage());
-        }
-    }
-
-    private String createToken(UserDTO user)
-    {
-        try
-        {
             String ISSUER;
             String TOKEN_EXPIRE_TIME;
             String SECRET_KEY;
@@ -154,7 +170,7 @@ public class SecurityServiceImpl implements SecurityService
                 TOKEN_EXPIRE_TIME = PropertyReader.getPropertyValue("TOKEN_EXPIRE_TIME", "config.properties");
                 SECRET_KEY = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
             }
-            return tokenSecurity.createToken(user, ISSUER, TOKEN_EXPIRE_TIME, SECRET_KEY);
+            return tokenSecurity.createToken(libraryDTO, ISSUER, TOKEN_EXPIRE_TIME, SECRET_KEY);
         }
         catch (Exception e)
         {
@@ -163,19 +179,27 @@ public class SecurityServiceImpl implements SecurityService
         }
     }
 
+    private UserDTO convertToLibraryDTO(EmployeeDTO employeeDTO)
+    {
+        return new UserDTO(
+                employeeDTO.email(),
+                Set.of(employeeDTO.role().name())
+        );
+    }
+
     private static String getToken(Context ctx)
     {
         String header = ctx.header("Authorization");
         if (header == null)
         {
-            throw new UnauthorizedResponse("Authorization header is missing"); // UnauthorizedResponse is javalin 6 specific but response is not json!
+            throw new UnauthorizedResponse("Authorization header is missing");
         }
 
         // If the Authorization Header was malformed, then no entry
         String token = header.split(" ")[1];
         if (token == null)
         {
-            throw new UnauthorizedResponse("Authorization header is malformed"); // UnauthorizedResponse is javalin 6 specific but response is not json!
+            throw new UnauthorizedResponse("Authorization header is malformed");
         }
         return token;
     }
@@ -200,7 +224,7 @@ public class SecurityServiceImpl implements SecurityService
         UserDTO verifiedTokenUser = verifyToken(token);
         if (verifiedTokenUser == null)
         {
-            throw new UnauthorizedResponse("Invalid user or token"); // UnauthorizedResponse is javalin 6 specific but response is not json!
+            throw new UnauthorizedResponse("Invalid user or token");
         }
         return verifiedTokenUser;
     }
@@ -223,14 +247,24 @@ public class SecurityServiceImpl implements SecurityService
         }
         catch (ParseException | TokenVerificationException e)
         {
-            //            logger.error("Could not create token", e);
             throw new ApiException(HttpStatus.UNAUTHORIZED.getCode(), "Unauthorized. Could not verify token");
         }
     }
 
     private static boolean userHasAllowedRole(UserDTO user, Set<String> allowedRoles)
     {
-        return user.getRoles().stream()
+        Set<String> userRoles = user.getRoles();
+
+        if (userRoles.isEmpty())
+        {
+            return false;
+        }
+
+        String userRole = userRoles.iterator().next();
+
+        Set<String> effectiveRoles = ROLE_HIERARCHY.getOrDefault(userRole, Set.of(userRole));
+
+        return effectiveRoles.stream()
                 .anyMatch(role -> allowedRoles.contains(role.toUpperCase()));
     }
 }
