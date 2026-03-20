@@ -1,6 +1,5 @@
 package app.services;
 
-import app.dtos.CreateUserRequest;
 import app.dtos.UserDTO;
 import app.entities.User;
 import app.exceptions.ApiException;
@@ -9,8 +8,6 @@ import app.persistence.interfaces.IUserDAO;
 
 import java.util.List;
 
-import static app.utils.CredentialsHandler.hashPassword;
-
 public class UserServiceImpl implements UserService
 {
     private final IUserDAO userDao;
@@ -18,28 +15,6 @@ public class UserServiceImpl implements UserService
     public UserServiceImpl(IUserDAO userDao)
     {
         this.userDao = userDao;
-    }
-
-    @Override
-    public UserDTO create(CreateUserRequest request)
-    {
-        if (userDao.getByEmail(request.email()) != null)
-        {
-            throw new ApiException(409, "Email already exists");
-        }
-        //TODO: validate inputs. implement validator util class
-        User user = User.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .email(request.email())
-                .phone(request.phone())
-                .role(request.role())
-                .password(hashPassword(request.password()))
-                .active(true)
-                .build();
-
-        User created = userDao.create(user);
-        return UserMapper.toDTO(created);
     }
 
     @Override

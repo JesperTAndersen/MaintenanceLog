@@ -1,6 +1,8 @@
 package app.entities.enums;
 
-public enum UserRole
+import io.javalin.security.RouteRole;
+
+public enum UserRole implements RouteRole
 {
     TECHNICIAN,
     MANAGER,

@@ -9,7 +9,7 @@ import app.persistence.interfaces.ICrudDAO;
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.utils.CredentialsHandler.hashPassword;
+import static app.security.SecurityServiceImpl.hashPassword;
 
 public class ApiUserServiceImpl implements ApiUserService
 {

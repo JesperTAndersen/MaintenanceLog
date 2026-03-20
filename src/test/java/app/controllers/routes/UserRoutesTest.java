@@ -1,6 +1,6 @@
 package app.controllers.routes;
 
-import app.config.AppConfig;
+import app.config.ApplicationConfig;
 import app.config.DependencyContainer;
 import app.config.HibernateTestConfig;
 import app.entities.User;
@@ -31,7 +31,7 @@ class UserRoutesTest
     {
         emf = HibernateTestConfig.getEntityManagerFactory();
         container = new DependencyContainer(emf);
-        app = AppConfig.start(container, TEST_PORT);
+        app = ApplicationConfig.start(container, TEST_PORT);
 
         RestAssured.baseURI = "http://localhost:" + TEST_PORT;
         RestAssured.basePath = "/" + Routes.getApiVersion();
@@ -46,7 +46,7 @@ class UserRoutesTest
     @AfterAll
     static void shutDown()
     {
-        AppConfig.stop(app);
+        ApplicationConfig.stop(app);
         emf.close();
     }
 

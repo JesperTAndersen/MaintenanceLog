@@ -3,6 +3,8 @@ package app.controllers.routes;
 import app.controllers.AssetController;
 import app.controllers.MaintenanceLogController;
 import app.controllers.UserController;
+import app.security.controllers.SecurityController;
+import app.security.routes.SecurityRoutes;
 import io.javalin.apibuilder.EndpointGroup;
 import lombok.Getter;
 
@@ -15,12 +17,14 @@ public class Routes
     private final UserRoutes userRoutes;
     private final AssetRoutes assetRoutes;
     private final MaintenanceLogRoutes maintenanceLogRoutes;
+    private final SecurityRoutes securityRoutes;
 
-    public Routes(UserController userController, AssetController assetController, MaintenanceLogController maintenanceLogController)
+    public Routes(UserController userController, AssetController assetController, MaintenanceLogController maintenanceLogController, SecurityController securityController)
     {
-        userRoutes = new UserRoutes(userController);
-        assetRoutes = new AssetRoutes(assetController, maintenanceLogController);
-        maintenanceLogRoutes = new MaintenanceLogRoutes(maintenanceLogController);
+        this.userRoutes = new UserRoutes(userController);
+        this.assetRoutes = new AssetRoutes(assetController, maintenanceLogController);
+        this.maintenanceLogRoutes = new MaintenanceLogRoutes(maintenanceLogController);
+        this.securityRoutes = new SecurityRoutes(securityController);
 
     }
 
@@ -32,6 +36,7 @@ public class Routes
                     userRoutes.getRoutes().addEndpoints();
                     assetRoutes.getRoutes().addEndpoints();
                     maintenanceLogRoutes.getRoutes().addEndpoints();
+                    securityRoutes.getRoutes().addEndpoints();
                 });
     }
 

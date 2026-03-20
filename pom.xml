@@ -22,10 +22,21 @@
         <hamcrest>3.0</hamcrest>
         <javalin-version>7.0.1</javalin-version>
         <restassured.version>6.0.0</restassured.version>
-
+        <token.security.version>1.0.4</token.security.version>
     </properties>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.Hartmannsolution</groupId>
+            <artifactId>TokenSecurity</artifactId>
+            <version>${token.security.version}</version>
+        </dependency>
 
         <!--  DB    -->
         <dependency>

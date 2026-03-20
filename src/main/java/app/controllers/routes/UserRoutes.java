@@ -26,7 +26,6 @@ public class UserRoutes
             {
                 get(userController::getAll);
                 get("/{id}", userController::get);
-                post(userController::create);
                 put("/{id}", userController::update);
                 delete("/{id}", userController::deactivate);
                 patch("/{id}",userController::activate);
