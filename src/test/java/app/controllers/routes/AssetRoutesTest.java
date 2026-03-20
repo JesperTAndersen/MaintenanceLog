@@ -5,7 +5,7 @@ import app.config.DependencyContainer;
 import app.config.HibernateTestConfig;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.entities.User;
+import app.entities.Employee;
 import app.persistence.testutils.TestPopulator;
 import io.javalin.Javalin;
 import io.restassured.RestAssured;
@@ -27,7 +27,7 @@ class AssetRoutesTest
     private static Javalin app;
     private static final int TEST_PORT = 7071;
 
-    private Map<String, User> users;
+    private Map<String, Employee> users;
     private Map<String, Asset> assets;
     private Map<String, MaintenanceLog> logs;
 
@@ -185,7 +185,7 @@ class AssetRoutesTest
     void testPostLogForAsset()
     {
         Asset asset1 = assets.get("asset1");
-        User user1 = users.get("user1");
+        Employee employee1 = users.get("user1");
 
         given()
                 .contentType("application/json")
@@ -197,14 +197,14 @@ class AssetRoutesTest
                             "comment": "Test log",
                             "performedByUserId": %d
                         }
-                        """, user1.getUserId()))
+                        """, employee1.getUserId()))
                 .when()
                 .post("/assets/" + asset1.getAssetId() + "/logs")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("assetId", equalTo(asset1.getAssetId()))
-                .body("performedByUserId", equalTo(user1.getUserId()))
+                .body("performedByUserId", equalTo(employee1.getUserId()))
                 .body("status", equalTo("DONE"))
                 .body("taskType", equalTo("MAINTENANCE"));
     }

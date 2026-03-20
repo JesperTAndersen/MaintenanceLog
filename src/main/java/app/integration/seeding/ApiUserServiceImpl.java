@@ -1,7 +1,7 @@
 package app.integration.seeding;
 
+import app.entities.Employee;
 import app.entities.enums.UserRole;
-import app.entities.User;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
 import app.persistence.interfaces.ICrudDAO;
@@ -14,9 +14,9 @@ import static app.security.SecurityServiceImpl.hashPassword;
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
-    private final ICrudDAO<User> userDao;
+    private final ICrudDAO<Employee> userDao;
 
-    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<User> userDao)
+    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<Employee> userDao)
     {
         this.client = client;
         this.userDao = userDao;
@@ -33,11 +33,11 @@ public class ApiUserServiceImpl implements ApiUserService
 
         List<RandomUserDTO> randomUsers = fetchUsers(count, multiThreaded, threads);
 
-        List<User> convertedUsers = userDtoToEntity(randomUsers);
+        List<Employee> convertedEmployees = userDtoToEntity(randomUsers);
 
-        assignRoles(convertedUsers);
+        assignRoles(convertedEmployees);
 
-        for (User u : convertedUsers)
+        for (Employee u : convertedEmployees)
         {
             userDao.create(u);
         }
@@ -57,13 +57,13 @@ public class ApiUserServiceImpl implements ApiUserService
         return randomUsers;
     }
 
-    private List<User> userDtoToEntity(List<RandomUserDTO> dtos)
+    private List<Employee> userDtoToEntity(List<RandomUserDTO> dtos)
     {
-        List<User> convertedUsers = new ArrayList<>();
+        List<Employee> convertedEmployees = new ArrayList<>();
         for (RandomUserDTO u : dtos)
         {
-            convertedUsers.add(
-                    User.builder()
+            convertedEmployees.add(
+                    Employee.builder()
                             .firstName(u.getName().first())
                             .lastName(u.getName().last())
                             .phone(u.getPhone())
@@ -72,13 +72,13 @@ public class ApiUserServiceImpl implements ApiUserService
                             .active(true)
                             .build());
         }
-        return convertedUsers;
+        return convertedEmployees;
     }
 
-    private void assignRoles(List<User> users)
+    private void assignRoles(List<Employee> employees)
     {
         int counter = 1;
-        for (User u : users)
+        for (Employee u : employees)
         {
             if (counter % 5 == 0)
             {

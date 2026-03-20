@@ -1,18 +1,17 @@
 package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
+import app.entities.Employee;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ class MaintenanceLogDAOTest
 
     private MaintenanceLogDAO logDAO;
     private Map<String, MaintenanceLog> seededLogs;
-    private Map<String, User> seededUsers;
+    private Map<String, Employee> seededUsers;
     private Map<String, Asset> seededAssets;
 
     @BeforeEach
@@ -50,7 +49,7 @@ class MaintenanceLogDAOTest
     @DisplayName("Create - should persist log and generate ID")
     void create()
     {
-        User user = seededUsers.get("user1");
+        Employee employee = seededUsers.get("user1");
         Asset asset = seededAssets.get("asset1");
         MaintenanceLog log = new MaintenanceLog(
                 LocalDateTime.now(),
@@ -58,7 +57,7 @@ class MaintenanceLogDAOTest
                 TaskType.MAINTENANCE,
                 "Test maintenance log",
                 asset,
-                user
+                employee
         );
 
         MaintenanceLog created = logDAO.create(log);
@@ -69,7 +68,7 @@ class MaintenanceLogDAOTest
         assertThat(fetched.getStatus(), is(LogStatus.DONE));
         assertThat(fetched.getTaskType(), is(TaskType.MAINTENANCE));
         assertThat(fetched.getAsset().getAssetId(), is(asset.getAssetId()));
-        assertThat(fetched.getPerformedBy().getUserId(), is(user.getUserId()));
+        assertThat(fetched.getPerformedBy().getUserId(), is(employee.getUserId()));
     }
 
     @Test
@@ -341,16 +340,16 @@ class MaintenanceLogDAOTest
     @DisplayName("GetByPerformedUser - should retrieve all logs performed by specific user")
     void getByPerformedUser()
     {
-        User user1 = seededUsers.get("user1");
+        Employee employee1 = seededUsers.get("user1");
 
-        List<MaintenanceLog> logs = logDAO.getByPerformedUser(user1.getUserId());
+        List<MaintenanceLog> logs = logDAO.getByPerformedUser(employee1.getUserId());
 
         assertThat(logs, notNullValue());
         assertThat(logs.size(), is(4)); // user1 performed 4 logs
 
         // all logs are performed by user1
         for (MaintenanceLog log : logs) {
-            assertThat(log.getPerformedBy().getUserId(), is(user1.getUserId()));
+            assertThat(log.getPerformedBy().getUserId(), is(employee1.getUserId()));
         }
     }
 
@@ -358,9 +357,9 @@ class MaintenanceLogDAOTest
     @DisplayName("GetByPerformedUser - should return empty list for user with no logs")
     void getByPerformedUserNoLogs()
     {
-        User user3 = seededUsers.get("user3"); // Jeff has no logs
+        Employee employee3 = seededUsers.get("user3"); // Jeff has no logs
 
-        List<MaintenanceLog> logs = logDAO.getByPerformedUser(user3.getUserId());
+        List<MaintenanceLog> logs = logDAO.getByPerformedUser(employee3.getUserId());
 
         assertThat(logs, notNullValue());
         assertThat(logs.isEmpty(), is(true));

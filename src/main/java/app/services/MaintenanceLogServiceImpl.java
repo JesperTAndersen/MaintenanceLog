@@ -4,7 +4,7 @@ import app.dtos.CreateLogRequest;
 import app.dtos.MaintenanceLogDTO;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.entities.User;
+import app.entities.Employee;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.mappers.MaintenanceLogMapper;
@@ -17,20 +17,20 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
 {
     private final IMaintenanceLogDAO logDao;
     private final IReadDAO<Asset> assetDao;
-    private final IReadDAO<User> userDao;
+    private final IReadDAO<Employee> employeeDao;
 
-    public MaintenanceLogServiceImpl(IMaintenanceLogDAO logDao, IReadDAO<Asset> assetDao, IReadDAO<User> userDao)
+    public MaintenanceLogServiceImpl(IMaintenanceLogDAO logDao, IReadDAO<Asset> assetDao, IReadDAO<Employee> employeeDao)
     {
         this.logDao = logDao;
         this.assetDao = assetDao;
-        this.userDao = userDao;
+        this.employeeDao = employeeDao;
     }
 
     @Override
     public MaintenanceLogDTO create(Integer assetId, CreateLogRequest request)
     {
         Asset asset = assetDao.get(assetId);
-        User performedBy = userDao.get(request.performedByUserId());
+        Employee performedBy = employeeDao.get(request.performedByUserId());
 
         MaintenanceLog log = new MaintenanceLog(
                 request.performedDate(),

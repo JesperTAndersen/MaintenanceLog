@@ -1,12 +1,11 @@
 package app.security.dao;
 
-import app.entities.User;
+import app.entities.Employee;
 import app.exceptions.ValidationException;
 import app.persistence.interfaces.ICreateDAO;
-import app.persistence.interfaces.IUserEmailQuery;
-import app.persistence.interfaces.IUserQueries;
+import app.persistence.interfaces.IEmployeeEmailQuery;
 
-public interface ISecurityDAO extends ICreateDAO<User>, IUserEmailQuery
+public interface ISecurityDAO extends ICreateDAO<Employee>, IEmployeeEmailQuery
 {
-    User getVerifiedUser(String email, String password) throws ValidationException;
+    Employee getVerifiedUser(String email, String password) throws ValidationException;
 }

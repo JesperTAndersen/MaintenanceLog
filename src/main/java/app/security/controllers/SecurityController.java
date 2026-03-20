@@ -1,11 +1,8 @@
 package app.security.controllers;
 
-import app.dtos.CreateUserRequest;
-import app.dtos.UserDTO;
-import app.exceptions.ApiException;
-import app.exceptions.ValidationException;
+import app.dtos.CreateEmployeeRequest;
 import app.security.SecurityService;
-import app.security.UserLoginDTO;
+import app.security.EmployeeLoginDTO;
 import io.javalin.http.Context;
 
 public class SecurityController
@@ -19,7 +16,7 @@ public class SecurityController
 
     public void register(Context ctx)
     {
-        CreateUserRequest userRequest = ctx.bodyValidator(CreateUserRequest.class).
+        CreateEmployeeRequest userRequest = ctx.bodyValidator(CreateEmployeeRequest.class).
                 check(dto -> dto.firstName() != null, "First name is required")
                 .check(dto -> dto.lastName() != null, "Last name is required")
                 .check(dto -> dto.email() != null, "Email is required")
@@ -34,7 +31,7 @@ public class SecurityController
 
     public void login(Context ctx)
     {
-        UserLoginDTO loginDTO = ctx.bodyValidator(UserLoginDTO.class)
+        EmployeeLoginDTO loginDTO = ctx.bodyValidator(EmployeeLoginDTO.class)
                 .check(dto -> dto.email() != null, "Email is required")
                 .check(dto -> dto.password() != null, "password is required")
                 .get();

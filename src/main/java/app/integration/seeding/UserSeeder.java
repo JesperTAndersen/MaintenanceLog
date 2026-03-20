@@ -1,6 +1,6 @@
 package app.integration.seeding;
 
-import app.entities.User;
+import app.entities.Employee;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
 import app.utils.APIReader;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserSeeder
 {
-    public static void seedUsers(ICrudDAO<User> userDao)
+    public static void seedUsers(ICrudDAO<Employee> userDao)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         APIReader apiReader = new APIReader(objectMapper);

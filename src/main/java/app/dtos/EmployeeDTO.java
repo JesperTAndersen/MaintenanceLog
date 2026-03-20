@@ -1,17 +1,16 @@
 package app.dtos;
 
 import app.entities.enums.UserRole;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-public record CreateUserRequest
+public record EmployeeDTO
         (
+                Integer id,
                 String firstName,
                 String lastName,
-                String email,
                 String phone,
+                String email,
                 UserRole role,
-                String password)
+                boolean active
+        )
 {
 }

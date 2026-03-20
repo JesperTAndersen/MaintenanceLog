@@ -1,6 +1,6 @@
 package app.controllers.routes;
 
-import app.controllers.UserController;
+import app.controllers.EmployeeController;
 import io.javalin.apibuilder.EndpointGroup;
 
 
@@ -11,11 +11,11 @@ import static io.javalin.apibuilder.ApiBuilder.put;
 
 public class UserRoutes
 {
-    private final UserController userController;
+    private final EmployeeController employeeController;
 
-    public UserRoutes(UserController userController)
+    public UserRoutes(EmployeeController employeeController)
     {
-        this.userController = userController;
+        this.employeeController = employeeController;
     }
 
     public EndpointGroup getRoutes()
@@ -24,11 +24,11 @@ public class UserRoutes
         {
             path("users", () ->
             {
-                get(userController::getAll);
-                get("/{id}", userController::get);
-                put("/{id}", userController::update);
-                delete("/{id}", userController::deactivate);
-                patch("/{id}",userController::activate);
+                get(employeeController::getAll);
+                get("/{id}", employeeController::get);
+                put("/{id}", employeeController::update);
+                delete("/{id}", employeeController::deactivate);
+                patch("/{id}", employeeController::activate);
             });
         };
     }

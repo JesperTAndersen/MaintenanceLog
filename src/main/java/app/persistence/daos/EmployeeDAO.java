@@ -1,29 +1,28 @@
 package app.persistence.daos;
 
-import app.entities.User;
+import app.entities.Employee;
 import app.exceptions.DatabaseException;
 import app.exceptions.ValidationException;
 import app.exceptions.enums.DatabaseErrorType;
-import app.persistence.interfaces.IUserDAO;
+import app.persistence.interfaces.IEmployeeDAO;
 import app.security.SecurityServiceImpl;
-import app.security.dao.ISecurityDAO;
 import jakarta.persistence.*;
 
 import java.util.List;
 
-public class UserDAO implements IUserDAO
+public class EmployeeDAO implements IEmployeeDAO
 {
     private final EntityManagerFactory emf;
 
-    public UserDAO(EntityManagerFactory emf)
+    public EmployeeDAO(EntityManagerFactory emf)
     {
         this.emf = emf;
     }
 
     @Override
-    public User create(User user)
+    public Employee create(Employee employee)
     {
-        if (user == null)
+        if (employee == null)
         {
             throw new IllegalArgumentException("User cant be null");
         }
@@ -34,9 +33,9 @@ public class UserDAO implements IUserDAO
 
             try
             {
-                em.persist(user);
+                em.persist(employee);
                 em.getTransaction().commit();
-                return user;
+                return employee;
             }
             catch (PersistenceException e)
             {
@@ -58,7 +57,7 @@ public class UserDAO implements IUserDAO
     }
 
     @Override
-    public User get(Integer id)
+    public Employee get(Integer id)
     {
         if (id == null)
         {
@@ -67,10 +66,10 @@ public class UserDAO implements IUserDAO
 
         try (EntityManager em = emf.createEntityManager())
         {
-            User user = em.find(User.class, id);
-            if (user != null)
+            Employee employee = em.find(Employee.class, id);
+            if (employee != null)
             {
-                return user;
+                return employee;
             }
             throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND);
         }
@@ -81,20 +80,20 @@ public class UserDAO implements IUserDAO
     }
 
     @Override
-    public User getVerifiedUser(String email, String password) throws ValidationException
+    public Employee getVerifiedUser(String email, String password) throws ValidationException
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email AND u.active = true", User.class);
+            TypedQuery<Employee> query = em.createQuery("SELECT u FROM Employee u WHERE u.email = :email AND u.active = true", Employee.class);
             query.setParameter("email", email);
 
             try
             {
-                User user = query.getSingleResult();
+                Employee employee = query.getSingleResult();
 
-                if (SecurityServiceImpl.verifyPassword(password, user.getPassword()))
+                if (SecurityServiceImpl.verifyPassword(password, employee.getPassword()))
                 {
-                    return user;
+                    return employee;
                 }
                 else throw new ValidationException("Could not Authenticate login info");
             }
@@ -106,11 +105,11 @@ public class UserDAO implements IUserDAO
     }
 
         @Override
-        public List<User> getAll ()
+        public List<Employee> getAll ()
         {
             try (EntityManager em = emf.createEntityManager())
             {
-                TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
+                TypedQuery<Employee> query = em.createQuery("SELECT u FROM Employee u", Employee.class);
                 return query.getResultList();
             }
             catch (PersistenceException e)
@@ -120,7 +119,7 @@ public class UserDAO implements IUserDAO
         }
 
         @Override
-        public User update (User u)
+        public Employee update (Employee u)
         {
             if (u == null || u.getUserId() == null)
             {
@@ -133,7 +132,7 @@ public class UserDAO implements IUserDAO
 
                 try
                 {
-                    User managed = em.find(User.class, u.getUserId());
+                    Employee managed = em.find(Employee.class, u.getUserId());
                     if (managed == null)
                     {
                         if (em.getTransaction().isActive())
@@ -171,7 +170,7 @@ public class UserDAO implements IUserDAO
         }
 
         @Override
-        public User getByEmail (String email)
+        public Employee getByEmail (String email)
         {
             if (email == null || email.isBlank())
             {
@@ -180,7 +179,7 @@ public class UserDAO implements IUserDAO
 
             try (EntityManager em = emf.createEntityManager())
             {
-                TypedQuery<User> query = em.createQuery("SELECT u from User u WHERE u.email = :email AND u.active = true", User.class);
+                TypedQuery<Employee> query = em.createQuery("SELECT u from Employee u WHERE u.email = :email AND u.active = true", Employee.class);
                 query.setParameter("email", email);
 
                 try
@@ -199,7 +198,7 @@ public class UserDAO implements IUserDAO
         }
 
         @Override
-        public List<User> getInactiveUsers ( int limit)
+        public List<Employee> getInactiveUsers (int limit)
         {
             if (limit <= 0)
             {
@@ -208,7 +207,7 @@ public class UserDAO implements IUserDAO
 
             try (EntityManager em = emf.createEntityManager())
             {
-                TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = false", User.class);
+                TypedQuery<Employee> query = em.createQuery("SELECT u FROM Employee u WHERE u.active = false", Employee.class);
                 query.setMaxResults(limit);
                 return query.getResultList();
             }
@@ -219,7 +218,7 @@ public class UserDAO implements IUserDAO
         }
 
         @Override
-        public List<User> getActiveUsers ( int limit)
+        public List<Employee> getActiveUsers (int limit)
         {
             if (limit <= 0)
             {
@@ -228,7 +227,7 @@ public class UserDAO implements IUserDAO
 
             try (EntityManager em = emf.createEntityManager())
             {
-                TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.active = true", User.class);
+                TypedQuery<Employee> query = em.createQuery("SELECT u FROM Employee u WHERE u.active = true", Employee.class);
                 query.setMaxResults(limit);
                 return query.getResultList();
             }

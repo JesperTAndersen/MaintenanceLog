@@ -1,18 +1,16 @@
 package app.controllers;
 
-import app.dtos.UserDTO;
-import app.dtos.CreateUserRequest;
-import app.exceptions.ApiException;
-import app.services.UserService;
+import app.dtos.EmployeeDTO;
+import app.services.EmployeeService;
 import io.javalin.http.Context;
 
-public class UserController
+public class EmployeeController
 {
-    private final UserService userService;
+    private final EmployeeService employeeService;
 
-    public UserController(UserService userService)
+    public EmployeeController(EmployeeService employeeService)
     {
-        this.userService = userService;
+        this.employeeService = employeeService;
     }
 
     public void getAll(Context ctx)
@@ -20,30 +18,30 @@ public class UserController
         String activeParam = ctx.queryParam("active");
         Boolean active = activeParam != null ? Boolean.parseBoolean(activeParam) : null;
 
-        ctx.status(200).json(userService.getAll(active));
+        ctx.status(200).json(employeeService.getAll(active));
     }
 
     public void get(Context ctx)
     {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        ctx.status(200).json(userService.get(id));
+        ctx.status(200).json(employeeService.get(id));
     }
 
     public void update(Context ctx)
     {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        UserDTO userDTO = ctx.bodyValidator(UserDTO.class)
+        EmployeeDTO employeeDTO = ctx.bodyValidator(EmployeeDTO.class)
                 .check(dto -> dto.id() == null || dto.id().equals(id), "ID in URL and body must match")
                 .check(dto -> dto.email() == null || dto.email().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
                 .get();
 
-        ctx.status(200).json(userService.update(id, userDTO));
+        ctx.status(200).json(employeeService.update(id, employeeDTO));
     }
 
     public void deactivate(Context ctx)
     {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        userService.deactivate(id);
+        employeeService.deactivate(id);
         ctx.status(204);
     }
 
@@ -51,7 +49,7 @@ public class UserController
     public void activate(Context ctx)
     {
         int id = Integer.parseInt(ctx.pathParam("id"));
-        userService.activate(id);
+        employeeService.activate(id);
         ctx.status(204);
     }
 }

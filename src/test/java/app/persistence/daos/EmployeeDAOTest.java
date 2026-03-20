@@ -1,8 +1,8 @@
 package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
+import app.entities.Employee;
 import app.entities.enums.UserRole;
-import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.testutils.TestPopulator;
@@ -17,17 +17,17 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserDAOTest
+class EmployeeDAOTest
 {
     private final EntityManagerFactory emf = HibernateTestConfig.getEntityManagerFactory();
-    private UserDAO userDAO;
-    private Map<String, User> seeded;
+    private EmployeeDAO employeeDAO;
+    private Map<String, Employee> seeded;
 
     @BeforeEach
     void beforeEach()
     {
         seeded = TestPopulator.populateUsers(emf);
-        userDAO = new UserDAO(emf);
+        employeeDAO = new EmployeeDAO(emf);
     }
 
     @AfterAll
@@ -40,11 +40,11 @@ class UserDAOTest
     @DisplayName("Create - should persist user and generate ID")
     void create()
     {
-        User user = new User("Test", "Doe", "12345678", "test@mail.dk", UserRole.TECHNICIAN, true);
-        User created = userDAO.create(user);
+        Employee employee = new Employee("Test", "Doe", "12345678", "test@mail.dk", UserRole.TECHNICIAN, true);
+        Employee created = employeeDAO.create(employee);
 
         assertThat(created.getUserId(), notNullValue());
-        User fetched = userDAO.get(created.getUserId());
+        Employee fetched = employeeDAO.get(created.getUserId());
         assertThat(fetched.getFirstName(), is("Test"));
         assertThat(fetched.getLastName(), is("Doe"));
         assertThat(fetched.getPhone(), is("12345678"));
@@ -57,7 +57,7 @@ class UserDAOTest
     @DisplayName("Create - should throw exception when user is null")
     void createNullUserThrowsException()
     {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userDAO.create(null));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> employeeDAO.create(null));
 
         assertTrue(exception.getMessage().contains("User cant be null"));
     }
@@ -66,12 +66,12 @@ class UserDAOTest
     @DisplayName("Get - should retrieve existing user by ID")
     void get()
     {
-        User user1 = seeded.get("user1");
+        Employee employee1 = seeded.get("user1");
 
-        User fetched = userDAO.get(user1.getUserId());
+        Employee fetched = employeeDAO.get(employee1.getUserId());
 
         assertThat(fetched, notNullValue());
-        assertThat(fetched.getUserId(), is(user1.getUserId()));
+        assertThat(fetched.getUserId(), is(employee1.getUserId()));
         assertThat(fetched.getFirstName(), is("John"));
         assertThat(fetched.getLastName(), is("Doe"));
         assertThat(fetched.getEmail(), is("Johndoe@mail.dk"));
@@ -82,7 +82,7 @@ class UserDAOTest
     @DisplayName("Get - should throw DatabaseException when user not found")
     void getNotFoundThrowsException()
     {
-        DatabaseException exception = assertThrows(DatabaseException.class, () -> userDAO.get(99999));
+        DatabaseException exception = assertThrows(DatabaseException.class, () -> employeeDAO.get(99999));
 
         assertThat(exception.getMessage(), containsString("User not found"));
         assertThat(exception.getErrorType(), is(DatabaseErrorType.NOT_FOUND));
@@ -92,7 +92,7 @@ class UserDAOTest
     @DisplayName("Get - should throw IllegalArgumentException when ID is null")
     void getNullIdThrowsException()
     {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userDAO.get(null));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> employeeDAO.get(null));
 
         assertThat(exception.getMessage(), containsString("User id is required"));
     }
@@ -101,35 +101,35 @@ class UserDAOTest
     @DisplayName("GetAll - should retrieve all users")
     void getAll()
     {
-        List<User> allUsers = userDAO.getAll();
+        List<Employee> allEmployees = employeeDAO.getAll();
 
-        assertThat(allUsers, notNullValue());
-        assertThat(allUsers.size(), is(4)); // 3 active + 1 inactive from TestPopulator
+        assertThat(allEmployees, notNullValue());
+        assertThat(allEmployees.size(), is(4)); // 3 active + 1 inactive from TestPopulator
 
         // Verify active users are included
-        assertThat(allUsers, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
-        assertThat(allUsers, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
-        assertThat(allUsers, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
 
         // Verify inactive user is included
-        assertThat(allUsers, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
     }
 
     @Test
     @DisplayName("Update - should update existing user successfully")
     void update()
     {
-        User user1 = seeded.get("user1");
-        user1.setFirstName("UpdatedJohn");
-        user1.setEmail("updatedjohn@mail.dk");
-        user1.setRole(UserRole.ADMIN);
+        Employee employee1 = seeded.get("user1");
+        employee1.setFirstName("UpdatedJohn");
+        employee1.setEmail("updatedjohn@mail.dk");
+        employee1.setRole(UserRole.ADMIN);
 
-        User updated = userDAO.update(user1);
+        Employee updated = employeeDAO.update(employee1);
 
         assertThat(updated, notNullValue());
-        assertThat(updated.getUserId(), is(user1.getUserId()));
+        assertThat(updated.getUserId(), is(employee1.getUserId()));
 
-        User fetched = userDAO.get(user1.getUserId());
+        Employee fetched = employeeDAO.get(employee1.getUserId());
         assertThat(fetched.getFirstName(), is("UpdatedJohn"));
         assertThat(fetched.getEmail(), is("updatedjohn@mail.dk"));
         assertThat(fetched.getRole(), is(UserRole.ADMIN));
@@ -139,7 +139,7 @@ class UserDAOTest
     @DisplayName("Update - should throw DatabaseException when user not found")
     void updateNonExistentUserThrowsException()
     {
-        User nonExistentUser = User.builder()
+        Employee nonExistentEmployee = Employee.builder()
                 .userId(99999)
                 .firstName("Ghost")
                 .lastName("User")
@@ -150,7 +150,7 @@ class UserDAOTest
                 .active(true)
                 .build();
 
-        DatabaseException exception = assertThrows(DatabaseException.class, () -> userDAO.update(nonExistentUser));
+        DatabaseException exception = assertThrows(DatabaseException.class, () -> employeeDAO.update(nonExistentEmployee));
 
         assertThat(exception.getMessage(), containsString("User not found"));
         assertThat(exception.getErrorType(), is(DatabaseErrorType.NOT_FOUND));
@@ -160,7 +160,7 @@ class UserDAOTest
     @DisplayName("Update - should throw IllegalArgumentException when user is null")
     void updateNullUserThrowsException()
     {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userDAO.update(null));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> employeeDAO.update(null));
 
         assertThat(exception.getMessage(), containsString("User and user id are required"));
     }
@@ -169,9 +169,9 @@ class UserDAOTest
     @DisplayName("Update - should throw IllegalArgumentException when user ID is null")
     void updateUserWithNullIdThrowsException()
     {
-        User userWithoutId = new User("Test", "User", "12345678", "test@mail.dk", UserRole.TECHNICIAN, true);
+        Employee employeeWithoutId = new Employee("Test", "User", "12345678", "test@mail.dk", UserRole.TECHNICIAN, true);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userDAO.update(userWithoutId));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> employeeDAO.update(employeeWithoutId));
 
         assertThat(exception.getMessage(), containsString("User and user id are required"));
     }
@@ -180,7 +180,7 @@ class UserDAOTest
     @DisplayName("GetByEmail - should retrieve active user by email")
     void getByEmail()
     {
-        User fetched = userDAO.getByEmail("Johndoe@mail.dk");
+        Employee fetched = employeeDAO.getByEmail("Johndoe@mail.dk");
 
         assertThat(fetched, notNullValue());
         assertThat(fetched.getEmail(), is("Johndoe@mail.dk"));
@@ -193,7 +193,7 @@ class UserDAOTest
     @DisplayName("GetByEmail - should return null when email not found")
     void getByEmailNotFoundThrowsException()
     {
-        User result = userDAO.getByEmail("nonexistent@mail.dk");
+        Employee result = employeeDAO.getByEmail("nonexistent@mail.dk");
 
         assertThat(result, nullValue());
     }
@@ -203,7 +203,7 @@ class UserDAOTest
     void getByEmailInactiveUserThrowsException()
     {
         // Clark Kent is inactive
-        User result = userDAO.getByEmail("Clarkkent@mail.dk");
+        Employee result = employeeDAO.getByEmail("Clarkkent@mail.dk");
 
         assertThat(result, nullValue());
     }
@@ -213,7 +213,7 @@ class UserDAOTest
     void getByEmailNullThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getByEmail(null));
+                () -> employeeDAO.getByEmail(null));
 
         assertThat(exception.getMessage(), containsString("Email is required"));
     }
@@ -223,7 +223,7 @@ class UserDAOTest
     void getByEmailBlankThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getByEmail("   "));
+                () -> employeeDAO.getByEmail("   "));
 
         assertThat(exception.getMessage(), containsString("Email is required"));
     }
@@ -232,39 +232,39 @@ class UserDAOTest
     @DisplayName("GetInactiveUsers - should retrieve only inactive users with limit")
     void getInactiveUsers()
     {
-        List<User> inactiveUsers = userDAO.getInactiveUsers(5);
+        List<Employee> inactiveEmployees = employeeDAO.getInactiveUsers(5);
 
-        assertThat(inactiveUsers, notNullValue());
-        assertThat(inactiveUsers.size(), is(1));
+        assertThat(inactiveEmployees, notNullValue());
+        assertThat(inactiveEmployees.size(), is(1));
 
         // Verify users are inactive
-        for (User user : inactiveUsers)
+        for (Employee employee : inactiveEmployees)
         {
-            assertThat(user.isActive(), is(false));
+            assertThat(employee.isActive(), is(false));
         }
 
         // inactive user is included
-        assertThat(inactiveUsers, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
+        assertThat(inactiveEmployees, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
 
         // active users are not included
-        assertThat(inactiveUsers, not(hasItem(hasProperty("email", is("Johndoe@mail.dk")))));
-        assertThat(inactiveUsers, not(hasItem(hasProperty("email", is("Janedoe@mail.dk")))));
-        assertThat(inactiveUsers, not(hasItem(hasProperty("email", is("Jeffdoe@mail.dk")))));
+        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("Johndoe@mail.dk")))));
+        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("Janedoe@mail.dk")))));
+        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("Jeffdoe@mail.dk")))));
     }
 
     @Test
     @DisplayName("GetInactiveUsers - should respect the limit parameter")
     void getInactiveUsersWithLimit()
     {
-        List<User> inactiveUsers = userDAO.getInactiveUsers(2);
+        List<Employee> inactiveEmployees = employeeDAO.getInactiveUsers(2);
 
-        assertThat(inactiveUsers, notNullValue());
-        assertThat(inactiveUsers.size(), is(1)); // Only 1 inactive user in test data
+        assertThat(inactiveEmployees, notNullValue());
+        assertThat(inactiveEmployees.size(), is(1)); // Only 1 inactive user in test data
 
         // Verify all returned users are inactive
-        for (User user : inactiveUsers)
+        for (Employee employee : inactiveEmployees)
         {
-            assertThat(user.isActive(), is(false));
+            assertThat(employee.isActive(), is(false));
         }
     }
 
@@ -273,7 +273,7 @@ class UserDAOTest
     void getInactiveUsersZeroLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getInactiveUsers(0));
+                () -> employeeDAO.getInactiveUsers(0));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }
@@ -283,7 +283,7 @@ class UserDAOTest
     void getInactiveUsersNegativeLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getInactiveUsers(-1));
+                () -> employeeDAO.getInactiveUsers(-1));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }
@@ -292,34 +292,34 @@ class UserDAOTest
     @DisplayName("GetActiveUsers - should retrieve only active users with limit")
     void getActiveUsers()
     {
-        List<User> activeUsers = userDAO.getActiveUsers(5);
+        List<Employee> activeEmployees = employeeDAO.getActiveUsers(5);
 
-        assertThat(activeUsers, notNullValue());
-        assertThat(activeUsers.size(), is(3));
+        assertThat(activeEmployees, notNullValue());
+        assertThat(activeEmployees.size(), is(3));
 
-        for (User user : activeUsers)
+        for (Employee employee : activeEmployees)
         {
-            assertThat(user.isActive(), is(true));
+            assertThat(employee.isActive(), is(true));
         }
 
-        assertThat(activeUsers, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
-        assertThat(activeUsers, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
-        assertThat(activeUsers, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
-        assertThat(activeUsers, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
+        assertThat(activeEmployees, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
+        assertThat(activeEmployees, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
+        assertThat(activeEmployees, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
+        assertThat(activeEmployees, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
     }
 
     @Test
     @DisplayName("GetActiveUsers - should respect the limit parameter")
     void getActiveUsersWithLimit()
     {
-        List<User> activeUsers = userDAO.getActiveUsers(2);
+        List<Employee> activeEmployees = employeeDAO.getActiveUsers(2);
 
-        assertThat(activeUsers, notNullValue());
-        assertThat(activeUsers.size(), is(2));
+        assertThat(activeEmployees, notNullValue());
+        assertThat(activeEmployees.size(), is(2));
 
-        for (User user : activeUsers)
+        for (Employee employee : activeEmployees)
         {
-            assertThat(user.isActive(), is(true));
+            assertThat(employee.isActive(), is(true));
         }
     }
 
@@ -328,7 +328,7 @@ class UserDAOTest
     void getActiveUsersZeroLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getActiveUsers(0));
+                () -> employeeDAO.getActiveUsers(0));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }
@@ -338,7 +338,7 @@ class UserDAOTest
     void getActiveUsersNegativeLimitThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userDAO.getActiveUsers(-1));
+                () -> employeeDAO.getActiveUsers(-1));
 
         assertThat(exception.getMessage(), containsString("Input needs to be bigger than 0"));
     }

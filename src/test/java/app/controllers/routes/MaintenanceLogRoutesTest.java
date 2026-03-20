@@ -4,8 +4,8 @@ import app.config.ApplicationConfig;
 import app.config.DependencyContainer;
 import app.config.HibernateTestConfig;
 import app.entities.Asset;
+import app.entities.Employee;
 import app.entities.MaintenanceLog;
-import app.entities.User;
 import app.persistence.testutils.TestPopulator;
 import io.javalin.Javalin;
 import io.restassured.RestAssured;
@@ -27,7 +27,7 @@ class MaintenanceLogRoutesTest
     private static Javalin app;
     private static final int TEST_PORT = 7073;
 
-    private Map<String, User> users;
+    private Map<String, Employee> users;
     private Map<String, Asset> assets;
     private Map<String, MaintenanceLog> logs;
 
@@ -118,14 +118,14 @@ class MaintenanceLogRoutesTest
     @Test
     void testGetByUser()
     {
-        User user1 = users.get("user1");
+        Employee employee1 = users.get("user1");
 
         given()
                 .when()
-                .get("/logs/user/" + user1.getUserId())
+                .get("/logs/user/" + employee1.getUserId())
                 .then()
                 .statusCode(200)
-                .body("performedByUserId", everyItem(equalTo(user1.getUserId())))
+                .body("performedByUserId", everyItem(equalTo(employee1.getUserId())))
                 .body("size()", is(4));
     }
 }

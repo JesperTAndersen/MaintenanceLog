@@ -2,15 +2,13 @@ package app.dtos;
 
 import app.entities.enums.UserRole;
 
-public record UserDTO
+public record CreateEmployeeRequest
         (
-                Integer id,
                 String firstName,
                 String lastName,
-                String phone,
                 String email,
+                String phone,
                 UserRole role,
-                boolean active
-        )
+                String password)
 {
 }

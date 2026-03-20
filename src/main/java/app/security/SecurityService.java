@@ -1,8 +1,7 @@
 package app.security;
 
-import app.dtos.CreateUserRequest;
-import app.dtos.UserDTO;
-import app.exceptions.ValidationException;
+import app.dtos.CreateEmployeeRequest;
+import app.dtos.EmployeeDTO;
 import io.javalin.http.Context;
 
 import java.util.Map;
@@ -13,8 +12,8 @@ public interface SecurityService
 
     void authorize(Context ctx);
 
-    UserDTO register(CreateUserRequest request);
+    EmployeeDTO register(CreateEmployeeRequest request);
 
-    Map<String, Object> login(UserLoginDTO dto);
+    Map<String, Object> login(EmployeeLoginDTO dto);
 
 }
