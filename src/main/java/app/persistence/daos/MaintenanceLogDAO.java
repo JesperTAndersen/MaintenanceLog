@@ -192,22 +192,22 @@ public class MaintenanceLogDAO implements IMaintenanceLogDAO
     }
 
     @Override
-    public List<MaintenanceLog> getByPerformedUser(Integer userId)
+    public List<MaintenanceLog> getByPerformedEmployee(Integer employeeId)
     {
-        if (userId == null)
+        if (employeeId == null)
         {
-            throw new IllegalArgumentException("User id is required");
+            throw new IllegalArgumentException("Employee id is required");
         }
 
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m WHERE m.performedBy.userId = :userId", MaintenanceLog.class);
-            query.setParameter("userId", userId);
+            TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m WHERE m.performedBy.employeeId = :employeeId", MaintenanceLog.class);
+            query.setParameter("employeeId", employeeId);
             return query.getResultList();
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get logs by performed user failed", DatabaseErrorType.QUERY_FAILURE, e);
+            throw new DatabaseException("Get logs by performed employee failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 

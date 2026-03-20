@@ -77,7 +77,7 @@ public class SecurityServiceImpl implements SecurityService
     {
         try
         {
-            Employee verifiedEmployee = secDAO.getVerifiedUser(dto.email(), dto.password());
+            Employee verifiedEmployee = secDAO.getVerifiedEmployee(dto.email(), dto.password());
 
             EmployeeDTO employeeDTO = EmployeeMapper.toDTO(verifiedEmployee);
             if (!employeeDTO.active())
@@ -89,7 +89,7 @@ public class SecurityServiceImpl implements SecurityService
 
             return Map.of(
                     "token", token,
-                    "user", employeeDTO
+                    "employee", employeeDTO
             );
 
         }
@@ -117,8 +117,8 @@ public class SecurityServiceImpl implements SecurityService
             return;
 
         // If there is no token we do not allow entry
-        UserDTO verifiedTokenUser = validateAndGetUserFromToken(ctx);
-        ctx.attribute("user", verifiedTokenUser);
+        UserDTO verifiedTokenEmployee = validateAndGetEmployeeFromToken(ctx);
+        ctx.attribute("employee", verifiedTokenEmployee);
     }
 
     @Override
@@ -133,17 +133,17 @@ public class SecurityServiceImpl implements SecurityService
         if (isOpenEndpoint(allowedRoles))
             return;
 
-        // 2. Get user and ensure it is not null
-        UserDTO user = ctx.attribute("user");
-        if (user == null)
+        // 2. Get employee and ensure it is not null
+        UserDTO employee = ctx.attribute("employee");
+        if (employee == null)
         {
-            throw new ForbiddenResponse("No user was added from the token");
+            throw new ForbiddenResponse("No employee was added from the token");
         }
 
         // 3. See if any role matches
-        if (!userHasAllowedRole(user, allowedRoles))
+        if (!employeeHasAllowedRole(employee, allowedRoles))
         {
-            throw new ForbiddenResponse("User was not authorized with roles: " + user.getRoles() + ". Needed roles are: " + allowedRoles);
+            throw new ForbiddenResponse("Employee was not authorized with roles: " + employee.getRoles() + ". Needed roles are: " + allowedRoles);
         }
     }
 
@@ -218,15 +218,15 @@ public class SecurityServiceImpl implements SecurityService
         return false;
     }
 
-    private UserDTO validateAndGetUserFromToken(Context ctx)
+    private UserDTO validateAndGetEmployeeFromToken(Context ctx)
     {
         String token = getToken(ctx);
-        UserDTO verifiedTokenUser = verifyToken(token);
-        if (verifiedTokenUser == null)
+        UserDTO verifiedTokenEmployee = verifyToken(token);
+        if (verifiedTokenEmployee == null)
         {
-            throw new UnauthorizedResponse("Invalid user or token");
+            throw new UnauthorizedResponse("Invalid employee or token");
         }
-        return verifiedTokenUser;
+        return verifiedTokenEmployee;
     }
 
     private UserDTO verifyToken(String token)
@@ -251,18 +251,18 @@ public class SecurityServiceImpl implements SecurityService
         }
     }
 
-    private static boolean userHasAllowedRole(UserDTO user, Set<String> allowedRoles)
+    private static boolean employeeHasAllowedRole(UserDTO employee, Set<String> allowedRoles)
     {
-        Set<String> userRoles = user.getRoles();
+        Set<String> employeeRoles = employee.getRoles();
 
-        if (userRoles.isEmpty())
+        if (employeeRoles.isEmpty())
         {
             return false;
         }
 
-        String userRole = userRoles.iterator().next();
+        String employeeRole = employeeRoles.iterator().next();
 
-        Set<String> effectiveRoles = ROLE_HIERARCHY.getOrDefault(userRole, Set.of(userRole));
+        Set<String> effectiveRoles = ROLE_HIERARCHY.getOrDefault(employeeRole, Set.of(employeeRole));
 
         return effectiveRoles.stream()
                 .anyMatch(role -> allowedRoles.contains(role.toUpperCase()));

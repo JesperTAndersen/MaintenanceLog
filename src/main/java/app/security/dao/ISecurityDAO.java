@@ -7,5 +7,5 @@ import app.persistence.interfaces.IEmployeeEmailQuery;
 
 public interface ISecurityDAO extends ICreateDAO<Employee>, IEmployeeEmailQuery
 {
-    Employee getVerifiedUser(String email, String password) throws ValidationException;
+    Employee getVerifiedEmployee(String email, String password) throws ValidationException;
 }

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IEmployeeQueries
 {
-    List<Employee> getInactiveUsers(int limit);
-    List<Employee> getActiveUsers(int limit);
+    List<Employee> getInactiveEmployees(int limit);
+    List<Employee> getActiveEmployees(int limit);
 }

@@ -14,18 +14,18 @@ import static app.security.SecurityServiceImpl.hashPassword;
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
-    private final ICrudDAO<Employee> userDao;
+    private final ICrudDAO<Employee> employeeDao;
 
-    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<Employee> userDao)
+    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<Employee> employeeDao)
     {
         this.client = client;
-        this.userDao = userDao;
+        this.employeeDao = employeeDao;
     }
 
     @Override
-    public void seedUsers(int count, boolean multiThreaded, int threads)
+    public void seedEmployees(int count, boolean multiThreaded, int threads)
     {
-        if(!userDao.getAll().isEmpty()) //only seeds if database is empty
+        if(!employeeDao.getAll().isEmpty()) //only seeds if database is empty
         {
             System.out.println("Database not empty - Skipping seeding");
             return;
@@ -37,9 +37,9 @@ public class ApiUserServiceImpl implements ApiUserService
 
         assignRoles(convertedEmployees);
 
-        for (Employee u : convertedEmployees)
+        for (Employee employee : convertedEmployees)
         {
-            userDao.create(u);
+            employeeDao.create(employee);
         }
     }
 
@@ -78,15 +78,15 @@ public class ApiUserServiceImpl implements ApiUserService
     private void assignRoles(List<Employee> employees)
     {
         int counter = 1;
-        for (Employee u : employees)
+        for (Employee employee : employees)
         {
             if (counter % 5 == 0)
             {
-                u.setRole(EmployeeRole.MANAGER);
+                employee.setRole(EmployeeRole.MANAGER);
             }
             else
             {
-                u.setRole(EmployeeRole.TECHNICIAN);
+                employee.setRole(EmployeeRole.TECHNICIAN);
             }
             counter++;
         }

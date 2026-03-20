@@ -40,7 +40,7 @@ class EmployeeRoutesTest
     @BeforeEach
     void setUp()
     {
-        seeded = TestPopulator.populateUsers(emf);
+        seeded = TestPopulator.populateEmployees(emf);
     }
 
     @AfterAll
@@ -51,11 +51,11 @@ class EmployeeRoutesTest
     }
 
     @Test
-    void testGetAllActiveUsers()
+    void testGetAllActiveEmployees()
     {
         given()
                 .when()
-                .get("/users?active=true")
+                .get("/employees?active=true")
                 .then()
                 .statusCode(200)
                 .body("email", containsInAnyOrder(seeded.values()
@@ -66,11 +66,11 @@ class EmployeeRoutesTest
     }
 
     @Test
-    void testGetAllInactiveUsers()
+    void testGetAllInactiveEmployees()
     {
         given()
                 .when()
-                .get("/users?active=false")
+                .get("/employees?active=false")
                 .then()
                 .statusCode(200)
                 .body("email", containsInAnyOrder(seeded.values()
@@ -83,14 +83,14 @@ class EmployeeRoutesTest
     @Test
     void testgetById()
     {
-        Employee employee1 = seeded.get("user1");
+        Employee employee1 = seeded.get("employee1");
 
         given()
                 .when()
-                .get("/users/" + employee1.getUserId())
+                .get("/employees/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(employee1.getUserId()))
+                .body("id", equalTo(employee1.getEmployeeId()))
                 .body("email", equalTo(employee1.getEmail()))
                 .body("firstName", equalTo(employee1.getFirstName()));
     }
@@ -100,13 +100,13 @@ class EmployeeRoutesTest
     {
         given()
                 .when()
-                .get("/users/999999")
+                .get("/employees/999999")
                 .then()
                 .statusCode(404);
     }
 
     @Test
-    void testPostNewUser()
+    void testPostNewEmployee()
     {
         given()
                 .contentType("application/json")
@@ -121,7 +121,7 @@ class EmployeeRoutesTest
                         }
                         """)
                 .when()
-                .post("/users")
+                .post("/employees")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
@@ -136,7 +136,7 @@ class EmployeeRoutesTest
     @Test
     void testPostExistingEmailReturns409()
     {
-        Employee employee1 = seeded.get("user1");
+        Employee employee1 = seeded.get("employee1");
 
         given()
                 .contentType("application/json")
@@ -151,7 +151,7 @@ class EmployeeRoutesTest
                         }
                         """, employee1.getEmail()))
                 .when()
-                .post("/users")
+                .post("/employees")
                 .then()
                 .statusCode(409);
     }
@@ -159,7 +159,7 @@ class EmployeeRoutesTest
     @Test
     void testPut()
     {
-        Employee employee1 = seeded.get("user1");
+        Employee employee1 = seeded.get("employee1");
 
         given()
                 .contentType("application/json")
@@ -174,10 +174,10 @@ class EmployeeRoutesTest
                         }
                         """)
                 .when()
-                .put("/users/" + employee1.getUserId())
+                .put("/employees/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(employee1.getUserId()))
+                .body("id", equalTo(employee1.getEmployeeId()))
                 .body("firstName", equalTo("Test"))
                 .body("lastName", equalTo("User"))
                 .body("email", equalTo("test@example.com"))
@@ -194,25 +194,25 @@ class EmployeeRoutesTest
 
         given()
                 .when()
-                .patch("/users/" + employee1.getUserId())
+                .patch("/employees/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(204);
     }
 
     @Test
-    void testPatchActivateAlreadyActiveUser()
+    void testPatchActivateAlreadyActiveEmployee()
     {
         Employee activeEmployee = seeded.values().stream().filter(Employee::isActive).findAny().orElseThrow();
 
         given()
                 .when()
-                .patch("/users/" + activeEmployee.getUserId())
+                .patch("/employees/" + activeEmployee.getEmployeeId())
                 .then()
                 .statusCode(204);
 
         given()
                 .when()
-                .get("/users/" + activeEmployee.getUserId())
+                .get("/employees/" + activeEmployee.getEmployeeId())
                 .then()
                 .statusCode(200)
                 .body("active", equalTo(true));
@@ -224,7 +224,7 @@ class EmployeeRoutesTest
         Employee employee1 = seeded.values().stream().filter(Employee::isActive).findAny().get();
         given()
                 .when()
-                .delete("/users/" + employee1.getUserId())
+                .delete("/employees/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(204);
     }
@@ -232,7 +232,7 @@ class EmployeeRoutesTest
     @Test
     void testPutInvalidEmailFormatReturns400()
     {
-        Employee employee1 = seeded.get("user1");
+        Employee employee1 = seeded.get("employee1");
 
         given()
                 .contentType("application/json")
@@ -247,7 +247,7 @@ class EmployeeRoutesTest
                         }
                         """)
                 .when()
-                .put("/users/" + employee1.getUserId())
+                .put("/employees/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(400);
     }

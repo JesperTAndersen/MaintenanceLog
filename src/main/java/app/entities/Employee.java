@@ -17,7 +17,7 @@ public class Employee
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id", nullable = false)
-    private Integer userId;
+    private Integer employeeId;
     @Setter
     @Column(name = "first_name", nullable = false)
     private String firstName;

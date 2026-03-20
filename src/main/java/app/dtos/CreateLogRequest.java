@@ -14,7 +14,7 @@ public record CreateLogRequest
                 LogStatus status,
                 TaskType taskType,
                 String comment,
-                Integer performedByUserId
+                Integer performedByEmployeeId
         )
 {
 }

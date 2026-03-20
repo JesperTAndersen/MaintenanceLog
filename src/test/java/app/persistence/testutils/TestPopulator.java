@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class TestPopulator
 {
-    public static Map<String, Employee> populateUsers(EntityManagerFactory emf)
+    public static Map<String, Employee> populateEmployees(EntityManagerFactory emf)
     {
         try (EntityManager em = emf.createEntityManager())
         {
@@ -28,7 +28,7 @@ public class TestPopulator
 
             try
             {
-                em.createNativeQuery("TRUNCATE TABLE users RESTART IDENTITY CASCADE").executeUpdate();
+                em.createNativeQuery("TRUNCATE TABLE employees RESTART IDENTITY CASCADE").executeUpdate();
                 em.persist(employee1);
                 em.persist(employee2);
                 em.persist(employee3);
@@ -44,10 +44,10 @@ public class TestPopulator
             em.getTransaction().commit();
 
             Map<String, Employee> seeded = new LinkedHashMap<>();
-            seeded.put("user1", employee1);
-            seeded.put("user2", employee2);
-            seeded.put("user3", employee3);
-            seeded.put("user4", employee4);
+            seeded.put("employee1", employee1);
+            seeded.put("employee2", employee2);
+            seeded.put("employee3", employee3);
+            seeded.put("employee4", employee4);
             return seeded;
         }
     }
@@ -88,14 +88,14 @@ public class TestPopulator
         }
     }
 
-    public static Map<String, MaintenanceLog> populateMaintenanceLogs(EntityManagerFactory emf, Map<String, Employee> users, Map<String, Asset> assets)
+    public static Map<String, MaintenanceLog> populateMaintenanceLogs(EntityManagerFactory emf, Map<String, Employee> employees, Map<String, Asset> assets)
     {
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
 
-            Employee employee1 = em.merge(users.get("user1"));
-            Employee employee2 = em.merge(users.get("user2"));
+            Employee employee1 = em.merge(employees.get("employee1"));
+            Employee employee2 = em.merge(employees.get("employee2"));
             Asset asset1 = em.merge(assets.get("asset1"));
             Asset asset2 = em.merge(assets.get("asset2"));
             Asset asset3 = em.merge(assets.get("asset3"));

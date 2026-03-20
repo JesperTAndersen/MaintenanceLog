@@ -30,7 +30,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     public MaintenanceLogDTO create(Integer assetId, CreateLogRequest request)
     {
         Asset asset = assetDao.get(assetId);
-        Employee performedBy = employeeDao.get(request.performedByUserId());
+        Employee performedBy = employeeDao.get(request.performedByEmployeeId());
 
         MaintenanceLog log = new MaintenanceLog(
                 request.performedDate(),
@@ -91,9 +91,9 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     }
 
     @Override
-    public List<MaintenanceLogDTO> getByPerformedEmployee(Integer userId)
+    public List<MaintenanceLogDTO> getByPerformedEmployee(Integer employeeId)
     {
-        return logDao.getByPerformedUser(userId).stream()
+        return logDao.getByPerformedEmployee(employeeId).stream()
                 .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }

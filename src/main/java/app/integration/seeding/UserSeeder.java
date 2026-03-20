@@ -11,13 +11,13 @@ import java.util.List;
 
 public class UserSeeder
 {
-    public static void seedUsers(ICrudDAO<Employee> userDao)
+    public static void seedEmployees(ICrudDAO<Employee> employeeDao)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         APIReader apiReader = new APIReader(objectMapper);
         RandomUserClient client = new RandomUserClient(apiReader);
-        ApiUserService apiUserService = new ApiUserServiceImpl(client, userDao);
-        apiUserService.seedUsers(50, false, 0);
+        ApiUserService apiUserService = new ApiUserServiceImpl(client, employeeDao);
+        apiUserService.seedEmployees(50, false, 0);
     }
 
     public static void testThreads(RandomUserClient client)
@@ -33,10 +33,10 @@ public class UserSeeder
 
         // Concurrent timing
         long startCon = System.currentTimeMillis();
-        List<RandomUserDTO> users = client.fetchUsersFromAPIMultiThreaded(5, 50);
+        List<RandomUserDTO> employees = client.fetchUsersFromAPIMultiThreaded(5, 50);
         long endCon = System.currentTimeMillis();
         System.out.println("Concurrent (5 threads, 50 total): " + (endCon - startCon) + "ms");
-        System.out.println("Users fetched: " + users.size());
+        System.out.println("Employees fetched: " + employees.size());
         System.out.println("Speedup: " + ((endSeq - startSeq) / (double) (endCon - startCon)) + "x");
     }
 }

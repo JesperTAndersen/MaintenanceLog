@@ -34,11 +34,11 @@ public class EmployeeServiceImpl implements EmployeeService
         }
         else if (active)
         {
-            employees = employeeDao.getActiveUsers(100);
+            employees = employeeDao.getActiveEmployees(100);
         }
         else
         {
-            employees = employeeDao.getInactiveUsers(100);
+            employees = employeeDao.getInactiveEmployees(100);
         }
 
         return employees

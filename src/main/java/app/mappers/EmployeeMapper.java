@@ -8,7 +8,7 @@ public class EmployeeMapper
     public static EmployeeDTO toDTO(Employee employee)
     {
         return new EmployeeDTO(
-                employee.getUserId(),
+                employee.getEmployeeId(),
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getPhone(),

@@ -27,7 +27,7 @@ class MaintenanceLogRoutesTest
     private static Javalin app;
     private static final int TEST_PORT = 7073;
 
-    private Map<String, Employee> users;
+    private Map<String, Employee> employees;
     private Map<String, Asset> assets;
     private Map<String, MaintenanceLog> logs;
 
@@ -45,9 +45,9 @@ class MaintenanceLogRoutesTest
     @BeforeEach
     void setUp()
     {
-        users = TestPopulator.populateUsers(emf);
+        employees = TestPopulator.populateEmployees(emf);
         assets = TestPopulator.populateAssets(emf);
-        logs = TestPopulator.populateMaintenanceLogs(emf, users, assets);
+        logs = TestPopulator.populateMaintenanceLogs(emf, employees, assets);
     }
 
     @AfterAll
@@ -116,16 +116,16 @@ class MaintenanceLogRoutesTest
     }
 
     @Test
-    void testGetByUser()
+    void testGetByEmployee()
     {
-        Employee employee1 = users.get("user1");
+        Employee employee1 = employees.get("employee1");
 
         given()
                 .when()
-                .get("/logs/user/" + employee1.getUserId())
+                .get("/logs/employee/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(200)
-                .body("performedByUserId", everyItem(equalTo(employee1.getUserId())))
+                .body("performedByEmployeeId", everyItem(equalTo(employee1.getEmployeeId())))
                 .body("size()", is(4));
     }
 }

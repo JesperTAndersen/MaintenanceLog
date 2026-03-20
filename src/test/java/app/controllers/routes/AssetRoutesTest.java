@@ -27,7 +27,7 @@ class AssetRoutesTest
     private static Javalin app;
     private static final int TEST_PORT = 7071;
 
-    private Map<String, Employee> users;
+    private Map<String, Employee> employees;
     private Map<String, Asset> assets;
     private Map<String, MaintenanceLog> logs;
 
@@ -45,9 +45,9 @@ class AssetRoutesTest
     @BeforeEach
     void setUp()
     {
-        users = TestPopulator.populateUsers(emf);
+        employees = TestPopulator.populateEmployees(emf);
         assets = TestPopulator.populateAssets(emf);
-        logs = TestPopulator.populateMaintenanceLogs(emf, users, assets);
+        logs = TestPopulator.populateMaintenanceLogs(emf, employees, assets);
     }
 
     @AfterAll
@@ -185,7 +185,7 @@ class AssetRoutesTest
     void testPostLogForAsset()
     {
         Asset asset1 = assets.get("asset1");
-        Employee employee1 = users.get("user1");
+        Employee employee1 = employees.get("employee1");
 
         given()
                 .contentType("application/json")
@@ -195,16 +195,16 @@ class AssetRoutesTest
                             "status": "DONE",
                             "taskType": "MAINTENANCE",
                             "comment": "Test log",
-                            "performedByUserId": %d
+                            "performedByEmployeeId": %d
                         }
-                        """, employee1.getUserId()))
+                        """, employee1.getEmployeeId()))
                 .when()
                 .post("/assets/" + asset1.getAssetId() + "/logs")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("assetId", equalTo(asset1.getAssetId()))
-                .body("performedByUserId", equalTo(employee1.getUserId()))
+                .body("performedByEmployeeId", equalTo(employee1.getEmployeeId()))
                 .body("status", equalTo("DONE"))
                 .body("taskType", equalTo("MAINTENANCE"));
     }

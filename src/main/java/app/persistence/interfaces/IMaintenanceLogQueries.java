@@ -16,7 +16,7 @@ public interface IMaintenanceLogQueries
 
     List<MaintenanceLog> getByStatusAndAsset(LogStatus status, Integer assetId);
 
-    List<MaintenanceLog> getByPerformedUser(Integer userId);
+    List<MaintenanceLog> getByPerformedEmployee(Integer employeeId);
 
     List<MaintenanceLog> getLogsOnActiveAssets(int limit);
 }

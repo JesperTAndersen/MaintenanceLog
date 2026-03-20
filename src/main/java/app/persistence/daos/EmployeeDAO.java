@@ -24,7 +24,7 @@ public class EmployeeDAO implements IEmployeeDAO
     {
         if (employee == null)
         {
-            throw new IllegalArgumentException("User cant be null");
+            throw new IllegalArgumentException("Employee cant be null");
         }
 
         try (EntityManager em = emf.createEntityManager())
@@ -43,7 +43,7 @@ public class EmployeeDAO implements IEmployeeDAO
                 {
                     em.getTransaction().rollback();
                 }
-                throw new DatabaseException("Create User failed", DatabaseErrorType.TRANSACTION_FAILURE, e);
+                throw new DatabaseException("Create employee failed", DatabaseErrorType.TRANSACTION_FAILURE, e);
             }
             catch (RuntimeException e)
             {
@@ -51,7 +51,7 @@ public class EmployeeDAO implements IEmployeeDAO
                 {
                     em.getTransaction().rollback();
                 }
-                throw new DatabaseException("Create User failed", DatabaseErrorType.UNKNOWN, e);
+                throw new DatabaseException("Create employee failed", DatabaseErrorType.UNKNOWN, e);
             }
         }
     }
@@ -61,7 +61,7 @@ public class EmployeeDAO implements IEmployeeDAO
     {
         if (id == null)
         {
-            throw new IllegalArgumentException("User id is required");
+            throw new IllegalArgumentException("Employee id is required");
         }
 
         try (EntityManager em = emf.createEntityManager())
@@ -71,16 +71,16 @@ public class EmployeeDAO implements IEmployeeDAO
             {
                 return employee;
             }
-            throw new DatabaseException("User not found", DatabaseErrorType.NOT_FOUND);
+            throw new DatabaseException("Employee not found", DatabaseErrorType.NOT_FOUND);
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get user failed", DatabaseErrorType.QUERY_FAILURE, e);
+            throw new DatabaseException("Get employee failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 
     @Override
-    public Employee getVerifiedUser(String email, String password) throws ValidationException
+    public Employee getVerifiedEmployee(String email, String password) throws ValidationException
     {
         try (EntityManager em = emf.createEntityManager())
         {
@@ -114,16 +114,16 @@ public class EmployeeDAO implements IEmployeeDAO
             }
             catch (PersistenceException e)
             {
-                throw new DatabaseException("Get users failed", DatabaseErrorType.QUERY_FAILURE, e);
+                throw new DatabaseException("Get employees failed", DatabaseErrorType.QUERY_FAILURE, e);
             }
         }
 
         @Override
         public Employee update (Employee u)
         {
-            if (u == null || u.getUserId() == null)
+            if (u == null || u.getEmployeeId() == null)
             {
-                throw new IllegalArgumentException("User and user id are required");
+                throw new IllegalArgumentException("Employee and employee id are required");
             }
 
             try (EntityManager em = emf.createEntityManager())
@@ -132,14 +132,14 @@ public class EmployeeDAO implements IEmployeeDAO
 
                 try
                 {
-                    Employee managed = em.find(Employee.class, u.getUserId());
+                    Employee managed = em.find(Employee.class, u.getEmployeeId());
                     if (managed == null)
                     {
                         if (em.getTransaction().isActive())
                         {
                             em.getTransaction().rollback();
                         }
-                        throw new DatabaseException("User not found or invalid", DatabaseErrorType.NOT_FOUND);
+                        throw new DatabaseException("Employee not found or invalid", DatabaseErrorType.NOT_FOUND);
                     }
 
                     managed = em.merge(u);
@@ -156,7 +156,7 @@ public class EmployeeDAO implements IEmployeeDAO
                     {
                         em.getTransaction().rollback();
                     }
-                    throw new DatabaseException("Update User failed", DatabaseErrorType.TRANSACTION_FAILURE, e);
+                    throw new DatabaseException("Update employee failed", DatabaseErrorType.TRANSACTION_FAILURE, e);
                 }
                 catch (RuntimeException e)
                 {
@@ -164,7 +164,7 @@ public class EmployeeDAO implements IEmployeeDAO
                     {
                         em.getTransaction().rollback();
                     }
-                    throw new DatabaseException("Update User failed", DatabaseErrorType.UNKNOWN, e);
+                    throw new DatabaseException("Update employee failed", DatabaseErrorType.UNKNOWN, e);
                 }
             }
         }
@@ -193,12 +193,12 @@ public class EmployeeDAO implements IEmployeeDAO
             }
             catch (PersistenceException e)
             {
-                throw new DatabaseException("Get user by email failed", DatabaseErrorType.QUERY_FAILURE, e);
+                throw new DatabaseException("Get employee by email failed", DatabaseErrorType.QUERY_FAILURE, e);
             }
         }
 
         @Override
-        public List<Employee> getInactiveUsers (int limit)
+        public List<Employee> getInactiveEmployees (int limit)
         {
             if (limit <= 0)
             {
@@ -213,12 +213,12 @@ public class EmployeeDAO implements IEmployeeDAO
             }
             catch (PersistenceException e)
             {
-                throw new DatabaseException("Get active users failed", DatabaseErrorType.QUERY_FAILURE, e);
+                throw new DatabaseException("Get inactive employees failed", DatabaseErrorType.QUERY_FAILURE, e);
             }
         }
 
         @Override
-        public List<Employee> getActiveUsers (int limit)
+        public List<Employee> getActiveEmployees (int limit)
         {
             if (limit <= 0)
             {
@@ -233,7 +233,7 @@ public class EmployeeDAO implements IEmployeeDAO
             }
             catch (PersistenceException e)
             {
-                throw new DatabaseException("Get active users failed", DatabaseErrorType.QUERY_FAILURE, e);
+                throw new DatabaseException("Get active employees failed", DatabaseErrorType.QUERY_FAILURE, e);
             }
         }
     }
