@@ -23,7 +23,7 @@ public class EmployeeRoutes
     {
         return () ->
         {
-            path("users", () ->
+            path("employees", () ->
             {
                 get(employeeController::getAll, EmployeeRole.AUTHENTICATED);
                 get("/{id}", employeeController::get, EmployeeRole.AUTHENTICATED);
