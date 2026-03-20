@@ -23,7 +23,7 @@ public class MaintenanceLogRoutes
             {
                 get(maintenanceLogController::getAll, EmployeeRole.AUTHENTICATED);
                 get("/{id}", maintenanceLogController::get, EmployeeRole.AUTHENTICATED);
-                get("/user/{userId}", maintenanceLogController::getByUser, EmployeeRole.MANAGER);
+                get("/employee/{employeeId}", maintenanceLogController::getByEmployee, EmployeeRole.MANAGER);
             });
         };
     }

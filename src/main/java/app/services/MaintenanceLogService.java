@@ -23,7 +23,7 @@ public interface MaintenanceLogService
 
     List<MaintenanceLogDTO> getByStatusAndAsset(LogStatus status, Integer assetId);
 
-    List<MaintenanceLogDTO> getByPerformedUser(Integer userId);
+    List<MaintenanceLogDTO> getByPerformedEmployee(Integer userId);
 
     List<MaintenanceLogDTO> getLogsOnActiveAssets(int limit);
 }

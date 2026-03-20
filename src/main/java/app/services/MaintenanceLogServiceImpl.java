@@ -91,7 +91,7 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     }
 
     @Override
-    public List<MaintenanceLogDTO> getByPerformedUser(Integer userId)
+    public List<MaintenanceLogDTO> getByPerformedEmployee(Integer userId)
     {
         return logDao.getByPerformedUser(userId).stream()
                 .map(MaintenanceLogMapper::toDTO)

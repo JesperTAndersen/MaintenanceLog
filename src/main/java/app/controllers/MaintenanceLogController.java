@@ -59,10 +59,10 @@ public class MaintenanceLogController
         ctx.status(200).json(logService.get(id));
     }
 
-    public void getByUser(Context ctx)
+    public void getByEmployee(Context ctx)
     {
         int userId = Integer.parseInt(ctx.pathParam("userId"));
-        ctx.status(200).json(logService.getByPerformedUser(userId));
+        ctx.status(200).json(logService.getByPerformedEmployee(userId));
     }
 
     public void getLogsByAsset(Context ctx)
