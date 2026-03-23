@@ -21,10 +21,7 @@ public class SecurityRoutes
         {
             post("/register", securityController::register, EmployeeRole.MANAGER);
             post("/login", securityController::login);
-            get("/protected", ctx -> ctx.json("Hello fom protected").status(200), EmployeeRole.ADMIN); //add as many roles as wanted seperated by ,
-
+            get("/protected", ctx -> ctx.json("Hello fom protected").status(200), EmployeeRole.ADMIN);
         });
-
     }
-
 }
