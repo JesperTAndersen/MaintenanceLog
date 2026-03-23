@@ -1,18 +1,14 @@
-package app.persistence.daos;
+package app.persistence;
 
 import app.entities.Asset;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IAssetDAO;
-import app.persistence.interfaces.IDAO;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 
 import java.util.List;
 
-public class AssetDAO implements IDAO<Asset>, IAssetDAO
+public class AssetDAO implements IAssetDAO
 {
     private final EntityManagerFactory emf;
 
@@ -57,6 +53,7 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
         }
     }
 
+    // In AssetDAO
     @Override
     public Asset get(Integer id)
     {
@@ -64,14 +61,23 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
         {
             throw new IllegalArgumentException("Asset id is required");
         }
+
         try (EntityManager em = emf.createEntityManager())
         {
-            Asset asset = em.find(Asset.class, id);
-            if (asset != null)
+            TypedQuery<Asset> query = em.createQuery(
+                    "SELECT a FROM Asset a LEFT JOIN FETCH a.logs WHERE a.assetId = :id",
+                    Asset.class
+            );
+            query.setParameter("id", id);
+
+            try
             {
-                return asset;
+                return query.getSingleResult();
             }
-            throw new DatabaseException("Asset not found", DatabaseErrorType.NOT_FOUND);
+            catch (NoResultException e)
+            {
+                throw new DatabaseException("Asset not found", DatabaseErrorType.NOT_FOUND);
+            }
         }
         catch (PersistenceException e)
         {
@@ -93,7 +99,6 @@ public class AssetDAO implements IDAO<Asset>, IAssetDAO
         }
     }
 
-    @Override
     public Asset update(Asset asset)
     {
         throw new UnsupportedOperationException("Assets are immutable");

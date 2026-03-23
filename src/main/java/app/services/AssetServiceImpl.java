@@ -2,78 +2,72 @@ package app.services;
 
 import app.dtos.AssetDTO;
 import app.entities.Asset;
+import app.mappers.AssetMapper;
 import app.persistence.interfaces.IAssetDAO;
-import app.persistence.interfaces.IDAO;
+import app.services.interfaces.AssetService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class AssetServiceImpl implements AssetService
 {
-    private final IDAO<Asset> assetDao;
-    private final IAssetDAO assetDaoExpanded;
+    private final IAssetDAO assetDao;
 
-    public AssetServiceImpl(IDAO<Asset> assetDao, IAssetDAO assetDaoExpanded)
+    public AssetServiceImpl(IAssetDAO assetDao)
     {
         this.assetDao = assetDao;
-        this.assetDaoExpanded = assetDaoExpanded;
     }
 
     @Override
     public AssetDTO create(AssetDTO dto)
     {
-        Asset asset = Asset.builder()
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .active(dto.isActive()).
-                build();
-
+        Asset asset = AssetMapper.toEntity(dto);
         Asset created = assetDao.create(asset);
-        return new AssetDTO(created);
+        return AssetMapper.toDTO(created);
     }
 
     @Override
-    public AssetDTO get(Integer id)
-    {
+    public AssetDTO get(Integer id) {
         Asset asset = assetDao.get(id);
 
         LocalDateTime lastLogDate = null;
-        if (!asset.getLogs().isEmpty())
-        {
+        if (!asset.getLogs().isEmpty()) {
             lastLogDate = asset.getLogs().get(0).getPerformedDate();
         }
 
-        AssetDTO dto = new AssetDTO(asset);
-        dto.setLastLogDate(lastLogDate);
-        return dto;
+        return AssetMapper.toDTO(asset, lastLogDate);
     }
 
     @Override
-    public List<AssetDTO> getAll(Boolean active) {
+    public List<AssetDTO> getAll(Boolean active)
+    {
         List<Asset> assets;
 
-        if (active == null) {
+        if (active == null)
+        {
             assets = assetDao.getAll();
-        } else {
-            assets = assetDaoExpanded.getAllByStatus(active);
+        }
+        else
+        {
+            assets = assetDao.getAllByStatus(active);
         }
 
         return assets.stream()
-                .map(AssetDTO::new)
+                .map(AssetMapper::toDTO)
                 .toList();
     }
 
     @Override
     public AssetDTO activate(Integer id)
     {
-        Asset activated = assetDaoExpanded.setActive(id, true);
-        return new AssetDTO(activated);
+        Asset activated = assetDao.setActive(id, true);
+        return AssetMapper.toDTO(activated);
     }
 
     @Override
     public AssetDTO deactivate(Integer id)
     {
-        Asset deactivated = assetDaoExpanded.setActive(id, false);
-        return new AssetDTO(deactivated);
+        Asset deactivated = assetDao.setActive(id, false);
+        return AssetMapper.toDTO(deactivated);
     }
 }

@@ -1,4 +1,4 @@
-package app.services;
+package app.services.interfaces;
 
 import app.dtos.CreateLogRequest;
 import app.dtos.MaintenanceLogDTO;
@@ -23,7 +23,7 @@ public interface MaintenanceLogService
 
     List<MaintenanceLogDTO> getByStatusAndAsset(LogStatus status, Integer assetId);
 
-    List<MaintenanceLogDTO> getByPerformedUser(Integer userId);
+    List<MaintenanceLogDTO> getByPerformedEmployee(Integer employeeId);
 
     List<MaintenanceLogDTO> getLogsOnActiveAssets(int limit);
 }

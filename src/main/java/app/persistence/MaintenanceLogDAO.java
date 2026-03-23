@@ -1,11 +1,10 @@
-package app.persistence.daos;
+package app.persistence;
 
 import app.entities.MaintenanceLog;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
-import app.persistence.interfaces.IDAO;
 import app.persistence.interfaces.IMaintenanceLogDAO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -14,7 +13,7 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogDAO
+public class MaintenanceLogDAO implements IMaintenanceLogDAO
 {
     private final EntityManagerFactory emf;
 
@@ -97,7 +96,6 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
         }
     }
 
-    @Override
     public MaintenanceLog update(MaintenanceLog maintenanceLog)
     {
         throw new UnsupportedOperationException("Maintenance logs are immutable");
@@ -194,22 +192,22 @@ public class MaintenanceLogDAO implements IDAO<MaintenanceLog>, IMaintenanceLogD
     }
 
     @Override
-    public List<MaintenanceLog> getByPerformedUser(Integer userId)
+    public List<MaintenanceLog> getByPerformedEmployee(Integer employeeId)
     {
-        if (userId == null)
+        if (employeeId == null)
         {
-            throw new IllegalArgumentException("User id is required");
+            throw new IllegalArgumentException("Employee id is required");
         }
 
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m WHERE m.performedBy.userId = :userId", MaintenanceLog.class);
-            query.setParameter("userId", userId);
+            TypedQuery<MaintenanceLog> query = em.createQuery("SELECT m FROM MaintenanceLog m WHERE m.performedBy.employeeId = :employeeId", MaintenanceLog.class);
+            query.setParameter("employeeId", employeeId);
             return query.getResultList();
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Get logs by performed user failed", DatabaseErrorType.QUERY_FAILURE, e);
+            throw new DatabaseException("Get logs by performed employee failed", DatabaseErrorType.QUERY_FAILURE, e);
         }
     }
 

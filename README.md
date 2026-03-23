@@ -9,7 +9,7 @@ The application is developed incrementally as a school project on the third seme
 ### Core concepts
 - Assets that require maintenance
 - Maintenance logs representing performed work
-- Users with different roles (e.g. technician, manager, admin)
+- Employees with different roles (e.g. technician, manager, admin)
 - Historical data that should not be modified or deleted
 
 ### Initial scope

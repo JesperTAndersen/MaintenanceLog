@@ -9,34 +9,17 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class MaintenanceLogDTO
+public record MaintenanceLogDTO
+        (
+                Integer id,
+                LocalDateTime performedDate,
+                LogStatus status,
+                TaskType taskType,
+                String comment,
+                Integer assetId,
+                String assetName,
+                Integer performedByEmployeeId,
+                String performedByName
+        )
 {
-    private Integer id;
-    private LocalDateTime performedDate;
-    private LogStatus status;
-    private TaskType taskType;
-    private String comment;
-
-    private Integer assetId;
-    private String assetName;
-
-    private Integer performedByUserId;
-    private String performedByName;
-
-    public MaintenanceLogDTO(MaintenanceLog log) {
-        this.id = log.getLogId();
-        this.performedDate = log.getPerformedDate();
-        this.status = log.getStatus();
-        this.taskType = log.getTaskType();
-        this.comment = log.getComment();
-
-        this.assetId = log.getAsset().getAssetId();
-        this.assetName = log.getAsset().getName();
-
-        this.performedByUserId = log.getPerformedBy().getUserId();
-        this.performedByName = log.getPerformedBy().getFirstName() + " " + log.getPerformedBy().getLastName();
-    }
 }

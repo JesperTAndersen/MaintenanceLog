@@ -1,8 +1,8 @@
 package app.config.hibernate;
 
 import app.entities.Asset;
+import app.entities.Employee;
 import app.entities.MaintenanceLog;
-import app.entities.User;
 import org.hibernate.cfg.Configuration;
 
 final class EntityRegistry
@@ -15,7 +15,7 @@ final class EntityRegistry
     static void registerEntities(Configuration configuration)
     {
         configuration.addAnnotatedClass(Asset.class);
-        configuration.addAnnotatedClass(User.class);
+        configuration.addAnnotatedClass(Employee.class);
         configuration.addAnnotatedClass(MaintenanceLog.class);
         // TODO: Add more entities here...
     }

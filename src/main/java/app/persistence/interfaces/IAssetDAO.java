@@ -2,11 +2,6 @@ package app.persistence.interfaces;
 
 import app.entities.Asset;
 
-import java.util.List;
-
-public interface IAssetDAO
+public interface IAssetDAO extends ICreateDAO<Asset>, IReadDAO<Asset>, IAssetQueries
 {
-    Asset setActive(Integer id, boolean active);
-
-    List<Asset> getAllByStatus(boolean active);
 }
