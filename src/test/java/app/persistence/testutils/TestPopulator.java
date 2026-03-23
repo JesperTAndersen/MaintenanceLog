@@ -6,6 +6,7 @@ import app.entities.enums.TaskType;
 import app.entities.enums.EmployeeRole;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
+import app.security.SecurityServiceImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -21,10 +22,48 @@ public class TestPopulator
         try (EntityManager em = emf.createEntityManager())
         {
             em.getTransaction().begin();
-            Employee employee1 = new Employee("John", "Doe", "12345678", "Johndoe@mail.dk", EmployeeRole.TECHNICIAN, true);
-            Employee employee2 = new Employee("Jane", "Doe", "23456789", "Janedoe@mail.dk", EmployeeRole.MANAGER, true);
-            Employee employee3 = new Employee("Jeff", "Doe", "34567890", "Jeffdoe@mail.dk", EmployeeRole.ADMIN, true);
-            Employee employee4 = new Employee("Clark", "Kent", "00000000", "Clarkkent@mail.dk", EmployeeRole.TECHNICIAN, false);
+
+            String hashedPassword = SecurityServiceImpl.hashPassword("password123");
+
+            Employee employee1 = Employee.builder()
+                    .firstName("John")
+                    .lastName("Doe")
+                    .phone("12345678")
+                    .email("Johndoe@mail.dk")
+                    .role(EmployeeRole.AUTHENTICATED)
+                    .password(hashedPassword)
+                    .active(true)
+                    .build();
+
+            Employee employee2 = Employee.builder()
+                    .firstName("Jane")
+                    .lastName("Doe")
+                    .phone("23456789")
+                    .email("Janedoe@mail.dk")
+                    .role(EmployeeRole.MANAGER)
+                    .password(hashedPassword)
+                    .active(true)
+                    .build();
+
+            Employee employee3 = Employee.builder()
+                    .firstName("Jeff")
+                    .lastName("Doe")
+                    .phone("34567890")
+                    .email("Jeffdoe@mail.dk")
+                    .role(EmployeeRole.ADMIN)
+                    .password(hashedPassword)
+                    .active(true)
+                    .build();
+
+            Employee employee4 = Employee.builder()
+                    .firstName("Clark")
+                    .lastName("Kent")
+                    .phone("00000000")
+                    .email("Clarkkent@mail.dk")
+                    .role(EmployeeRole.TECHNICIAN)
+                    .password(hashedPassword)
+                    .active(false)
+                    .build();
 
             try
             {

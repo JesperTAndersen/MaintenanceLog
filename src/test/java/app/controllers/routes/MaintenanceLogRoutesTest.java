@@ -30,6 +30,9 @@ class MaintenanceLogRoutesTest
     private Map<String, Employee> employees;
     private Map<String, Asset> assets;
     private Map<String, MaintenanceLog> logs;
+    private static String authenticatedToken;
+    private static String managerToken;
+    private static String adminToken;
 
     @BeforeAll
     public static void init()
@@ -48,6 +51,28 @@ class MaintenanceLogRoutesTest
         employees = TestPopulator.populateEmployees(emf);
         assets = TestPopulator.populateAssets(emf);
         logs = TestPopulator.populateMaintenanceLogs(emf, employees, assets);
+
+        authenticatedToken = loginAsEmployee("Johndoe@mail.dk", "password123");
+        managerToken = loginAsEmployee("Janedoe@mail.dk", "password123");
+        adminToken = loginAsEmployee("Jeffdoe@mail.dk", "password123");
+    }
+
+    private String loginAsEmployee(String email, String password)
+    {
+        return given()
+                .contentType("application/json")
+                .body(String.format("""
+                        {
+                            "email": "%s",
+                            "password": "%s"
+                        }
+                        """, email, password))
+                .when()
+                .post("/auth/login")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("token");
     }
 
     @AfterAll
@@ -61,6 +86,7 @@ class MaintenanceLogRoutesTest
     void testGetAllLogs()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/logs")
                 .then()
@@ -72,6 +98,7 @@ class MaintenanceLogRoutesTest
     void testGetLogsByStatus()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/logs?status=DONE")
                 .then()
@@ -84,6 +111,7 @@ class MaintenanceLogRoutesTest
     void testGetLogsByStatusInvalid()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/logs?status=not-a-status")
                 .then()
@@ -96,6 +124,7 @@ class MaintenanceLogRoutesTest
         MaintenanceLog log1 = logs.get("log1");
 
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/logs/" + log1.getLogId())
                 .then()
@@ -109,6 +138,7 @@ class MaintenanceLogRoutesTest
     void testGetByIdFails()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/logs/999999")
                 .then()
@@ -121,11 +151,59 @@ class MaintenanceLogRoutesTest
         Employee employee1 = employees.get("employee1");
 
         given()
+                .header("Authorization", "Bearer " + managerToken)
                 .when()
                 .get("/logs/employee/" + employee1.getEmployeeId())
                 .then()
                 .statusCode(200)
                 .body("performedByEmployeeId", everyItem(equalTo(employee1.getEmployeeId())))
                 .body("size()", is(4));
+    }
+
+    @Test
+    void testGetLogsNoAccessWithoutToken()
+    {
+        given()
+                .when()
+                .get("/logs")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testGetLogByIdNoAccessWithoutToken()
+    {
+        MaintenanceLog log1 = logs.get("log1");
+
+        given()
+                .when()
+                .get("/logs/" + log1.getLogId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testGetLogsByEmployeeNoAccessWithoutToken()
+    {
+        Employee employee1 = employees.get("employee1");
+
+        given()
+                .when()
+                .get("/logs/employee/" + employee1.getEmployeeId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testGetLogsByEmployeeForbiddenForAuthenticated()
+    {
+        Employee employee1 = employees.get("employee1");
+
+        given()
+                .header("Authorization", "Bearer " + authenticatedToken)
+                .when()
+                .get("/logs/employee/" + employee1.getEmployeeId())
+                .then()
+                .statusCode(403);
     }
 }

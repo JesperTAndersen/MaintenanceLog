@@ -26,10 +26,12 @@ class AssetRoutesTest
     private static DependencyContainer container;
     private static Javalin app;
     private static final int TEST_PORT = 7071;
-
     private Map<String, Employee> employees;
     private Map<String, Asset> assets;
     private Map<String, MaintenanceLog> logs;
+    private static String authenticatedToken;
+    private static String managerToken;
+    private static String adminToken;
 
     @BeforeAll
     public static void init()
@@ -48,6 +50,28 @@ class AssetRoutesTest
         employees = TestPopulator.populateEmployees(emf);
         assets = TestPopulator.populateAssets(emf);
         logs = TestPopulator.populateMaintenanceLogs(emf, employees, assets);
+
+        authenticatedToken = loginAsEmployee("Johndoe@mail.dk", "password123");
+        managerToken = loginAsEmployee("Janedoe@mail.dk", "password123");
+        adminToken = loginAsEmployee("Jeffdoe@mail.dk", "password123");
+    }
+
+    private String loginAsEmployee(String email, String password)
+    {
+        return given()
+                .contentType("application/json")
+                .body(String.format("""
+                        {
+                            "email": "%s",
+                            "password": "%s"
+                        }
+                        """, email, password))
+                .when()
+                .post("/auth/login")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("token");
     }
 
     @AfterAll
@@ -61,6 +85,7 @@ class AssetRoutesTest
     void testGetAllActiveAssets()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets?active=true")
                 .then()
@@ -76,6 +101,7 @@ class AssetRoutesTest
     void testGetAllInactiveAssets()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets?active=false")
                 .then()
@@ -89,6 +115,7 @@ class AssetRoutesTest
         Asset asset1 = assets.get("asset1");
 
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets/" + asset1.getAssetId())
                 .then()
@@ -102,6 +129,7 @@ class AssetRoutesTest
     void testGetByIdFails()
     {
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets/999999")
                 .then()
@@ -112,6 +140,7 @@ class AssetRoutesTest
     void testPostNewAsset()
     {
         given()
+                .header("Authorization", "Bearer " + managerToken)
                 .contentType("application/json")
                 .body("""
                         {
@@ -136,12 +165,14 @@ class AssetRoutesTest
         Asset inactiveAsset = assets.get("asset4");
 
         given()
+                .header("Authorization", "Bearer " + managerToken)
                 .when()
                 .patch("/assets/" + inactiveAsset.getAssetId())
                 .then()
                 .statusCode(204);
 
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets/" + inactiveAsset.getAssetId())
                 .then()
@@ -155,12 +186,14 @@ class AssetRoutesTest
         Asset activeAsset = assets.get("asset1");
 
         given()
+                .header("Authorization", "Bearer " + adminToken)
                 .when()
                 .delete("/assets/" + activeAsset.getAssetId())
                 .then()
                 .statusCode(204);
 
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets/" + activeAsset.getAssetId())
                 .then()
@@ -174,6 +207,7 @@ class AssetRoutesTest
         Asset asset1 = assets.get("asset1");
 
         given()
+                .header("Authorization", "Bearer " + authenticatedToken)
                 .when()
                 .get("/assets/" + asset1.getAssetId() + "/logs")
                 .then()
@@ -188,6 +222,7 @@ class AssetRoutesTest
         Employee employee1 = employees.get("employee1");
 
         given()
+                .header("Authorization", "Bearer " + managerToken)
                 .contentType("application/json")
                 .body(String.format("""
                         {
@@ -207,6 +242,174 @@ class AssetRoutesTest
                 .body("performedByEmployeeId", equalTo(employee1.getEmployeeId()))
                 .body("status", equalTo("DONE"))
                 .body("taskType", equalTo("MAINTENANCE"));
+    }
+
+    @Test
+    void testGetAssetsNoAccessWithoutToken()
+    {
+        given()
+                .when()
+                .get("/assets?active=true")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testGetAssetByIdNoAccessWithoutToken()
+    {
+        Asset asset1 = assets.get("asset1");
+
+        given()
+                .when()
+                .get("/assets/" + asset1.getAssetId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testPostAssetNoAccessWithoutToken()
+    {
+        given()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "name": "Machine Z",
+                            "description": "No token",
+                            "active": true
+                        }
+                        """)
+                .when()
+                .post("/assets")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testPatchAssetNoAccessWithoutToken()
+    {
+        Asset inactiveAsset = assets.get("asset4");
+
+        given()
+                .when()
+                .patch("/assets/" + inactiveAsset.getAssetId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testDeleteAssetNoAccessWithoutToken()
+    {
+        Asset activeAsset = assets.get("asset1");
+
+        given()
+                .when()
+                .delete("/assets/" + activeAsset.getAssetId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testGetAssetLogsNoAccessWithoutToken()
+    {
+        Asset asset1 = assets.get("asset1");
+
+        given()
+                .when()
+                .get("/assets/" + asset1.getAssetId() + "/logs")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testPostAssetLogNoAccessWithoutToken()
+    {
+        Asset asset1 = assets.get("asset1");
+        Employee employee1 = employees.get("employee1");
+
+        given()
+                .contentType("application/json")
+                .body(String.format("""
+                        {
+                            "performedDate": "2024-07-01T10:00:00",
+                            "status": "DONE",
+                            "taskType": "MAINTENANCE",
+                            "comment": "No token",
+                            "performedByEmployeeId": %d
+                        }
+                        """, employee1.getEmployeeId()))
+                .when()
+                .post("/assets/" + asset1.getAssetId() + "/logs")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testPostAssetForbiddenForAuthenticated()
+    {
+        given()
+                .header("Authorization", "Bearer " + authenticatedToken)
+                .contentType("application/json")
+                .body("""
+                        {
+                            "name": "Machine Y",
+                            "description": "Should fail",
+                            "active": true
+                        }
+                        """)
+                .when()
+                .post("/assets")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testPatchAssetForbiddenForAuthenticated()
+    {
+        Asset inactiveAsset = assets.get("asset4");
+
+        given()
+                .header("Authorization", "Bearer " + authenticatedToken)
+                .when()
+                .patch("/assets/" + inactiveAsset.getAssetId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testDeleteAssetForbiddenForManager()
+    {
+        Asset activeAsset = assets.get("asset1");
+
+        given()
+                .header("Authorization", "Bearer " + managerToken)
+                .when()
+                .delete("/assets/" + activeAsset.getAssetId())
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    void testPostLogForAssetForbiddenForAuthenticated()
+    {
+        Asset asset1 = assets.get("asset1");
+        Employee employee1 = employees.get("employee1");
+
+        given()
+                .header("Authorization", "Bearer " + authenticatedToken)
+                .contentType("application/json")
+                .body(String.format("""
+                        {
+                            "performedDate": "2024-07-01T10:00:00",
+                            "status": "DONE",
+                            "taskType": "MAINTENANCE",
+                            "comment": "Should fail",
+                            "performedByEmployeeId": %d
+                        }
+                        """, employee1.getEmployeeId()))
+                .when()
+                .post("/assets/" + asset1.getAssetId() + "/logs")
+                .then()
+                .statusCode(403);
     }
 }
 
