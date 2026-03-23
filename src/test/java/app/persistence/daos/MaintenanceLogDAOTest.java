@@ -1,18 +1,19 @@
 package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
+import app.entities.Employee;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
+import app.persistence.AssetDAO;
+import app.persistence.MaintenanceLogDAO;
 import app.persistence.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -28,15 +29,15 @@ class MaintenanceLogDAOTest
 
     private MaintenanceLogDAO logDAO;
     private Map<String, MaintenanceLog> seededLogs;
-    private Map<String, User> seededUsers;
+    private Map<String, Employee> seededEmployees;
     private Map<String, Asset> seededAssets;
 
     @BeforeEach
     void setUp()
     {
-        seededUsers = TestPopulator.populateUsers(emf);
+        seededEmployees = TestPopulator.populateEmployees(emf);
         seededAssets = TestPopulator.populateAssets(emf);
-        seededLogs = TestPopulator.populateMaintenanceLogs(emf, seededUsers, seededAssets);
+        seededLogs = TestPopulator.populateMaintenanceLogs(emf, seededEmployees, seededAssets);
         logDAO = new MaintenanceLogDAO(emf);
     }
 
@@ -50,7 +51,7 @@ class MaintenanceLogDAOTest
     @DisplayName("Create - should persist log and generate ID")
     void create()
     {
-        User user = seededUsers.get("user1");
+        Employee employee = seededEmployees.get("employee1");
         Asset asset = seededAssets.get("asset1");
         MaintenanceLog log = new MaintenanceLog(
                 LocalDateTime.now(),
@@ -58,7 +59,7 @@ class MaintenanceLogDAOTest
                 TaskType.MAINTENANCE,
                 "Test maintenance log",
                 asset,
-                user
+                employee
         );
 
         MaintenanceLog created = logDAO.create(log);
@@ -69,7 +70,7 @@ class MaintenanceLogDAOTest
         assertThat(fetched.getStatus(), is(LogStatus.DONE));
         assertThat(fetched.getTaskType(), is(TaskType.MAINTENANCE));
         assertThat(fetched.getAsset().getAssetId(), is(asset.getAssetId()));
-        assertThat(fetched.getPerformedBy().getUserId(), is(user.getUserId()));
+        assertThat(fetched.getPerformedBy().getEmployeeId(), is(employee.getEmployeeId()));
     }
 
     @Test
@@ -338,42 +339,42 @@ class MaintenanceLogDAOTest
     }
 
     @Test
-    @DisplayName("GetByPerformedUser - should retrieve all logs performed by specific user")
-    void getByPerformedUser()
+    @DisplayName("GetByPerformedEmployee - should retrieve all logs performed by specific employee")
+    void getByPerformedEmployee()
     {
-        User user1 = seededUsers.get("user1");
+        Employee employee1 = seededEmployees.get("employee1");
 
-        List<MaintenanceLog> logs = logDAO.getByPerformedUser(user1.getUserId());
+        List<MaintenanceLog> logs = logDAO.getByPerformedEmployee(employee1.getEmployeeId());
 
         assertThat(logs, notNullValue());
-        assertThat(logs.size(), is(4)); // user1 performed 4 logs
+        assertThat(logs.size(), is(4)); // employee1 performed 4 logs
 
-        // all logs are performed by user1
+        // all logs are performed by employee1
         for (MaintenanceLog log : logs) {
-            assertThat(log.getPerformedBy().getUserId(), is(user1.getUserId()));
+            assertThat(log.getPerformedBy().getEmployeeId(), is(employee1.getEmployeeId()));
         }
     }
 
     @Test
-    @DisplayName("GetByPerformedUser - should return empty list for user with no logs")
-    void getByPerformedUserNoLogs()
+    @DisplayName("GetByPerformedEmployee - should return empty list for employee with no logs")
+    void getByPerformedEmployeeNoLogs()
     {
-        User user3 = seededUsers.get("user3"); // Jeff has no logs
+        Employee employee3 = seededEmployees.get("employee3"); // Jeff has no logs
 
-        List<MaintenanceLog> logs = logDAO.getByPerformedUser(user3.getUserId());
+        List<MaintenanceLog> logs = logDAO.getByPerformedEmployee(employee3.getEmployeeId());
 
         assertThat(logs, notNullValue());
         assertThat(logs.isEmpty(), is(true));
     }
 
     @Test
-    @DisplayName("GetByPerformedUser - should throw IllegalArgumentException when userId is null")
-    void getByPerformedUserNullIdThrowsException()
+    @DisplayName("GetByPerformedEmployee - should throw IllegalArgumentException when employeeId is null")
+    void getByPerformedEmployeeNullIdThrowsException()
     {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> logDAO.getByPerformedUser(null));
+                () -> logDAO.getByPerformedEmployee(null));
 
-        assertThat(exception.getMessage(), containsString("User id is required"));
+        assertThat(exception.getMessage(), containsString("Employee id is required"));
     }
 
     @Test

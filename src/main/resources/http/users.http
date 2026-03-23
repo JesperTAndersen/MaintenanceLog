@@ -6,7 +6,7 @@ GET {{baseUrl}}
 ###
 
 ### POST request to example server
-POST {{baseUrl}}/users
+POST {{baseUrl}}/employees
 
  {
     "firstName": "John",
@@ -21,17 +21,17 @@ POST {{baseUrl}}/users
 
 
 ### GET request to example server
-GET {{baseUrl}}/users
+GET {{baseUrl}}/employees
 
 ###
 
 ### GET by ID
- GET {{baseUrl}}/users/51
+ GET {{baseUrl}}/employees/51
 
 ###
 
 ### PUT request to example server
-PUT {{baseUrl}}/users/51
+PUT {{baseUrl}}/employees/51
 
  {
     "firstName": "John-Updated",
@@ -45,7 +45,7 @@ PUT {{baseUrl}}/users/51
 ###
 
 ### DELETE request to example server
-DELETE {{baseUrl}}/users/9
+DELETE {{baseUrl}}/employees/9
 
 
 ###

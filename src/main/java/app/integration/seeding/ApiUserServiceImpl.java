@@ -1,45 +1,45 @@
 package app.integration.seeding;
 
-import app.entities.enums.UserRole;
-import app.entities.User;
+import app.entities.Employee;
+import app.entities.enums.EmployeeRole;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
-import app.persistence.interfaces.ICrudDAO;
+import app.persistence.EmployeeDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.utils.CredentialsHandler.hashPassword;
+import static app.services.SecurityServiceImpl.hashPassword;
 
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
-    private final ICrudDAO<User> userDao;
+    private final EmployeeDAO employeeDao;
 
-    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<User> userDao)
+    public ApiUserServiceImpl(RandomUserClient client, EmployeeDAO employeeDao)
     {
         this.client = client;
-        this.userDao = userDao;
+        this.employeeDao = employeeDao;
     }
 
     @Override
-    public void seedUsers(int count, boolean multiThreaded, int threads)
+    public void seedEmployees(int count, boolean multiThreaded, int threads)
     {
-        if(!userDao.getAll().isEmpty()) //only seeds if database is empty
-        {
-            System.out.println("Database not empty - Skipping seeding");
-            return;
-        }
+//        if(!employeeDao.getAll().isEmpty()) //only seeds if database is empty
+//        {
+//            System.out.println("Database not empty - Skipping seeding");
+//            return;
+//        }
 
         List<RandomUserDTO> randomUsers = fetchUsers(count, multiThreaded, threads);
 
-        List<User> convertedUsers = userDtoToEntity(randomUsers);
+        List<Employee> convertedEmployees = userDtoToEntity(randomUsers);
 
-        assignRoles(convertedUsers);
+        assignRoles(convertedEmployees);
 
-        for (User u : convertedUsers)
+        for (Employee employee : convertedEmployees)
         {
-            userDao.create(u);
+            employeeDao.create(employee);
         }
     }
 
@@ -57,13 +57,13 @@ public class ApiUserServiceImpl implements ApiUserService
         return randomUsers;
     }
 
-    private List<User> userDtoToEntity(List<RandomUserDTO> dtos)
+    private List<Employee> userDtoToEntity(List<RandomUserDTO> dtos)
     {
-        List<User> convertedUsers = new ArrayList<>();
+        List<Employee> convertedEmployees = new ArrayList<>();
         for (RandomUserDTO u : dtos)
         {
-            convertedUsers.add(
-                    User.builder()
+            convertedEmployees.add(
+                    Employee.builder()
                             .firstName(u.getName().first())
                             .lastName(u.getName().last())
                             .phone(u.getPhone())
@@ -72,21 +72,21 @@ public class ApiUserServiceImpl implements ApiUserService
                             .active(true)
                             .build());
         }
-        return convertedUsers;
+        return convertedEmployees;
     }
 
-    private void assignRoles(List<User> users)
+    private void assignRoles(List<Employee> employees)
     {
         int counter = 1;
-        for (User u : users)
+        for (Employee employee : employees)
         {
             if (counter % 5 == 0)
             {
-                u.setRole(UserRole.MANAGER);
+                employee.setRole(EmployeeRole.MANAGER);
             }
             else
             {
-                u.setRole(UserRole.TECHNICIAN);
+                employee.setRole(EmployeeRole.TECHNICIAN);
             }
             counter++;
         }

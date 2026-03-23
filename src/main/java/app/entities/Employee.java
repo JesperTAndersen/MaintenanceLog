@@ -1,7 +1,7 @@
 package app.entities;
 
-import app.dtos.UserDTO;
-import app.entities.enums.UserRole;
+import app.dtos.EmployeeDTO;
+import app.entities.enums.EmployeeRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,13 +11,13 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User
+@Table(name = "employees")
+public class Employee
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @Column(name = "employee_id", nullable = false)
+    private Integer employeeId;
     @Setter
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -36,12 +36,12 @@ public class User
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;
+    private EmployeeRole role;
     @Setter
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
-    public User(String firstName, String lastName, String phone, String email, UserRole role, boolean active)
+    public Employee(String firstName, String lastName, String phone, String email, EmployeeRole role, boolean active)
     {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,7 +52,7 @@ public class User
         this.password = "default";
     }
 
-    public User(String firstName, String lastName, String phone, String email, String password, UserRole role, boolean active)
+    public Employee(String firstName, String lastName, String phone, String email, String password, EmployeeRole role, boolean active)
     {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -63,13 +63,13 @@ public class User
         this.active = active;
     }
 
-    public User(UserDTO userDTO, String password)
+    public Employee(EmployeeDTO employeeDTO, String password)
     {
-        this.firstName = userDTO.getFirstName();
-        this.lastName = userDTO.getLastName();
-        this.phone = userDTO.getPhone();
-        this.email = userDTO.getEmail();
-        this.role = userDTO.getRole();
+        this.firstName = employeeDTO.firstName();
+        this.lastName = employeeDTO.lastName();
+        this.phone = employeeDTO.phone();
+        this.email = employeeDTO.email();
+        this.role = employeeDTO.role();
         this.password = password;
     }
 }

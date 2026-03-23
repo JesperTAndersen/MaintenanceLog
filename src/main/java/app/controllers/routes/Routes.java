@@ -2,9 +2,9 @@ package app.controllers.routes;
 
 import app.controllers.AssetController;
 import app.controllers.MaintenanceLogController;
-import app.controllers.UserController;
+import app.controllers.EmployeeController;
+import app.controllers.SecurityController;
 import io.javalin.apibuilder.EndpointGroup;
-import lombok.Getter;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
 
@@ -12,15 +12,17 @@ public class Routes
 {
     private static final String API_VERSION = "api/v1";
 
-    private final UserRoutes userRoutes;
+    private final EmployeeRoutes employeeRoutes;
     private final AssetRoutes assetRoutes;
     private final MaintenanceLogRoutes maintenanceLogRoutes;
+    private final SecurityRoutes securityRoutes;
 
-    public Routes(UserController userController, AssetController assetController, MaintenanceLogController maintenanceLogController)
+    public Routes(EmployeeController employeeController, AssetController assetController, MaintenanceLogController maintenanceLogController, SecurityController securityController)
     {
-        userRoutes = new UserRoutes(userController);
-        assetRoutes = new AssetRoutes(assetController, maintenanceLogController);
-        maintenanceLogRoutes = new MaintenanceLogRoutes(maintenanceLogController);
+        this.employeeRoutes = new EmployeeRoutes(employeeController);
+        this.assetRoutes = new AssetRoutes(assetController, maintenanceLogController);
+        this.maintenanceLogRoutes = new MaintenanceLogRoutes(maintenanceLogController);
+        this.securityRoutes = new SecurityRoutes(securityController);
 
     }
 
@@ -29,9 +31,10 @@ public class Routes
         return () ->
                 path(API_VERSION, () ->
                 {
-                    userRoutes.getRoutes().addEndpoints();
+                    employeeRoutes.getRoutes().addEndpoints();
                     assetRoutes.getRoutes().addEndpoints();
                     maintenanceLogRoutes.getRoutes().addEndpoints();
+                    securityRoutes.getRoutes().addEndpoints();
                 });
     }
 

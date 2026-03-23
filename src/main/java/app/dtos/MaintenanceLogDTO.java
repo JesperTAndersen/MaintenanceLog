@@ -18,7 +18,7 @@ public record MaintenanceLogDTO
                 String comment,
                 Integer assetId,
                 String assetName,
-                Integer performedByUserId,
+                Integer performedByEmployeeId,
                 String performedByName
         )
 {

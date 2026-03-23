@@ -4,6 +4,7 @@ import app.dtos.AssetDTO;
 import app.entities.Asset;
 import app.mappers.AssetMapper;
 import app.persistence.interfaces.IAssetDAO;
+import app.services.interfaces.AssetService;
 
 import java.time.LocalDateTime;
 import java.util.List;

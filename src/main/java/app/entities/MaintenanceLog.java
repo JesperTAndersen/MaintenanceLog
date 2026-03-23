@@ -5,7 +5,6 @@ import app.entities.enums.TaskType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -43,10 +42,10 @@ public class MaintenanceLog
 
     @Setter
     @ManyToOne(optional = false)
-    @JoinColumn(name = "performed_by_user_id", nullable = false)
-    private User performedBy;
+    @JoinColumn(name = "performed_by_employee_id", nullable = false)
+    private Employee performedBy;
 
-    public MaintenanceLog(LocalDateTime performedDate, LogStatus status, TaskType taskType, String comment, Asset asset, User performedBy)
+    public MaintenanceLog(LocalDateTime performedDate, LogStatus status, TaskType taskType, String comment, Asset asset, Employee performedBy)
     {
         this.performedDate = performedDate;
         this.status = status;

@@ -4,12 +4,13 @@ import app.dtos.CreateLogRequest;
 import app.dtos.MaintenanceLogDTO;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.entities.User;
+import app.entities.Employee;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.mappers.MaintenanceLogMapper;
 import app.persistence.interfaces.IMaintenanceLogDAO;
 import app.persistence.interfaces.IReadDAO;
+import app.services.interfaces.MaintenanceLogService;
 
 import java.util.List;
 
@@ -17,20 +18,20 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
 {
     private final IMaintenanceLogDAO logDao;
     private final IReadDAO<Asset> assetDao;
-    private final IReadDAO<User> userDao;
+    private final IReadDAO<Employee> employeeDao;
 
-    public MaintenanceLogServiceImpl(IMaintenanceLogDAO logDao, IReadDAO<Asset> assetDao, IReadDAO<User> userDao)
+    public MaintenanceLogServiceImpl(IMaintenanceLogDAO logDao, IReadDAO<Asset> assetDao, IReadDAO<Employee> employeeDao)
     {
         this.logDao = logDao;
         this.assetDao = assetDao;
-        this.userDao = userDao;
+        this.employeeDao = employeeDao;
     }
 
     @Override
     public MaintenanceLogDTO create(Integer assetId, CreateLogRequest request)
     {
         Asset asset = assetDao.get(assetId);
-        User performedBy = userDao.get(request.performedByUserId());
+        Employee performedBy = employeeDao.get(request.performedByEmployeeId());
 
         MaintenanceLog log = new MaintenanceLog(
                 request.performedDate(),
@@ -91,9 +92,9 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
     }
 
     @Override
-    public List<MaintenanceLogDTO> getByPerformedUser(Integer userId)
+    public List<MaintenanceLogDTO> getByPerformedEmployee(Integer employeeId)
     {
-        return logDao.getByPerformedUser(userId).stream()
+        return logDao.getByPerformedEmployee(employeeId).stream()
                 .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }

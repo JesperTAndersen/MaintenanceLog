@@ -3,6 +3,7 @@ package app.config;
 import app.controllers.routes.Routes;
 import app.exceptions.ApiException;
 import app.exceptions.DatabaseException;
+import app.services.interfaces.SecurityService;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import org.slf4j.Logger;
@@ -10,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class AppConfig
+public class ApplicationConfig
 {
-    private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(ApplicationConfig.class);
 
 
     public static Javalin start(int port)
@@ -24,11 +25,13 @@ public class AppConfig
     public static Javalin start(DependencyContainer container, int port) //used for test Container
     {
         Routes routes = container.getRoutes();
+        SecurityService securityService = container.getSecurityService();
 
         return Javalin.create(config ->
         {
             configurePlugins(config);
             configureRoutes(config, routes);
+            configureSecurity(config, securityService);
             configureExceptionHandlers(config);
         }).start(port);
     }
@@ -47,6 +50,12 @@ public class AppConfig
     private static void configureRoutes(JavalinConfig config, Routes routes)
     {
         config.routes.apiBuilder(routes.getRoutes());
+    }
+
+    private static void configureSecurity(JavalinConfig config, SecurityService securityService)
+    {
+        config.routes.beforeMatched(securityService::authenticate);
+        config.routes.afterMatched(securityService::authorize);
     }
 
     private static void configureExceptionHandlers(JavalinConfig config)

@@ -17,7 +17,7 @@ public class MaintenanceLogMapper
                 log.getAsset().getAssetId(),
                 log.getAsset().getName(),
 
-                log.getPerformedBy().getUserId(),
+                log.getPerformedBy().getEmployeeId(),
                 log.getPerformedBy().getFirstName() + " " + log.getPerformedBy().getLastName());
     }
 }

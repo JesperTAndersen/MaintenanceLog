@@ -2,6 +2,7 @@ package app.controllers.routes;
 
 import app.controllers.AssetController;
 import app.controllers.MaintenanceLogController;
+import app.entities.enums.EmployeeRole;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -23,16 +24,16 @@ public class AssetRoutes
         {
             path("assets", () ->
             {
-                get(assetController::getAll);
-                get("/{id}", assetController::get);
-                post(assetController::create);
-                patch("/{id}", assetController::active);
-                delete("/{id}", assetController::delete);
+                get(assetController::getAll, EmployeeRole.AUTHENTICATED);
+                get("/{id}", assetController::get, EmployeeRole.AUTHENTICATED);
+                post(assetController::create, EmployeeRole.MANAGER);
+                patch("/{id}", assetController::active, EmployeeRole.MANAGER);
+                delete("/{id}", assetController::delete, EmployeeRole.ADMIN);
 
                 path("/{id}/logs", () ->
                 {
-                    get(maintenanceLogController::getLogsByAsset);
-                    post(maintenanceLogController::createLogForAsset);
+                    get(maintenanceLogController::getLogsByAsset, EmployeeRole.AUTHENTICATED);
+                    post(maintenanceLogController::createLogForAsset, EmployeeRole.TECHNICIAN);
                 });
             });
         };

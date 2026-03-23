@@ -4,7 +4,7 @@ import app.dtos.CreateLogRequest;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.exceptions.ApiException;
-import app.services.MaintenanceLogService;
+import app.services.interfaces.MaintenanceLogService;
 import io.javalin.http.Context;
 
 public class MaintenanceLogController
@@ -25,7 +25,7 @@ public class MaintenanceLogController
                 .check(dto -> dto.status() != null, "Status is required")
                 .check(dto -> dto.taskType() != null, "Task type is required")
                 .check(dto -> dto.comment() != null, "Comment is required")
-                .check(dto -> dto.performedByUserId() != null, "Performed by user id is required")
+                .check(dto -> dto.performedByEmployeeId() != null, "Performed by employee id is required")
                 .get();
 
         ctx.status(201).json(logService.create(assetId, request));
@@ -59,10 +59,10 @@ public class MaintenanceLogController
         ctx.status(200).json(logService.get(id));
     }
 
-    public void getByUser(Context ctx)
+    public void getByEmployee(Context ctx)
     {
-        int userId = Integer.parseInt(ctx.pathParam("userId"));
-        ctx.status(200).json(logService.getByPerformedUser(userId));
+        int employeeId = Integer.parseInt(ctx.pathParam("employeeId"));
+        ctx.status(200).json(logService.getByPerformedEmployee(employeeId));
     }
 
     public void getLogsByAsset(Context ctx)
