@@ -1,12 +1,14 @@
-package app.security;
+package app.services;
 
 import app.dtos.CreateEmployeeRequest;
 import app.dtos.EmployeeDTO;
+import app.dtos.EmployeeLoginDTO;
 import app.entities.Employee;
 import app.exceptions.ApiException;
 import app.exceptions.ValidationException;
 import app.mappers.EmployeeMapper;
-import app.security.dao.ISecurityDAO;
+import app.persistence.interfaces.ISecurityDAO;
+import app.services.interfaces.SecurityService;
 import app.utils.PropertyReader;
 import dk.bugelhartmann.ITokenSecurity;
 import dk.bugelhartmann.TokenSecurity;

@@ -5,6 +5,7 @@ import app.entities.Employee;
 import app.entities.enums.EmployeeRole;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
+import app.persistence.EmployeeDAO;
 import app.persistence.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;

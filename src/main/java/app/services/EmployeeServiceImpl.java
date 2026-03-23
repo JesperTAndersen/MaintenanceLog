@@ -5,6 +5,7 @@ import app.entities.Employee;
 import app.exceptions.ApiException;
 import app.mappers.EmployeeMapper;
 import app.persistence.interfaces.IEmployeeDAO;
+import app.services.interfaces.EmployeeService;
 
 import java.util.List;
 

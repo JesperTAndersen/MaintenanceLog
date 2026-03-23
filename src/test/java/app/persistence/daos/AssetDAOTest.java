@@ -4,6 +4,7 @@ import app.config.HibernateTestConfig;
 import app.entities.Asset;
 import app.exceptions.DatabaseException;
 import app.exceptions.enums.DatabaseErrorType;
+import app.persistence.AssetDAO;
 import app.persistence.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;

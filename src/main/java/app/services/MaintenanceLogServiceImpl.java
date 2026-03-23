@@ -10,6 +10,7 @@ import app.entities.enums.TaskType;
 import app.mappers.MaintenanceLogMapper;
 import app.persistence.interfaces.IMaintenanceLogDAO;
 import app.persistence.interfaces.IReadDAO;
+import app.services.interfaces.MaintenanceLogService;
 
 import java.util.List;
 

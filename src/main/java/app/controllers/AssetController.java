@@ -1,7 +1,7 @@
 package app.controllers;
 
 import app.dtos.AssetDTO;
-import app.services.AssetService;
+import app.services.interfaces.AssetService;
 import io.javalin.http.Context;
 
 public class AssetController

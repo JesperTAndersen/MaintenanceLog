@@ -6,7 +6,7 @@ import app.entities.enums.TaskType;
 import app.entities.enums.EmployeeRole;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.security.SecurityServiceImpl;
+import app.services.SecurityServiceImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;

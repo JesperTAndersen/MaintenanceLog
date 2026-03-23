@@ -1,11 +1,11 @@
-package app.persistence.daos;
+package app.persistence;
 
 import app.entities.Employee;
 import app.exceptions.DatabaseException;
 import app.exceptions.ValidationException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IEmployeeDAO;
-import app.security.SecurityServiceImpl;
+import app.services.SecurityServiceImpl;
 import jakarta.persistence.*;
 
 import java.util.List;

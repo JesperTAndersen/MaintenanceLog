@@ -3,8 +3,7 @@ package app.controllers.routes;
 import app.controllers.AssetController;
 import app.controllers.MaintenanceLogController;
 import app.controllers.EmployeeController;
-import app.security.controllers.SecurityController;
-import app.security.routes.SecurityRoutes;
+import app.controllers.SecurityController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.path;

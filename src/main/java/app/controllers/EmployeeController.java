@@ -1,7 +1,7 @@
 package app.controllers;
 
 import app.dtos.EmployeeDTO;
-import app.services.EmployeeService;
+import app.services.interfaces.EmployeeService;
 import io.javalin.http.Context;
 
 public class EmployeeController

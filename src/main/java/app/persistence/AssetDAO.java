@@ -1,4 +1,4 @@
-package app.persistence.daos;
+package app.persistence;
 
 import app.entities.Asset;
 import app.exceptions.DatabaseException;

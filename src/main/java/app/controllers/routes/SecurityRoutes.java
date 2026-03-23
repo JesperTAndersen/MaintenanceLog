@@ -1,7 +1,7 @@
-package app.security.routes;
+package app.controllers.routes;
 
 import app.entities.enums.EmployeeRole;
-import app.security.controllers.SecurityController;
+import app.controllers.SecurityController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;

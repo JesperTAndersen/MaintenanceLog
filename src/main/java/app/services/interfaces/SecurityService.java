@@ -1,7 +1,8 @@
-package app.security;
+package app.services.interfaces;
 
 import app.dtos.CreateEmployeeRequest;
 import app.dtos.EmployeeDTO;
+import app.dtos.EmployeeLoginDTO;
 import io.javalin.http.Context;
 
 import java.util.Map;

@@ -4,7 +4,7 @@ import app.dtos.CreateLogRequest;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.exceptions.ApiException;
-import app.services.MaintenanceLogService;
+import app.services.interfaces.MaintenanceLogService;
 import io.javalin.http.Context;
 
 public class MaintenanceLogController

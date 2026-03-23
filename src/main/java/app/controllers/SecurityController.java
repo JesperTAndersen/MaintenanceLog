@@ -1,8 +1,8 @@
-package app.security.controllers;
+package app.controllers;
 
 import app.dtos.CreateEmployeeRequest;
-import app.security.SecurityService;
-import app.security.EmployeeLoginDTO;
+import app.services.interfaces.SecurityService;
+import app.dtos.EmployeeLoginDTO;
 import io.javalin.http.Context;
 
 public class SecurityController

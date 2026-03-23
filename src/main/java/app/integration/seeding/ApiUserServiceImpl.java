@@ -4,19 +4,19 @@ import app.entities.Employee;
 import app.entities.enums.EmployeeRole;
 import app.integration.RandomUserClient;
 import app.integration.RandomUserDTO;
-import app.persistence.interfaces.ICrudDAO;
+import app.persistence.EmployeeDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.security.SecurityServiceImpl.hashPassword;
+import static app.services.SecurityServiceImpl.hashPassword;
 
 public class ApiUserServiceImpl implements ApiUserService
 {
     private final RandomUserClient client;
-    private final ICrudDAO<Employee> employeeDao;
+    private final EmployeeDAO employeeDao;
 
-    public ApiUserServiceImpl(RandomUserClient client, ICrudDAO<Employee> employeeDao)
+    public ApiUserServiceImpl(RandomUserClient client, EmployeeDAO employeeDao)
     {
         this.client = client;
         this.employeeDao = employeeDao;
@@ -25,11 +25,11 @@ public class ApiUserServiceImpl implements ApiUserService
     @Override
     public void seedEmployees(int count, boolean multiThreaded, int threads)
     {
-        if(!employeeDao.getAll().isEmpty()) //only seeds if database is empty
-        {
-            System.out.println("Database not empty - Skipping seeding");
-            return;
-        }
+//        if(!employeeDao.getAll().isEmpty()) //only seeds if database is empty
+//        {
+//            System.out.println("Database not empty - Skipping seeding");
+//            return;
+//        }
 
         List<RandomUserDTO> randomUsers = fetchUsers(count, multiThreaded, threads);
 

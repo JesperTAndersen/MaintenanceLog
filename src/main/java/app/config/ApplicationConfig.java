@@ -3,7 +3,7 @@ package app.config;
 import app.controllers.routes.Routes;
 import app.exceptions.ApiException;
 import app.exceptions.DatabaseException;
-import app.security.SecurityService;
+import app.services.interfaces.SecurityService;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import org.slf4j.Logger;
