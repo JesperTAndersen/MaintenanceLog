@@ -19,7 +19,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
+
 class EmployeeRoutesTest
 {
     private static EntityManagerFactory emf;
