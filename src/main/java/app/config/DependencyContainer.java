@@ -20,7 +20,6 @@ import lombok.Getter;
 
 public class DependencyContainer
 {
-    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
     private final EmployeeController employeeController;
     private final AssetController assetController;
     private final MaintenanceLogController maintenanceLogController;
@@ -30,7 +29,7 @@ public class DependencyContainer
 
     public DependencyContainer()
     {
-        this(emf);
+        this(HibernateConfig.getEntityManagerFactory());
     }
 
     public DependencyContainer(EntityManagerFactory emfTest)
