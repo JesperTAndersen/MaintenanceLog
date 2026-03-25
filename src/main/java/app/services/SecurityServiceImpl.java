@@ -155,10 +155,23 @@ public class SecurityServiceImpl implements SecurityService
         try
         {
             UserDTO libraryDTO = convertToLibraryDTO(employeeDTO);
+            String ISSUER;
+            String TOKEN_EXPIRE_TIME;
+            String SECRET_KEY;
 
-            String ISSUER = PropertyReader.getPropertyValue("ISSUER", "config.properties");
-            String TOKEN_EXPIRE_TIME = PropertyReader.getPropertyValue("TOKEN_EXPIRE_TIME", "config.properties");
-            String SECRET_KEY = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
+            if (System.getenv("DEPLOYED") != null)
+            {
+                ISSUER = System.getenv("ISSUER");
+                TOKEN_EXPIRE_TIME = System.getenv("TOKEN_EXPIRE_TIME");
+                SECRET_KEY = System.getenv("SECRET_KEY");
+            }
+            else
+            {
+                ISSUER = PropertyReader.getPropertyValue("ISSUER", "config.properties");
+                TOKEN_EXPIRE_TIME = PropertyReader.getPropertyValue("TOKEN_EXPIRE_TIME", "config.properties");
+                SECRET_KEY = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
+            }
+
             return tokenSecurity.createToken(libraryDTO, ISSUER, TOKEN_EXPIRE_TIME, SECRET_KEY);
         }
         catch (Exception e)
