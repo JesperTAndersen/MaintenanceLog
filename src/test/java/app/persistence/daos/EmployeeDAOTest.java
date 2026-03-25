@@ -76,7 +76,7 @@ class EmployeeDAOTest
         assertThat(fetched.getFirstName(), is("John"));
         assertThat(fetched.getLastName(), is("Doe"));
         assertThat(fetched.getEmail(), is("Johndoe@mail.dk"));
-        assertThat(fetched.getRole(), is(EmployeeRole.TECHNICIAN));
+        assertThat(fetched.getRole(), is(employee1.getRole()));
     }
 
     @Test
