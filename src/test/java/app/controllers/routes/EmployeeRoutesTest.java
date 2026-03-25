@@ -17,13 +17,15 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
+@Testcontainers
 class EmployeeRoutesTest
 {
     private static EntityManagerFactory emf;
     private static DependencyContainer container;
     private static Javalin app;
-    private static final int TEST_PORT = 7071;
+    private static final int TEST_PORT = 7072;
     private Map<String, Employee> seeded;
     private static String authenticatedToken;
     private static String managerToken;
