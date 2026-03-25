@@ -1,36 +1,53 @@
-name: GITHUB ACTIONS WORKFLOW
+name: Build and Push Docker Image
 on:
   push:
     branches: [ main, hibernate ]
   pull_request:
     branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      # Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Set up JDK 17
+
+      # Set up Java 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-      -
-        name: Build with Maven
+
+      # Build with Maven, skipping tests
+      - name: Build with Maven (skip tests)
         run: mvn --batch-mode --update-snapshots package -DskipTests
-      -
-        name: Login to Docker Hub
+
+      # Debug step: print if secrets are available (do NOT print token value!)
+      - name: Debug secrets
+        run: |
+          echo "DockerHub username is set: ${{ secrets.DOCKERHUB_USERNAME }}"
+          if [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+            echo "DockerHub token is missing!"
+            exit 1
+          else
+            echo "DockerHub token length: ${#{{ secrets.DOCKERHUB_TOKEN }}}"
+          fi
+
+      # Login to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Set up Docker Buildx
+
+      # Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push
+
+      # Build and push Docker image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
