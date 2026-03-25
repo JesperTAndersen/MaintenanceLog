@@ -10,7 +10,20 @@ public class PropertyReader
 {
 
     public static String getPropertyValue(String propName, String resourceName)  {
+        String envValue = System.getenv(propName);
+        if (envValue != null && !envValue.isBlank()) {
+            return envValue.trim();
+        }
+
         try (InputStream is = PropertyReader.class.getClassLoader().getResourceAsStream(resourceName)) {
+            if (is == null) {
+                throw new ApiException(500, String.format(
+                        "Property file %s was not found on the classpath and environment variable %s is not set",
+                        resourceName,
+                        propName
+                ));
+            }
+
             Properties prop = new Properties();
             prop.load(is);
 

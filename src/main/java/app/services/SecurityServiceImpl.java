@@ -156,22 +156,9 @@ public class SecurityServiceImpl implements SecurityService
         {
             UserDTO libraryDTO = convertToLibraryDTO(employeeDTO);
 
-            String ISSUER;
-            String TOKEN_EXPIRE_TIME;
-            String SECRET_KEY;
-
-            if (System.getenv("DEPLOYED") != null)
-            {
-                ISSUER = System.getenv("ISSUER");
-                TOKEN_EXPIRE_TIME = System.getenv("TOKEN_EXPIRE_TIME");
-                SECRET_KEY = System.getenv("SECRET_KEY");
-            }
-            else
-            {
-                ISSUER = PropertyReader.getPropertyValue("ISSUER", "config.properties");
-                TOKEN_EXPIRE_TIME = PropertyReader.getPropertyValue("TOKEN_EXPIRE_TIME", "config.properties");
-                SECRET_KEY = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
-            }
+            String ISSUER = PropertyReader.getPropertyValue("ISSUER", "config.properties");
+            String TOKEN_EXPIRE_TIME = PropertyReader.getPropertyValue("TOKEN_EXPIRE_TIME", "config.properties");
+            String SECRET_KEY = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
             return tokenSecurity.createToken(libraryDTO, ISSUER, TOKEN_EXPIRE_TIME, SECRET_KEY);
         }
         catch (Exception e)
@@ -233,8 +220,7 @@ public class SecurityServiceImpl implements SecurityService
 
     private UserDTO verifyToken(String token)
     {
-        boolean IS_DEPLOYED = (System.getenv("DEPLOYED") != null);
-        String SECRET = IS_DEPLOYED ? System.getenv("SECRET_KEY") : PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
+        String SECRET = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
 
         try
         {
