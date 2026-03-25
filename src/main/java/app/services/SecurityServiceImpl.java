@@ -233,7 +233,15 @@ public class SecurityServiceImpl implements SecurityService
 
     private UserDTO verifyToken(String token)
     {
-        String SECRET = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
+        String SECRET;
+        if (System.getenv("DEPLOYED") != null)
+        {
+            SECRET = System.getenv("SECRET_KEY");
+        }
+        else
+        {
+            SECRET = PropertyReader.getPropertyValue("SECRET_KEY", "config.properties");
+        }
 
         try
         {
