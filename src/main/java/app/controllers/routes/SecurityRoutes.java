@@ -19,6 +19,7 @@ public class SecurityRoutes
     {
         return () -> path("auth", () ->
         {
+            get("/healthcheck", securityController::healthCheck);
             post("/register", securityController::register, EmployeeRole.MANAGER);
             post("/login", securityController::login);
             get("/protected", ctx -> ctx.json("Hello fom protected").status(200), EmployeeRole.ADMIN);

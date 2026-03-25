@@ -4,6 +4,7 @@ import app.dtos.CreateEmployeeRequest;
 import app.services.interfaces.SecurityService;
 import app.dtos.EmployeeLoginDTO;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 public class SecurityController
 {
@@ -39,4 +40,7 @@ public class SecurityController
         ctx.status(200).json(securityService.login(loginDTO));
     }
 
+    public void healthCheck(Context ctx) {
+        ctx.status(200).json("{\"msg\": \"API is up and running\"}");
+    }
 }
