@@ -27,7 +27,7 @@ public class AssetRoutes
                 get(assetController::getAll, EmployeeRole.AUTHENTICATED);
                 get("/{id}", assetController::get, EmployeeRole.AUTHENTICATED);
                 post(assetController::create, EmployeeRole.MANAGER);
-                patch("/{id}", assetController::active, EmployeeRole.MANAGER);
+                patch("/{id}", assetController::active, EmployeeRole.ADMIN);
                 delete("/{id}", assetController::delete, EmployeeRole.ADMIN);
 
                 path("/{id}/logs", () ->

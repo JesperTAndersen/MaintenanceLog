@@ -167,7 +167,7 @@ class AssetRoutesTest
         Asset inactiveAsset = assets.get("asset4");
 
         given()
-                .header("Authorization", "Bearer " + managerToken)
+                .header("Authorization", "Bearer " + adminToken)
                 .when()
                 .patch("/assets/" + inactiveAsset.getAssetId())
                 .then()
