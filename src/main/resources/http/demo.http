@@ -1,0 +1,81 @@
+
+@baseUrl = http://localhost:7070/api/v1
+@authUrl = {{baseUrl}}/auth
+
+@technicianToken = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJKRVNQRVIgQU5ERVJTRU4iLCJzdWIiOiJ0ZWNobmljaWFuQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc1NTY4MTIwLCJyb2xlcyI6IlRFQ0hOSUNJQU4iLCJ1c2VybmFtZSI6InRlY2huaWNpYW5AZXhhbXBsZS5jb20ifQ.RtT6L0XO9PQAjdIGUGr-pEOgJEtfwyPo8evcCkKVBO4
+@managerToken = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJKRVNQRVIgQU5ERVJTRU4iLCJzdWIiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc1NTY4MTM2LCJyb2xlcyI6Ik1BTkFHRVIiLCJ1c2VybmFtZSI6Im1hbmFnZXJAZXhhbXBsZS5jb20ifQ.NHwt1R49NinykD03wdTVPsv_kfA7RjSqBKqTFG89Azw
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJKRVNQRVIgQU5ERVJTRU4iLCJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsImV4cCI6MTc3NTU2ODE1MSwicm9sZXMiOiJBRE1JTiIsInVzZXJuYW1lIjoiYWRtaW5AZXhhbXBsZS5jb20ifQ.ollJI6BR5LK6mVP2CYeOCv4YkNze7XBQUjuRzPeICUw
+
+GET {{authUrl}}/healthcheck
+
+
+### Login as TECHNICIAN
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "technician@example.com",
+  "password": "tech123"
+}
+
+### Login as MANAGER
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "manager@example.com",
+  "password": "manager123"
+}
+
+### Login as Admin
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### 2a) Create asset WITH NO TOKEN (should be 401)
+POST {{baseUrl}}/assets
+Content-Type: application/json
+
+{
+  "name": "Demo Asset",
+  "description": "Created during 2-min demo",
+  "active": true
+}
+
+### 2b) Create asset WITH TECHNICIAN token (should be 403)
+POST {{baseUrl}}/assets
+Authorization: Bearer {{technicianToken}}
+Content-Type: application/json
+
+{
+  "name": "Demo Asset",
+  "description": "Should be forbidden for AUTHENTICATED",
+  "active": true
+}
+
+### 2c) Create asset WITH MANAGER token (should be 201)
+POST {{baseUrl}}/assets
+Authorization: Bearer {{managerToken}}
+Content-Type: application/json
+
+{
+  "name": "Demo Asset",
+  "description": "Created by MANAGER",
+  "active": true
+}
+
+### 3) ADMIN Only
+@assetId = 13
+
+### 3a) Deactivate asset WITH MANAGER token (should be 403)
+DELETE {{baseUrl}}/assets/{{assetId}}
+Authorization: Bearer {{managerToken}}
+
+### 3b) Deactivate asset WITH ADMIN token (should be 204)
+DELETE {{baseUrl}}/assets/{{assetId}}
+Authorization: Bearer {{adminToken}}
+
