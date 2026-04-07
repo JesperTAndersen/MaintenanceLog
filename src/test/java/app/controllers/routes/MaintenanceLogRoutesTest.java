@@ -169,7 +169,7 @@ class MaintenanceLogRoutesTest
                 .when()
                 .get("/logs")
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -181,7 +181,7 @@ class MaintenanceLogRoutesTest
                 .when()
                 .get("/logs/" + log1.getLogId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -193,7 +193,7 @@ class MaintenanceLogRoutesTest
                 .when()
                 .get("/logs/employee/" + employee1.getEmployeeId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test

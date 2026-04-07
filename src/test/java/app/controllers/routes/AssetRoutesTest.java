@@ -167,7 +167,7 @@ class AssetRoutesTest
         Asset inactiveAsset = assets.get("asset4");
 
         given()
-                .header("Authorization", "Bearer " + managerToken)
+                .header("Authorization", "Bearer " + adminToken)
                 .when()
                 .patch("/assets/" + inactiveAsset.getAssetId())
                 .then()
@@ -253,7 +253,7 @@ class AssetRoutesTest
                 .when()
                 .get("/assets?active=true")
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -265,7 +265,7 @@ class AssetRoutesTest
                 .when()
                 .get("/assets/" + asset1.getAssetId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -283,7 +283,7 @@ class AssetRoutesTest
                 .when()
                 .post("/assets")
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -295,7 +295,7 @@ class AssetRoutesTest
                 .when()
                 .patch("/assets/" + inactiveAsset.getAssetId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -307,7 +307,7 @@ class AssetRoutesTest
                 .when()
                 .delete("/assets/" + activeAsset.getAssetId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -319,7 +319,7 @@ class AssetRoutesTest
                 .when()
                 .get("/assets/" + asset1.getAssetId() + "/logs")
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -342,7 +342,7 @@ class AssetRoutesTest
                 .when()
                 .post("/assets/" + asset1.getAssetId() + "/logs")
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
