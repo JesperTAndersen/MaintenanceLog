@@ -16,6 +16,7 @@ https://jespertandersen.github.io/Portfolio/
 
 **Deployed application:**  
 https://maintenancelog.heltsort.dk/
+
 https://maintenancelog.heltsort.dk/routes
 
 **Source code repository:**  
