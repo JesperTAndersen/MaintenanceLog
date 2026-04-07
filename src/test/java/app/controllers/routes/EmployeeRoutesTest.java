@@ -245,7 +245,7 @@ class EmployeeRoutesTest
                 .when()
                 .get("/employees?active=true")
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -257,7 +257,7 @@ class EmployeeRoutesTest
                 .when()
                 .get("/employees/" + employee1.getEmployeeId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -280,7 +280,7 @@ class EmployeeRoutesTest
                 .when()
                 .put("/employees/" + employee1.getEmployeeId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -292,7 +292,7 @@ class EmployeeRoutesTest
                 .when()
                 .patch("/employees/" + inactiveEmployee.getEmployeeId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -304,7 +304,7 @@ class EmployeeRoutesTest
                 .when()
                 .delete("/employees/" + activeEmployee.getEmployeeId())
                 .then()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test

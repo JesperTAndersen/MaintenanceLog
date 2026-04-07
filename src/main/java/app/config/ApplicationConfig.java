@@ -55,7 +55,7 @@ public class ApplicationConfig
     private static void configureSecurity(JavalinConfig config, SecurityService securityService)
     {
         config.routes.beforeMatched(securityService::authenticate);
-        config.routes.afterMatched(securityService::authorize);
+        config.routes.beforeMatched(securityService::authorize);
     }
 
     private static void configureExceptionHandlers(JavalinConfig config)

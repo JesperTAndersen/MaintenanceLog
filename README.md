@@ -12,7 +12,7 @@ This project is a backend REST API for managing maintenance operations in indust
 https://jespertandersen.github.io/Portfolio/
 
 **Project overview video (max 5 min):**  
-[Your Video URL]
+https://www.youtube.com/watch?v=kXl-42g5mtk
 
 **Deployed application:**  
 https://maintenancelog.heltsort.dk/
@@ -121,7 +121,8 @@ Services depend only on the operations they require, improving testability and r
 - Validates JWT token signature and expiration
 - Stores authenticated user in request context
 
-**Authorization** occurs in the `afterMatched` hook:
+**Authorization** occurs in a second Javalin `beforeMatched` lifecycle hook (executed after authentication):
+- Reads `ctx.routeRoles()` for the matched endpoint
 - Verifies user role matches endpoint requirements
 - Implements role hierarchy (ADMIN > MANAGER > TECHNICIAN > AUTHENTICATED)
 
@@ -529,7 +530,7 @@ The system implements a role hierarchy where higher roles inherit permissions fr
 
 **Special Cases:**
 - Endpoints with no role requirement are public (e.g., `POST /auth/login`)
-- Role validation occurs after JWT token authentication
+- Role validation occurs after JWT token authentication but **before the endpoint handler executes**
 
 
 ---
@@ -974,8 +975,10 @@ The system uses an external JWT library (`dk.bugelhartmann.TokenSecurity`) that 
 ### Request Lifecycle Security
 
 Authentication and authorization are split across Javalin lifecycle hooks:
-- `beforeMatched` validates JWT tokens before route resolution
-- `afterMatched` checks role permissions after route matching (when `ctx.routeRoles()` becomes available)
+- `beforeMatched` authenticates the JWT token after route matching and stores the authenticated user in the request context
+- a second `beforeMatched` handler authorizes the request by checking `ctx.routeRoles()` and enforcing role hierarchy
+
+This ensures unauthorized requests are rejected **before** any endpoint handler runs.
 
 ### Role-Based Permissions
 
