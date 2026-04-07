@@ -1,0 +1,26 @@
+@baseUrl = http://localhost:7070/api/v1
+@authUrl = http://localhost:7070/api/v1/auth
+
+@technicianToken =eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJKRVNQRVIgQU5ERVJTRU4iLCJzdWIiOiJ0ZWNobmljaWFuQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc1NTQ3MTI0LCJyb2xlcyI6IlRFQ0hOSUNJQU4iLCJ1c2VybmFtZSI6InRlY2huaWNpYW5AZXhhbXBsZS5jb20ifQ.2RIExpqjr09Kx1lXTSh0UX-iwZa2_jqNojbcpIXSRRc
+
+### Login as Technician
+POST {{authUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "technician@example.com",
+  "password": "tech123"
+}
+
+###
+POST {{baseUrl}}/assets/1/logs
+Authorization: Bearer {{technicianToken}}
+Content-Type: application/json
+
+{
+"performedDate": "2026-03-23T10:00:00",
+"status": "DONE",
+"taskType": "MAINTENANCE",
+"comment": "Replaced hydraulic seals",
+"performedByEmployeeId": 3
+}
