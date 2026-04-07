@@ -12,7 +12,7 @@ This project is a backend REST API for managing maintenance operations in indust
 https://jespertandersen.github.io/Portfolio/
 
 **Project overview video (max 5 min):**  
-[Your Video URL]
+https://www.youtube.com/watch?v=kXl-42g5mtk
 
 **Deployed application:**  
 https://maintenancelog.heltsort.dk/
