@@ -8,10 +8,7 @@ import app.controllers.routes.Routes;
 import app.persistence.AssetDAO;
 import app.persistence.MaintenanceLogDAO;
 import app.persistence.EmployeeDAO;
-import app.services.interfaces.AssetService;
-import app.services.interfaces.EmployeeService;
-import app.services.interfaces.MaintenanceLogService;
-import app.services.interfaces.SecurityService;
+import app.services.interfaces.*;
 import app.services.SecurityServiceImpl;
 import app.controllers.SecurityController;
 import app.services.*;
@@ -41,12 +38,13 @@ public class DependencyContainer
         EmployeeService employeeService = new EmployeeServiceImpl(employeeDaoImpl);
         AssetService assetService = new AssetServiceImpl(assetDaoImpl);
         MaintenanceLogService logService = new MaintenanceLogServiceImpl(logDaoImpl, assetDaoImpl, employeeDaoImpl);
+        EmployeeIdentityService employeeIdentityService = new EmployeeIdentityServiceImpl(employeeDaoImpl);
         securityService = new SecurityServiceImpl(employeeDaoImpl);
 
 
         this.employeeController = new EmployeeController(employeeService);
         this.assetController = new AssetController(assetService);
-        this.maintenanceLogController = new MaintenanceLogController(logService);
+        this.maintenanceLogController = new MaintenanceLogController(logService, employeeIdentityService);
         this.securityController = new SecurityController(securityService);
     }
 

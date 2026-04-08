@@ -91,7 +91,7 @@ public class SecurityServiceImpl implements SecurityService
 
             return Map.of(
                     "token", token,
-                    "employee", employeeDTO
+                    "authUser", employeeDTO
             );
 
         }
@@ -120,7 +120,7 @@ public class SecurityServiceImpl implements SecurityService
 
         // If there is no token we do not allow entry
         UserDTO verifiedTokenEmployee = validateAndGetEmployeeFromToken(ctx);
-        ctx.attribute("employee", verifiedTokenEmployee);
+        ctx.attribute("authUser", verifiedTokenEmployee);
     }
 
     @Override
@@ -136,7 +136,7 @@ public class SecurityServiceImpl implements SecurityService
             return;
 
         // 2. Get employee and ensure it is not null
-        UserDTO employee = ctx.attribute("employee");
+        UserDTO employee = ctx.attribute("authUser");
         if (employee == null)
         {
             throw new ForbiddenResponse("No employee was added from the token");

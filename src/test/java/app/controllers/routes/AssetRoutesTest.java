@@ -221,7 +221,8 @@ class AssetRoutesTest
     void testPostLogForAsset()
     {
         Asset asset1 = assets.get("asset1");
-        Employee employee1 = employees.get("employee1");
+        Employee authenticatedEmployee = employees.get("employee2"); //the employee that is the Bearer
+        Employee otherEmployee = employees.get("employee1");
 
         given()
                 .header("Authorization", "Bearer " + managerToken)
@@ -234,14 +235,15 @@ class AssetRoutesTest
                             "comment": "Test log",
                             "performedByEmployeeId": %d
                         }
-                        """, employee1.getEmployeeId()))
+                        """, otherEmployee.getEmployeeId()))
                 .when()
                 .post("/assets/" + asset1.getAssetId() + "/logs")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("assetId", equalTo(asset1.getAssetId()))
-                .body("performedByEmployeeId", equalTo(employee1.getEmployeeId()))
+                .body("performedByEmployeeId", equalTo(authenticatedEmployee.getEmployeeId()))
+                .body("performedByEmployeeId", not(equalTo(otherEmployee.getEmployeeId())))
                 .body("status", equalTo("DONE"))
                 .body("taskType", equalTo("MAINTENANCE"));
     }
