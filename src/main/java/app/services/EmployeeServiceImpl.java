@@ -6,6 +6,7 @@ import app.exceptions.ApiException;
 import app.mappers.EmployeeMapper;
 import app.persistence.interfaces.IEmployeeDAO;
 import app.services.interfaces.EmployeeService;
+import app.utils.ValidationUtil;
 
 import java.util.List;
 
@@ -53,14 +54,27 @@ public class EmployeeServiceImpl implements EmployeeService
     {
         Employee existingEmployee = employeeDao.get(id);
 
-        //check first if email is changing, then for if taken
-        if (!existingEmployee.getEmail().equals(employeeDTO.email()))
+        ValidationUtil.lengthBetween(employeeDTO.firstName(), "First name", 2, 50);
+        ValidationUtil.lengthBetween(employeeDTO.lastName(), "Last name", 2, 50);
+
+        if (employeeDTO.email() != null)
         {
-            Employee employeeWithEmail = employeeDao.getByEmail(employeeDTO.email());
-            if (employeeWithEmail != null)
+            ValidationUtil.validateEmailNonNull(employeeDTO.email());
+
+            //check first if email is changing, then for if taken
+            if (!existingEmployee.getEmail().equals(employeeDTO.email()))
             {
-                throw new ApiException(409, "Email already exists");
+                Employee employeeWithEmail = employeeDao.getByEmail(employeeDTO.email());
+                if (employeeWithEmail != null)
+                {
+                    throw new ApiException(409, "Email already exists");
+                }
             }
+        }
+
+        if (employeeDTO.phone() != null)
+        {
+            ValidationUtil.validatePhoneNonNull(employeeDTO.phone());
         }
 
         existingEmployee.setFirstName(employeeDTO.firstName());
@@ -72,7 +86,6 @@ public class EmployeeServiceImpl implements EmployeeService
 
         return EmployeeMapper.toDTO(employeeDao.update(existingEmployee));
     }
-
 
     @Override
     public EmployeeDTO deactivate(Integer id)

@@ -32,7 +32,11 @@ public class EmployeeController
         int id = Integer.parseInt(ctx.pathParam("id"));
         EmployeeDTO employeeDTO = ctx.bodyValidator(EmployeeDTO.class)
                 .check(dto -> dto.id() == null || dto.id().equals(id), "ID in URL and body must match")
-                .check(dto -> dto.email() == null || dto.email().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"), "Invalid email format")
+                .check(dto -> dto.firstName() != null && !dto.firstName().trim().isEmpty() , "First Name is required")
+                .check(dto -> dto.lastName() != null && !dto.lastName().trim().isEmpty(), "Last Name is required")
+                .check(dto -> dto.email() != null && !dto.email().trim().isEmpty(), "Email is required")
+                .check(dto -> dto.phone() != null&& !dto.phone().trim().isEmpty(), "Phone is required")
+                .check(dto -> dto.role() != null, "Role is required")
                 .get();
 
         ctx.status(200).json(employeeService.update(id, employeeDTO));

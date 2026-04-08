@@ -10,6 +10,7 @@ import app.mappers.EmployeeMapper;
 import app.persistence.interfaces.ISecurityDAO;
 import app.services.interfaces.SecurityService;
 import app.utils.PropertyReader;
+import app.utils.ValidationUtil;
 import dk.bugelhartmann.ITokenSecurity;
 import dk.bugelhartmann.TokenSecurity;
 import dk.bugelhartmann.TokenVerificationException;
@@ -53,17 +54,22 @@ public class SecurityServiceImpl implements SecurityService
     @Override
     public EmployeeDTO register(CreateEmployeeRequest request)
     {
+        ValidationUtil.lengthBetween(request.firstName(), "First name", 2, 50);
+        ValidationUtil.lengthBetween(request.lastName(), "Last name", 2, 50);
+        ValidationUtil.validateEmailNonNull(request.email());
+        ValidationUtil.validatePhoneNonNull(request.phone());
+        ValidationUtil.validatePasswordNonNull(request.password());
+
         if (secDAO.getByEmail(request.email()) != null)
         {
             throw new ApiException(409, "Email already exists");
         }
 
-        //TODO: validate inputs. implement validator util class
         Employee employee = Employee.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .email(request.email())
-                .phone(request.phone())
+                .firstName(request.firstName().trim())
+                .lastName(request.lastName().trim())
+                .email(request.email().trim())
+                .phone(request.phone().trim())
                 .role(request.role())
                 .password(hashPassword(request.password()))
                 .active(true)
