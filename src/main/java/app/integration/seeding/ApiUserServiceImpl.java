@@ -25,12 +25,6 @@ public class ApiUserServiceImpl implements ApiUserService
     @Override
     public void seedEmployees(int count, boolean multiThreaded, int threads)
     {
-//        if(!employeeDao.getAll().isEmpty()) //only seeds if database is empty
-//        {
-//            System.out.println("Database not empty - Skipping seeding");
-//            return;
-//        }
-
         List<RandomUserDTO> randomUsers = fetchUsers(count, multiThreaded, threads);
 
         List<Employee> convertedEmployees = userDtoToEntity(randomUsers);
@@ -39,6 +33,7 @@ public class ApiUserServiceImpl implements ApiUserService
 
         for (Employee employee : convertedEmployees)
         {
+            System.out.println("creating employees");
             employeeDao.create(employee);
         }
     }
@@ -57,17 +52,17 @@ public class ApiUserServiceImpl implements ApiUserService
         return randomUsers;
     }
 
-    private List<Employee> userDtoToEntity(List<RandomUserDTO> dtos)
+    private List<Employee> userDtoToEntity(List<RandomUserDTO> dtoList)
     {
         List<Employee> convertedEmployees = new ArrayList<>();
-        for (RandomUserDTO u : dtos)
+        for (RandomUserDTO u : dtoList)
         {
             convertedEmployees.add(
                     Employee.builder()
-                            .firstName(u.getName().first())
-                            .lastName(u.getName().last())
-                            .phone(u.getPhone())
-                            .email(u.getEmail())
+                            .firstName(u.getName().first().trim())
+                            .lastName(u.getName().last().trim())
+                            .phone(u.getPhone().trim())
+                            .email(u.getEmail().trim())
                             .password(hashPassword(u.getLogin().password()))
                             .active(true)
                             .build());
@@ -91,6 +86,5 @@ public class ApiUserServiceImpl implements ApiUserService
             counter++;
         }
     }
-
 
 }
