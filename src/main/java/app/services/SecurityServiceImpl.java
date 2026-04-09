@@ -10,6 +10,7 @@ import app.mappers.EmployeeMapper;
 import app.persistence.interfaces.ISecurityDAO;
 import app.services.interfaces.SecurityService;
 import app.utils.PropertyReader;
+import app.utils.ValidationUtil;
 import dk.bugelhartmann.ITokenSecurity;
 import dk.bugelhartmann.TokenSecurity;
 import dk.bugelhartmann.TokenVerificationException;
@@ -18,12 +19,13 @@ import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.UnauthorizedResponse;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.text.ParseException;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static app.utils.PasswordUtil.hashPassword;
 
 public class SecurityServiceImpl implements SecurityService
 {
@@ -39,31 +41,25 @@ public class SecurityServiceImpl implements SecurityService
         this.secDAO = secDAO;
     }
 
-    public static String hashPassword(String password)
-    {
-        String salt = BCrypt.gensalt(12);
-        return BCrypt.hashpw(password, salt);
-    }
-
-    public static boolean verifyPassword(String inputtedPassword, String hashedPassword)
-    {
-        return BCrypt.checkpw(inputtedPassword, hashedPassword);
-    }
-
     @Override
     public EmployeeDTO register(CreateEmployeeRequest request)
     {
+        ValidationUtil.lengthBetween(request.firstName(), "First name", 2, 50);
+        ValidationUtil.lengthBetween(request.lastName(), "Last name", 2, 50);
+        ValidationUtil.validateEmailNonNull(request.email());
+        ValidationUtil.validatePhoneNonNull(request.phone());
+        ValidationUtil.validatePasswordNonNull(request.password());
+
         if (secDAO.getByEmail(request.email()) != null)
         {
             throw new ApiException(409, "Email already exists");
         }
 
-        //TODO: validate inputs. implement validator util class
         Employee employee = Employee.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .email(request.email())
-                .phone(request.phone())
+                .firstName(request.firstName().trim())
+                .lastName(request.lastName().trim())
+                .email(request.email().trim())
+                .phone(request.phone().trim())
                 .role(request.role())
                 .password(hashPassword(request.password()))
                 .active(true)
@@ -91,7 +87,7 @@ public class SecurityServiceImpl implements SecurityService
 
             return Map.of(
                     "token", token,
-                    "employee", employeeDTO
+                    "authUser", employeeDTO
             );
 
         }
@@ -120,7 +116,7 @@ public class SecurityServiceImpl implements SecurityService
 
         // If there is no token we do not allow entry
         UserDTO verifiedTokenEmployee = validateAndGetEmployeeFromToken(ctx);
-        ctx.attribute("employee", verifiedTokenEmployee);
+        ctx.attribute("authUser", verifiedTokenEmployee);
     }
 
     @Override
@@ -136,7 +132,7 @@ public class SecurityServiceImpl implements SecurityService
             return;
 
         // 2. Get employee and ensure it is not null
-        UserDTO employee = ctx.attribute("employee");
+        UserDTO employee = ctx.attribute("authUser");
         if (employee == null)
         {
             throw new ForbiddenResponse("No employee was added from the token");

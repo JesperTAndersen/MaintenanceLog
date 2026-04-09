@@ -4,29 +4,42 @@ import app.dtos.CreateLogRequest;
 import app.entities.enums.LogStatus;
 import app.entities.enums.TaskType;
 import app.exceptions.ApiException;
+import app.services.interfaces.EmployeeIdentityService;
 import app.services.interfaces.MaintenanceLogService;
+import app.utils.EmployeeAuthUtil;
 import io.javalin.http.Context;
 
 public class MaintenanceLogController
 {
     private final MaintenanceLogService logService;
+    private final EmployeeIdentityService employeeIdentityService;
 
-    public MaintenanceLogController(MaintenanceLogService logService)
+    public MaintenanceLogController(MaintenanceLogService logService, EmployeeIdentityService employeeIdentityService)
     {
         this.logService = logService;
+        this.employeeIdentityService = employeeIdentityService;
     }
 
     public void createLogForAsset(Context ctx)
     {
         int assetId = Integer.parseInt(ctx.pathParam("id"));
 
-        CreateLogRequest request = ctx.bodyValidator(CreateLogRequest.class)
+        Integer performedById = EmployeeAuthUtil.requireAuthenticatedEmployee(ctx, employeeIdentityService).id();
+
+        CreateLogRequest body = ctx.bodyValidator(CreateLogRequest.class)
                 .check(dto -> dto.performedDate() != null, "Performed date is required")
                 .check(dto -> dto.status() != null, "Status is required")
                 .check(dto -> dto.taskType() != null, "Task type is required")
                 .check(dto -> dto.comment() != null, "Comment is required")
-                .check(dto -> dto.performedByEmployeeId() != null, "Performed by employee id is required")
                 .get();
+
+        CreateLogRequest request = new CreateLogRequest(
+                body.performedDate(),
+                body.status(),
+                body.taskType(),
+                body.comment(),
+                performedById
+        );
 
         ctx.status(201).json(logService.create(assetId, request));
     }

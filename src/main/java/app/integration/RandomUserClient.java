@@ -33,6 +33,8 @@ public class RandomUserClient
     {
         List<RandomUserDTO> users = new ArrayList<>();
 
+        threads = Math.min(threads, 10);
+
         int usersPerThread = totalUsers / threads;
 
         ExecutorService executor = Executors.newFixedThreadPool(threads);
@@ -43,12 +45,10 @@ public class RandomUserClient
 
             for (int i = 0; i < threads; i++)
             {
-                callables.add(fetchUsers(usersPerThread));
+                callables.add(() -> fetchUsersFromAPI(usersPerThread));
             }
 
-            List<Future<List<RandomUserDTO>>> futures = executor.invokeAll(callables);
-
-            awaitTerminationAfterShutdown(executor);
+            List<Future<List<RandomUserDTO>>> futures = executor.invokeAll(callables); //blocks threads until all are finished
 
             for (Future<List<RandomUserDTO>> f : futures)
             {
@@ -71,29 +71,9 @@ public class RandomUserClient
             Thread.currentThread().interrupt();
             return users;
         }
-    }
-
-    private Callable<List<RandomUserDTO>> fetchUsers(int amount)
-    {
-        return () ->
-                fetchUsersFromAPI(amount);
-
-    }
-
-    private void awaitTerminationAfterShutdown(ExecutorService threadPool)
-    {
-        threadPool.shutdown();
-        try
+        finally
         {
-            if (!threadPool.awaitTermination(5, TimeUnit.SECONDS))
-            {
-                threadPool.shutdownNow();
-            }
-        }
-        catch (InterruptedException ex)
-        {
-            threadPool.shutdownNow();
-            Thread.currentThread().interrupt();
+            executor.shutdown();
         }
     }
 }
