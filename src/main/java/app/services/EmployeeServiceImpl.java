@@ -6,9 +6,11 @@ import app.exceptions.ApiException;
 import app.mappers.EmployeeMapper;
 import app.persistence.interfaces.IEmployeeDAO;
 import app.services.interfaces.EmployeeService;
+import app.utils.PasswordUtil;
 import app.utils.ValidationUtil;
 
 import java.util.List;
+
 
 public class EmployeeServiceImpl implements EmployeeService
 {
@@ -115,5 +117,26 @@ public class EmployeeServiceImpl implements EmployeeService
         return EmployeeMapper.toDTO(employeeDao.update(employee));
     }
 
-    //TODO: ADD PASSWORD CHANGER
+    @Override
+    public Integer getEmployeeIdByEmail(String email)
+    {
+        Employee employee = employeeDao.getByEmail(email);
+
+        return employee == null ? null : employee.getEmployeeId();
+    }
+
+    @Override
+    public EmployeeDTO changePassword(Integer id, String oldPassword, String newPassword)
+    {
+        Employee employee = employeeDao.get(id);
+
+        if (!PasswordUtil.verifyPassword(oldPassword, employee.getPassword()))
+        {
+            throw new ApiException(403, "Old password is incorrect");
+        }
+
+        ValidationUtil.validatePasswordNonNull(newPassword);
+        employee.setPassword(PasswordUtil.hashPassword(newPassword));
+        return EmployeeMapper.toDTO(employeeDao.update(employee));
+    }
 }

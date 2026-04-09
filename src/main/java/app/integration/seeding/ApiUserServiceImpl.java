@@ -9,7 +9,7 @@ import app.persistence.EmployeeDAO;
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.services.SecurityServiceImpl.hashPassword;
+import static app.utils.PasswordUtil.hashPassword;
 
 public class ApiUserServiceImpl implements ApiUserService
 {

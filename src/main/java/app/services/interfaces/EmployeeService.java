@@ -4,7 +4,7 @@ import app.dtos.EmployeeDTO;
 
 import java.util.List;
 
-public interface EmployeeService
+public interface EmployeeService extends EmployeeIdentityService
 {
     EmployeeDTO get(Integer id);
 
@@ -15,4 +15,6 @@ public interface EmployeeService
     EmployeeDTO deactivate(Integer id);
 
     EmployeeDTO activate(Integer id);
+
+    EmployeeDTO changePassword(Integer id, String oldPassword, String newPassword);
 }
