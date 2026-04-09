@@ -5,7 +5,7 @@ import app.exceptions.DatabaseException;
 import app.exceptions.ValidationException;
 import app.exceptions.enums.DatabaseErrorType;
 import app.persistence.interfaces.IEmployeeDAO;
-import app.services.SecurityServiceImpl;
+import app.utils.PasswordUtil;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -91,7 +91,7 @@ public class EmployeeDAO implements IEmployeeDAO
             {
                 Employee employee = query.getSingleResult();
 
-                if (SecurityServiceImpl.verifyPassword(password, employee.getPassword()))
+                if (PasswordUtil.verifyPassword(password, employee.getPassword()))
                 {
                     return employee;
                 }
