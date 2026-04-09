@@ -6,7 +6,7 @@ import app.entities.enums.TaskType;
 import app.exceptions.ApiException;
 import app.services.interfaces.EmployeeIdentityService;
 import app.services.interfaces.MaintenanceLogService;
-import dk.bugelhartmann.UserDTO;
+import app.utils.EmployeeAuthUtil;
 import io.javalin.http.Context;
 
 public class MaintenanceLogController
@@ -24,19 +24,7 @@ public class MaintenanceLogController
     {
         int assetId = Integer.parseInt(ctx.pathParam("id"));
 
-        UserDTO tokenUser = ctx.attribute("authUser");
-        if(tokenUser == null)
-        {
-            throw new ApiException(401, "Missing authenticated Employee");
-        }
-
-        String authEmail = tokenUser.getUsername();
-        Integer performedById = employeeIdentityService.getEmployeeIdByEmail(authEmail);
-
-        if(performedById == null)
-        {
-            throw new ApiException(401, "Missing authenticated Employee ID");
-        }
+        Integer performedById = EmployeeAuthUtil.requireAuthenticatedEmployee(ctx, employeeIdentityService).id();
 
         CreateLogRequest body = ctx.bodyValidator(CreateLogRequest.class)
                 .check(dto -> dto.performedDate() != null, "Performed date is required")

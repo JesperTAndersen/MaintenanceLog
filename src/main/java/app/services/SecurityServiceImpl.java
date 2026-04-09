@@ -19,12 +19,13 @@ import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.UnauthorizedResponse;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.text.ParseException;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static app.utils.PasswordUtil.hashPassword;
 
 public class SecurityServiceImpl implements SecurityService
 {
@@ -38,17 +39,6 @@ public class SecurityServiceImpl implements SecurityService
     public SecurityServiceImpl(ISecurityDAO secDAO)
     {
         this.secDAO = secDAO;
-    }
-
-    public static String hashPassword(String password)
-    {
-        String salt = BCrypt.gensalt(12);
-        return BCrypt.hashpw(password, salt);
-    }
-
-    public static boolean verifyPassword(String inputtedPassword, String hashedPassword)
-    {
-        return BCrypt.checkpw(inputtedPassword, hashedPassword);
     }
 
     @Override

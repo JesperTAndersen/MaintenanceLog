@@ -6,7 +6,7 @@ import app.entities.enums.TaskType;
 import app.entities.enums.EmployeeRole;
 import app.entities.Asset;
 import app.entities.MaintenanceLog;
-import app.services.SecurityServiceImpl;
+import app.utils.PasswordUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -23,7 +23,7 @@ public class TestPopulator
         {
             em.getTransaction().begin();
 
-            String hashedPassword = SecurityServiceImpl.hashPassword("password123");
+            String hashedPassword = PasswordUtil.hashPassword("password123");
 
             Employee employee1 = Employee.builder()
                     .firstName("John")

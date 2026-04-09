@@ -30,6 +30,7 @@ public class EmployeeRoutes
                 put("/{id}", employeeController::update, EmployeeRole.MANAGER);
                 delete("/{id}", employeeController::deactivate, EmployeeRole.ADMIN);
                 patch("/{id}", employeeController::activate, EmployeeRole.ADMIN);
+                patch("/{id}/password", employeeController::changePassword, EmployeeRole.AUTHENTICATED);
             });
         };
     }
