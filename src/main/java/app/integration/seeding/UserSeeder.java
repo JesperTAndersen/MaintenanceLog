@@ -10,34 +10,33 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-public class UserSeeder {
-
-    public static void main(String[] args) {
-        System.out.println("User Seeder Demo \n");
-
-        // Setup
-        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
-        EmployeeDAO employeeDao = new EmployeeDAO(emf);
+public class UserSeeder
+{
+    public static void main(String[] args)
+    {
         ObjectMapper objectMapper = new ObjectMapper();
         APIReader apiReader = new APIReader(objectMapper);
         RandomUserClient client = new RandomUserClient(apiReader);
 
-        // Test threading performance
+//         Test threading performance
         System.out.println("1. Testing Sequential vs Concurrent API Calls:");
         testThreads(client);
 
-        // Seed employees
-        System.out.println("\n2. Seeding Employees:");
-        seedEmployees(employeeDao);
+
+        //Seed employees
+//                System.out.println("User Seeder Demo \n");
+//                EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+//                EmployeeDAO employeeDao = new EmployeeDAO(emf);
+//
+//                System.out.println("\n2. Seeding Employees:");
+//                seedEmployees(client, employeeDao);
+//                emf.close();
 
         System.out.println("\nDemo Complete");
-        emf.close();
     }
 
-    public static void seedEmployees(EmployeeDAO employeeDao) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        APIReader apiReader = new APIReader(objectMapper);
-        RandomUserClient client = new RandomUserClient(apiReader);
+    public static void seedEmployees(RandomUserClient client, EmployeeDAO employeeDao)
+    {
         ApiUserService apiUserService = new ApiUserServiceImpl(client, employeeDao);
 
         System.out.println("Seeding 50 employees...");
@@ -45,11 +44,13 @@ public class UserSeeder {
         System.out.println("Seeding complete!");
     }
 
-    public static void testThreads(RandomUserClient client) {
+    public static void testThreads(RandomUserClient client)
+    {
         // Sequential timing
         System.out.println("Running sequential API calls (5x10 users)...");
         long startSeq = System.currentTimeMillis();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++)
+        {
             client.fetchUsersFromAPI(10);
         }
         long endSeq = System.currentTimeMillis();
