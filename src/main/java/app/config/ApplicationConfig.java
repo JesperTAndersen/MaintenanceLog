@@ -29,6 +29,7 @@ public class ApplicationConfig
 
         return Javalin.create(config ->
         {
+            configureCors(config);
             configurePlugins(config);
             configureRoutes(config, routes);
             configureSecurity(config, securityService);
@@ -36,10 +37,25 @@ public class ApplicationConfig
         }).start(port);
     }
 
-
     public static void stop(Javalin app)
     {
         app.stop();
+    }
+
+    private static void configureCors(JavalinConfig config)
+    {
+        boolean isProduction = System.getenv("DEPLOYED") != null;
+
+        config.bundledPlugins.enableCors(cors -> {
+            cors.addRule(it -> {
+                if (isProduction) {
+                    it.allowHost(""); //TODO add deployed domain later
+                } else {
+                    it.anyHost();
+                }
+                it.allowCredentials = true;
+            });
+        });
     }
 
     private static void configurePlugins(JavalinConfig config)
