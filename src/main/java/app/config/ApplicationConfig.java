@@ -53,7 +53,7 @@ public class ApplicationConfig
                 } else {
                     it.anyHost();
                 }
-                it.allowCredentials = true;
+//                it.allowCredentials = true;
             });
         });
     }
