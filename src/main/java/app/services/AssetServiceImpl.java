@@ -30,11 +30,7 @@ public class AssetServiceImpl implements AssetService
     public AssetDTO get(Integer id) {
         Asset asset = assetDao.get(id);
 
-        LocalDateTime lastLogDate = null;
-        if (!asset.getLogs().isEmpty()) {
-            lastLogDate = asset.getLogs().get(0).getPerformedDate();
-        }
-
+        LocalDateTime lastLogDate = getLastLogDate(asset);
         return AssetMapper.toDTO(asset, lastLogDate);
     }
 
@@ -53,7 +49,10 @@ public class AssetServiceImpl implements AssetService
         }
 
         return assets.stream()
-                .map(AssetMapper::toDTO)
+                .map(asset -> {
+                    LocalDateTime lastLogDate = getLastLogDate(asset);
+                    return AssetMapper.toDTO(asset, lastLogDate);
+                })
                 .toList();
     }
 
@@ -69,5 +68,10 @@ public class AssetServiceImpl implements AssetService
     {
         Asset deactivated = assetDao.setActive(id, false);
         return AssetMapper.toDTO(deactivated);
+    }
+
+    private LocalDateTime getLastLogDate(Asset asset) {
+        if (asset.getLogs().isEmpty()) return null;
+        return asset.getLogs().get(0).getPerformedDate();
     }
 }
