@@ -26,5 +26,7 @@ public interface MaintenanceLogService
     List<MaintenanceLogDTO> getByPerformedEmployee(Integer employeeId);
 
     List<MaintenanceLogDTO> getLogsOnActiveAssets(int limit);
+
+    List<MaintenanceLogDTO> getByAssetFiltered(Integer assetId, LogStatus status, TaskType taskType);
 }
 

@@ -147,6 +147,41 @@ public class MaintenanceLogDAO implements IMaintenanceLogDAO
     }
 
     @Override
+    public List<MaintenanceLog> getByAssetFiltered(Integer assetId, LogStatus status, TaskType taskType)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            String jpql = "SELECT m FROM MaintenanceLog m WHERE m.asset.assetId = :assetId";
+
+            if (status != null)
+            {
+                jpql += " AND m.status = :status";
+            }
+            if (taskType != null)
+            {
+                jpql += " AND m.taskType = :taskType";
+            }
+
+            TypedQuery<MaintenanceLog> query = em.createQuery(jpql, MaintenanceLog.class);
+            query.setParameter("assetId", assetId);
+
+            if (taskType != null)
+            {
+                query.setParameter("taskType", taskType);
+            }
+            if (status != null)
+            {
+                query.setParameter("status", status);
+            }
+            return query.getResultList();
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Get logs by asset, task and status failed", DatabaseErrorType.QUERY_FAILURE, e);
+        }
+    }
+
+    @Override
     public List<MaintenanceLog> getByStatus(LogStatus status)
     {
         if (status == null)

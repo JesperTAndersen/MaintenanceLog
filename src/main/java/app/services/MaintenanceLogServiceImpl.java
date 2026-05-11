@@ -106,4 +106,14 @@ public class MaintenanceLogServiceImpl implements MaintenanceLogService
                 .map(MaintenanceLogMapper::toDTO)
                 .toList();
     }
+
+    @Override
+    public List<MaintenanceLogDTO> getByAssetFiltered(Integer assetId, LogStatus status, TaskType taskType)
+    {
+        return logDao.getByAssetFiltered(assetId, status, taskType).stream()
+                .map(MaintenanceLogMapper::toDTO)
+                .toList();
+    }
+
+
 }

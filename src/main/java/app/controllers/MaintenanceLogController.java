@@ -84,33 +84,25 @@ public class MaintenanceLogController
         String taskParam = ctx.queryParam("taskType");
         String statusParam = ctx.queryParam("status");
 
-        if (taskParam != null)
+        TaskType taskType = null;
+        LogStatus status = null;
+
+        try
         {
-            try
+            if (taskParam != null)
             {
-                TaskType taskType = TaskType.valueOf(taskParam.toUpperCase());
-                ctx.status(200).json(logService.getByAssetAndTask(assetId, taskType));
+                taskType = TaskType.valueOf(taskParam.toUpperCase());
             }
-            catch (IllegalArgumentException e)
+            if (statusParam != null)
             {
-                throw new ApiException(400, "Invalid task type value");
+                status = LogStatus.valueOf(statusParam.toUpperCase());
             }
         }
-        else if (statusParam != null)
+        catch (IllegalArgumentException e)
         {
-            try
-            {
-                LogStatus status = LogStatus.valueOf(statusParam.toUpperCase());
-                ctx.status(200).json(logService.getByStatus(status));
-            }
-            catch (IllegalArgumentException e)
-            {
-                throw new ApiException(400, "Invalid status value");
-            }
+            throw new ApiException(400, "Invalid taskType or status value");
         }
-        else
-        {
-            ctx.status(200).json(logService.getByAsset(assetId));
-        }
+
+        ctx.status(200).json(logService.getByAssetFiltered(assetId, status, taskType));
     }
 }
