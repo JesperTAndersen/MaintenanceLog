@@ -218,6 +218,36 @@ class AssetRoutesTest
     }
 
     @Test
+    void testGetLogsByAssetWithFilters()
+    {
+        Asset asset1 = assets.get("asset1");
+
+        given()
+                .header("Authorization", "Bearer " + authenticatedToken)
+                .when()
+                .get("/assets/" + asset1.getAssetId() + "/logs?status=DONE&taskType=MAINTENANCE")
+                .then()
+                .statusCode(200)
+                .body("assetId", everyItem(equalTo(asset1.getAssetId())))
+                .body("status", everyItem(equalTo("DONE")))
+                .body("taskType", everyItem(equalTo("MAINTENANCE")))
+                .body("size()", is(1));
+    }
+
+    @Test
+    void testGetLogsByAssetWithInvalidFiltersReturns400()
+    {
+        Asset asset1 = assets.get("asset1");
+
+        given()
+                .header("Authorization", "Bearer " + authenticatedToken)
+                .when()
+                .get("/assets/" + asset1.getAssetId() + "/logs?status=NOT_A_STATUS")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
     void testPostLogForAsset()
     {
         Asset asset1 = assets.get("asset1");

@@ -4,8 +4,11 @@ import app.controllers.routes.Routes;
 import app.exceptions.ApiException;
 import app.exceptions.DatabaseException;
 import app.services.interfaces.SecurityService;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
+import io.javalin.json.JavalinJackson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +32,42 @@ public class ApplicationConfig
 
         return Javalin.create(config ->
         {
+            configureCors(config);
             configurePlugins(config);
             configureRoutes(config, routes);
             configureSecurity(config, securityService);
             configureExceptionHandlers(config);
+            configureJackson(config);
         }).start(port);
     }
-
 
     public static void stop(Javalin app)
     {
         app.stop();
+    }
+
+    private static void configureJackson(JavalinConfig config)
+    {
+        config.jsonMapper(new JavalinJackson().updateMapper(mapper ->
+                mapper.registerModule(new JavaTimeModule())
+                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        ));
+    }
+
+    private static void configureCors(JavalinConfig config)
+    {
+        boolean isProduction = System.getenv("DEPLOYED") != null;
+
+        config.bundledPlugins.enableCors(cors -> {
+            cors.addRule(it -> {
+                if (isProduction) {
+                    it.allowHost("mlf.heltsort.dk"); //TODO add deployed domain later
+                } else {
+                    it.anyHost();
+                }
+//                it.allowCredentials = true;
+            });
+        });
     }
 
     private static void configurePlugins(JavalinConfig config)

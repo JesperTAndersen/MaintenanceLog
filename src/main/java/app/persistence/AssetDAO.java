@@ -90,7 +90,8 @@ public class AssetDAO implements IAssetDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a ORDER BY a.assetId DESC", Asset.class);
+            //TODO negates the point of lazy Loading, improve query so it doesnt load all logs.
+            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a LEFT JOIN FETCH a.logs ORDER BY a.assetId DESC", Asset.class);
             return query.getResultList();
         }
         catch (PersistenceException e)
@@ -147,7 +148,8 @@ public class AssetDAO implements IAssetDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a WHERE a.active = :active ORDER BY a.assetId DESC", Asset.class)
+            //TODO negates the point of lazy Loading, improve query so it doesnt load all logs.
+            TypedQuery<Asset> query = em.createQuery("SELECT a FROM Asset a  LEFT JOIN FETCH a.logs WHERE a.active = :active  ORDER BY a.assetId DESC", Asset.class)
                     .setParameter("active", active);
             return query.getResultList();
         }

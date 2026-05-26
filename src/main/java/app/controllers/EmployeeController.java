@@ -5,6 +5,7 @@ import app.exceptions.ApiException;
 import app.services.interfaces.EmployeeService;
 import app.utils.EmployeeAuthUtil;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 public class EmployeeController
 {
@@ -56,6 +57,12 @@ public class EmployeeController
         int id = Integer.parseInt(ctx.pathParam("id"));
         employeeService.activate(id);
         ctx.status(204);
+    }
+
+    public void getSelf(Context ctx)
+    {
+        Integer id = EmployeeAuthUtil.requireAuthenticatedEmployee(ctx, employeeService).id();
+        ctx.status(200).json(employeeService.get(id));
     }
 
     private record ChangePasswordRequest(String oldPassword, String newPassword)

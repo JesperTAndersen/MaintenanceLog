@@ -26,6 +26,7 @@ public class EmployeeRoutes
             path("employees", () ->
             {
                 get(employeeController::getAll, EmployeeRole.AUTHENTICATED);
+                get("/me", employeeController::getSelf, EmployeeRole.AUTHENTICATED);
                 get("/{id}", employeeController::get, EmployeeRole.AUTHENTICATED);
                 put("/{id}", employeeController::update, EmployeeRole.MANAGER);
                 delete("/{id}", employeeController::deactivate, EmployeeRole.ADMIN);
