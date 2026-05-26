@@ -61,7 +61,7 @@ public class ApplicationConfig
         config.bundledPlugins.enableCors(cors -> {
             cors.addRule(it -> {
                 if (isProduction) {
-                    it.allowHost("mlf.heltsort.dk"); //TODO add deployed domain later
+                    it.allowHost("https://mlf.heltsort.dk/");
                 } else {
                     it.anyHost();
                 }
