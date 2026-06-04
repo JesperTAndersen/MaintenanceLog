@@ -61,7 +61,7 @@ public class SecurityServiceImpl implements SecurityService
                 .email(request.email().toLowerCase().trim())
                 .phone(request.phone().trim())
                 .role(request.role())
-                .password(hashPassword(request.password().trim()))
+                .password(hashPassword(request.password()))
                 .active(true)
                 .build();
 
@@ -75,7 +75,7 @@ public class SecurityServiceImpl implements SecurityService
     {
         try
         {
-            Employee verifiedEmployee = secDAO.getVerifiedEmployee(dto.email().trim(), dto.password().trim());
+            Employee verifiedEmployee = secDAO.getVerifiedEmployee(dto.email().trim(), dto.password());
 
             EmployeeDTO employeeDTO = EmployeeMapper.toDTO(verifiedEmployee);
             if (!employeeDTO.active())
