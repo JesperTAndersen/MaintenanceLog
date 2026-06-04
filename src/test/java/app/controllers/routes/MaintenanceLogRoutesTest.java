@@ -54,9 +54,9 @@ class MaintenanceLogRoutesTest
         assets = TestPopulator.populateAssets(emf);
         logs = TestPopulator.populateMaintenanceLogs(emf, employees, assets);
 
-        authenticatedToken = loginAsEmployee("Johndoe@mail.dk", "password123");
-        managerToken = loginAsEmployee("Janedoe@mail.dk", "password123");
-        adminToken = loginAsEmployee("Jeffdoe@mail.dk", "password123");
+        authenticatedToken = loginAsEmployee("johndoe@mail.dk", "password123");
+        managerToken = loginAsEmployee("janedoe@mail.dk", "password123");
+        adminToken = loginAsEmployee("jeffdoe@mail.dk", "password123");
     }
 
     private String loginAsEmployee(String email, String password)
@@ -68,7 +68,7 @@ class MaintenanceLogRoutesTest
                             "email": "%s",
                             "password": "%s"
                         }
-                        """, email, password))
+                        """, email.trim(), password))
                 .when()
                 .post("/auth/login")
                 .then()

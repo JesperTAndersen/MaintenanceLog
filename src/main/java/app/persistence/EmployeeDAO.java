@@ -85,7 +85,7 @@ public class EmployeeDAO implements IEmployeeDAO
         try (EntityManager em = emf.createEntityManager())
         {
             TypedQuery<Employee> query = em.createQuery("SELECT u FROM Employee u WHERE u.email = :email AND u.active = true", Employee.class);
-            query.setParameter("email", email);
+            query.setParameter("email", email.toLowerCase());
 
             try
             {
@@ -180,7 +180,7 @@ public class EmployeeDAO implements IEmployeeDAO
             try (EntityManager em = emf.createEntityManager())
             {
                 TypedQuery<Employee> query = em.createQuery("SELECT u from Employee u WHERE u.email = :email AND u.active = true", Employee.class);
-                query.setParameter("email", email);
+                query.setParameter("email", email.toLowerCase());
 
                 try
                 {

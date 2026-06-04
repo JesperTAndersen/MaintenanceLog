@@ -75,7 +75,7 @@ class EmployeeDAOTest
         assertThat(fetched.getEmployeeId(), is(employee1.getEmployeeId()));
         assertThat(fetched.getFirstName(), is("John"));
         assertThat(fetched.getLastName(), is("Doe"));
-        assertThat(fetched.getEmail(), is("Johndoe@mail.dk"));
+        assertThat(fetched.getEmail(), is("johndoe@mail.dk"));
         assertThat(fetched.getRole(), is(employee1.getRole()));
     }
 
@@ -108,12 +108,12 @@ class EmployeeDAOTest
         assertThat(allEmployees.size(), is(4)); // 3 active + 1 inactive from TestPopulator
 
         // Verify active employees are included
-        assertThat(allEmployees, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
-        assertThat(allEmployees, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
-        assertThat(allEmployees, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("johndoe@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("janedoe@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("jeffdoe@mail.dk"))));
 
         // Verify inactive employee is included
-        assertThat(allEmployees, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
+        assertThat(allEmployees, hasItem(hasProperty("email", is("clarkkent@mail.dk"))));
     }
 
     @Test
@@ -181,10 +181,10 @@ class EmployeeDAOTest
     @DisplayName("GetByEmail - should retrieve active employee by email")
     void getByEmail()
     {
-        Employee fetched = employeeDAO.getByEmail("Johndoe@mail.dk");
+        Employee fetched = employeeDAO.getByEmail("johndoe@mail.dk");
 
         assertThat(fetched, notNullValue());
-        assertThat(fetched.getEmail(), is("Johndoe@mail.dk"));
+        assertThat(fetched.getEmail(), is("johndoe@mail.dk"));
         assertThat(fetched.getFirstName(), is("John"));
         assertThat(fetched.getLastName(), is("Doe"));
         assertThat(fetched.isActive(), is(true));
@@ -245,12 +245,12 @@ class EmployeeDAOTest
         }
 
         // inactive employee is included
-        assertThat(inactiveEmployees, hasItem(hasProperty("email", is("Clarkkent@mail.dk"))));
+        assertThat(inactiveEmployees, hasItem(hasProperty("email", is("clarkkent@mail.dk"))));
 
         // active employees are not included
-        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("Johndoe@mail.dk")))));
-        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("Janedoe@mail.dk")))));
-        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("Jeffdoe@mail.dk")))));
+        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("johndoe@mail.dk")))));
+        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("janedoe@mail.dk")))));
+        assertThat(inactiveEmployees, not(hasItem(hasProperty("email", is("jeffdoe@mail.dk")))));
     }
 
     @Test
@@ -303,10 +303,10 @@ class EmployeeDAOTest
             assertThat(employee.isActive(), is(true));
         }
 
-        assertThat(activeEmployees, hasItem(hasProperty("email", is("Johndoe@mail.dk"))));
-        assertThat(activeEmployees, hasItem(hasProperty("email", is("Janedoe@mail.dk"))));
-        assertThat(activeEmployees, hasItem(hasProperty("email", is("Jeffdoe@mail.dk"))));
-        assertThat(activeEmployees, not(hasItem(hasProperty("email", is("Clarkkent@mail.dk")))));
+        assertThat(activeEmployees, hasItem(hasProperty("email", is("johndoe@mail.dk"))));
+        assertThat(activeEmployees, hasItem(hasProperty("email", is("janedoe@mail.dk"))));
+        assertThat(activeEmployees, hasItem(hasProperty("email", is("jeffdoe@mail.dk"))));
+        assertThat(activeEmployees, not(hasItem(hasProperty("email", is("jlarkkent@mail.dk")))));
     }
 
     @Test
